@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="ua-1185-spacex-common-project-impl-Sub_Flow" doc:id="2453f030-321b-47d6-ac74-d37cdd85b958" >
+		<ee:transform doc:name="Transform Message" doc:id="380a30be-6484-4a60-9428-d0faf8b9d329" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var inputTime = vars.ERROR_MESSAGE."dataTime" as Time 
+var inputDate = vars.ERROR_MESSAGE."dataTime" as Date
+var inputZone = vars.ERROR_MESSAGE."dataTime" as TimeZone
+---
+{
+    "code": vars.ERROR_MESSAGE."code",
+    "message": vars.ERROR_MESSAGE."message",
+    "description": vars.ERROR_MESSAGE."description",
+    "dataTime": inputDate ++ ' ' ++ inputTime as String {format: "HH:mm"} ++ ' ' ++ inputZone,
+    "transactionId": vars.ERROR_MESSAGE."transactionId"
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[vars.ERROR_MESSAGE."code"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2948ed90-6fdb-4c26-b93e-6975dd0561be" message="#[payload]" />
+	</sub-flow>
+</mule>

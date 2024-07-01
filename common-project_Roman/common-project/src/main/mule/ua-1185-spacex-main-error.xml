@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="ua-1185-spacex-main-Error_Handler" doc:id="f89e211a-c986-46b9-ba3d-7384086b77fe" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="424364d5-1bc3-40dd-8ce0-1400179f41ac" type="HTTP:NOT_FOUND">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"code": 404,&#10;	"message": "Page Not Found",&#10;	"description": "HTTP:NOT_FOUND",&#10;	"dataTime": now(),&#10;    "transactionId": "main-Error_Handler"&#10;}]' doc:name="ERROR_MESSAGE" doc:id="9c92b575-6629-4fc7-ab09-70299add6f8c" variableName="ERROR_MESSAGE" />
+			<logger level="INFO" doc:name="Logger" doc:id="4f03c3c4-1b07-493f-ae16-eb10e73da0b8" message="#[payload]"/>
+			<flow-ref doc:name="Flow Reference" doc:id="8b1c937f-2cbe-4cac-a2d7-31e11841e196" name="ua-1185-spacex-common-project-impl-Sub_Flow"/>
+		</on-error-continue>
+		<!-- [STUDIO:"On Error Propagate"]<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="aee83b9a-450c-418a-802d-4d055ee00c79" type="HTTP:NOT_FOUND">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;&#45;&#45;-&#10;{&#10;	"code": 404,&#10;	"message": "Page Not Found",&#10;	"description": "HTTP:NOT_FOUND",&#10;	"dataTime": now(),&#10;    "transactionId": "main-Error_Handler"&#10;}&#93;' doc:name="ERROR_MESSAGE" doc:id="596ada91-1ab1-411a-b60e-3c596364c198" variableName="ERROR_MESSAGE" />
+			<logger level="INFO" doc:name="Logger" doc:id="04dfc3cd-331d-4ff1-a821-b23ec2982de3" message="#[payload&#93;" />
+			<flow-ref doc:name="Flow Reference" doc:id="1249d209-0c87-4f33-8641-7a73dea4df16" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-propagate> [STUDIO] -->
+	</error-handler>
+</mule>
