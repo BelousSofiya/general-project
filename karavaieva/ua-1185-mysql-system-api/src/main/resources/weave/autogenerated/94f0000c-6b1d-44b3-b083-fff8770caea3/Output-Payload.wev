@@ -1,0 +1,51 @@
+%dw 2.0
+// namespaces
+ns ns0 http://example.com/rocketservice
+
+type auto_94f0000c_6b1d_44b3_b083_fff8770caea3_Output_Payload = {|
+  ns0#GetRocketByExternalIdResponse: {|
+    id: java_lang_Object | Null, 
+    externalId: java_lang_Object_4 | Null, 
+    name: java_lang_Object_7 | Null, 
+    active: java_lang_Object_10 | Null, 
+    stages: java_lang_Object_13 | Null, 
+    costPerLaunch: java_lang_Object_16 | Null, 
+    description: java_lang_Object_19 | Null
+  |}
+|}
+type java_lang_Object_4 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_7 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_13 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_16 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_10 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_19 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+

@@ -1,0 +1,18 @@
+%dw 2.0
+// namespaces
+ns ns0 http://schemas.xmlsoap.org/soap/envelope/
+
+type auto_2f2086b8_a32a_4239_8721_86bc961db46c_Output_Payload = {|
+  body: {|
+    ns0#Response: {|
+      result: Array<{ _?: java_lang_Object }>, 
+      table: String
+    |}
+  |} | {| ns0#Response: {| result: String |} |}
+|}
+type java_lang_Object = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+

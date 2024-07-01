@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <apikit-soap:config httpStatusVarName="httpStatus" name="soapkit-configuration" port="SpaceXdbServiceSoapPort" service="SpaceXdbService" wsdlLocation="general_crud.wsdl"/>
+   
+    <flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfiguration" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+            <http:response statusCode="#[attributes.additionalTransportData.statusCode default 200]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[attributes.protocolHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[attributes.additionalTransportData.statusCode default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[attributes.protocolHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit-soap:router config-ref="soapkit-configuration">
+            <apikit-soap:attributes><![CDATA[#[%dw 2.0
+              output application/java
+              ---
+              {
+                  headers: attributes.headers,
+                  method: attributes.method,
+                  queryString: attributes.queryString
+            }]]]></apikit-soap:attributes>
+        </apikit-soap:router>
+		<error-handler ref="global-error-handlingError_Handler" />
+    </flow>
+	<flow name="GetRocketByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="89ab8b13-8945-4023-a55a-7af9f3cf4516" name="getRocketByExternalId"/>
+    </flow>
+    <flow name="GetPayloadByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="0ca77910-7319-4f0d-9db4-f325189874fc" name="getPayloadByExternalId"/>
+    </flow>
+    <flow name="GetLaunchpadByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="42502637-2c22-4e28-80e3-d6623aac4991" name="getLaunchpadByExternalId"/>
+    </flow>
+    <flow name="GetLaunchByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="4d3aac6b-cd30-440f-be82-c1ebac03d87c" name="getLaunchByExternalId"/>
+    </flow>
+    <flow name="CreateLaunchpad:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="4a7a6f26-7b53-48ff-9792-c86922526c5f" name="createLauncpad"/>
+    </flow>
+    <flow name="CreateLaunch:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="3dfde866-8bc2-4902-b35f-f5a20ef7253c" name="createLaunch"/>
+    </flow>
+    <flow name="CreateRocket:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="c556f9a4-2681-4e33-8ad5-4718f91f54c6" name="createRocket"/>
+    </flow>
+    <flow name="CreatePayload:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="86884b4f-b64e-437f-a5d3-ecd612bb47fe" name="createPayload"/>
+    </flow>
+    <flow name="UpdateLaunchpad:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="941835e2-d99b-4393-a071-f04bad38a48e" name="updateLaunchpad"/>
+    </flow>
+    <flow name="UpdateLaunch:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="e133deda-ad20-4976-88a2-03a0315f7805" name="updateLaunch"/>
+    </flow>
+    <flow name="UpdateRocket:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="5bfd4e68-0b52-4c43-acde-57598ebe5d97" name="updateRocket"/>
+    </flow>
+    <flow name="UpdatePayload:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="5bfe3e50-ef38-4fd3-8456-71b803df41fb" name="updatePayload"/>
+    </flow>
+    <flow name="DeleteRocketByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="de6ebdc5-151c-4085-8ade-9b5cf416ba6f" name="deleteRocketByExternalId"/>
+    </flow>
+    <flow name="DeletePayloadByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="69acae19-da9c-4a95-96a5-4d7447f7942d" name="deletePayloadByExternalId"/>
+    </flow>
+    <flow name="DeleteLaunchpadByExternalId:\soapkit-configuration">
+		<flow-ref doc:name="Flow Reference" doc:id="6b03e15b-edef-4242-a313-8147195cd4bd" name="deleteLaunchpadByExternalId"/>
+    </flow>
+    <flow name="DeleteLaunchByExternalId:\soapkit-configuration" doc:id="1b2db723-c432-4c3b-be15-fcc0a1333cab">
+		<flow-ref doc:name="Flow Reference" doc:id="2f184d36-2889-4a52-bb26-a47302dc4860" name="deleteLaunchByExternalId"/>
+    </flow>
+</mule>
