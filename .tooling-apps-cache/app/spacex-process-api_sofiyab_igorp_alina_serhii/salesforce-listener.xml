@@ -12,8 +12,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
 		</salesforce:new-object-listener>
-		<logger level="INFO" doc:name="Logger" doc:id="b72b2f3d-7d0d-41b4-9a2f-ed69b8d2acec" message="#[typeOf(payload)]"/>
-		<logger level="INFO" doc:name="Logger" doc:id="d1e6a448-8f3c-43b3-ab0e-68811b43edab" message="#[payload]"/>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="b72b2f3d-7d0d-41b4-9a2f-ed69b8d2acec" message="#[typeOf(payload)&#93;"/> [STUDIO] -->
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="d1e6a448-8f3c-43b3-ab0e-68811b43edab" message="#[payload&#93;"/> [STUDIO] -->
 		<ee:transform doc:name="Transform Message" doc:id="59e79ada-ccae-43a4-bbed-f4760f4c6a93" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -29,7 +29,7 @@ ns roc http://example.com/rocketservice
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="2498ad6e-679e-4182-bfff-593d75f037cd" message="#[payload]"/>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="2498ad6e-679e-4182-bfff-593d75f037cd" message="#[payload&#93;"/> [STUDIO] -->
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="403b09a9-967c-4f67-851b-e6509edb9e3f" type="ANY"/>
 		</error-handler>
@@ -41,8 +41,8 @@ ns roc http://example.com/rocketservice
             </scheduling-strategy>
 		</salesforce:modified-object-listener>
 		
-		<logger level="INFO" doc:name="Logger" doc:id="3d30dd13-1c18-422f-a101-2eb8441f842b" message="#[typeOf(payload)]"/>
-		<logger level="INFO" doc:name="Logger" doc:id="722c1695-65ca-4110-8140-541274952283" message="#[payload]"/>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="3d30dd13-1c18-422f-a101-2eb8441f842b" message="#[typeOf(payload)&#93;"/> [STUDIO] -->
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="722c1695-65ca-4110-8140-541274952283" message="#[payload&#93;"/> [STUDIO] -->
 		<ee:transform doc:name="Transform Message" doc:id="3e11f675-dd87-458a-a22e-af706e62606a" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -58,24 +58,10 @@ ns roc http://example.com/rocketservice
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="796f2a10-a98d-45b5-9205-4111c218002e" message="#[payload]"/>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="796f2a10-a98d-45b5-9205-4111c218002e" message="#[payload&#93;"/> [STUDIO] -->
+		<logger level="INFO" doc:name="Logger" doc:id="bde14fd0-017b-4544-a9a5-19ebda3f5d1e" message="It works!!!!!!!!!!!!!"/>
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0b8a945c-c35e-4fd9-83d7-de7d40a81309" type="ANY"/>
 		</error-handler>
 	</flow>
-	<!-- [STUDIO:"salesforce-listenerFlow1"]<flow name="salesforce-listenerFlow1" doc:id="8e8fcc12-0c47-47c4-a7ca-0609b1a35e1e" >
-		<salesforce:deleted-object-listener doc:name="On Deleted Object" doc:id="0da52456-2e19-4a8d-8105-1525cdf04874" config-ref="Salesforce_Config" objectType="Contact" since="2024-06-26 12:00:00">
-		    <scheduling-strategy>
-                <fixed-frequency frequency="10000"/>
-            </scheduling-strategy>
-        </salesforce:deleted-object-listener>
-		<ee:transform doc:name="Transform Message" doc:id="a2a875f6-99ae-4a0b-b6e9-1e0ca4cb27ad" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-&#45;&#45;-
-payload&#93;&#93;></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</flow> [STUDIO] -->
 </mule>

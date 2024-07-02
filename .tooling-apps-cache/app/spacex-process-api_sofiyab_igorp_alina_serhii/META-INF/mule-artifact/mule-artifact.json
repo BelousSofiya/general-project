@@ -17,7 +17,6 @@
       "exportedResources": [
         "application-types.xml",
         "config/local-out.yaml",
-        "config/local-properties.yaml",
         "config/secure-properties-tool.jar",
         "global.xml",
         "log4j2.xml",
