@@ -1,0 +1,33 @@
+{
+  "configs": [
+    "global.xml",
+    "spacex-process-api_sofiyab_igorp_alina_serhii.xml",
+    "salesforce-listener.xml"
+  ],
+  "secureProperties": [],
+  "supportedJavaVersions": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:common-api:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.6.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "config/local-out.yaml",
+        "config/local-properties.yaml",
+        "config/secure-properties-tool.jar",
+        "global.xml",
+        "log4j2.xml",
+        "salesforce-listener.xml",
+        "spacex-process-api_sofiyab_igorp_alina_serhii.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

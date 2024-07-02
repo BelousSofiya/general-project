@@ -1,0 +1,8 @@
+http:
+  host: "0.0.0.0"
+  port: "8081"
+salesforce:
+  password: "Pavlograd1990"
+  username: "maksym.stepanenko.86@gmail.com"
+  token: "MBwR3UtuyosEKVbuhcDn96Wn5"
+  url: "https://login.salesforce.com/services/Soap/u/60.0"
