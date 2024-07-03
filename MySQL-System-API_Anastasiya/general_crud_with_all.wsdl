@@ -26,6 +26,28 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="GetAllRocketsRequest">
+                <xsd:complexType/>
+            </xsd:element>
+            <xsd:element name="GetAllRocketsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="rockets" type="tns:Rocket" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+                <xsd:complexType name="Rocket">
+                    <xsd:sequence>
+                        <xsd:element name="id" type="xsd:int"/>
+                        <xsd:element name="externalId" type="xsd:string"/>
+                        <xsd:element name="name" type="xsd:string"/>
+                        <xsd:element name="active" type="xsd:boolean"/>
+                        <xsd:element name="stages" type="xsd:int"/>
+                        <xsd:element name="costPerLaunch" type="xsd:decimal"/>
+                        <xsd:element name="description" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+
             <xsd:element name="GetPayloadByExternalIdRequest">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -33,6 +55,7 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+
             <xsd:element name="GetPayloadByExternalIdResponse">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -47,6 +70,31 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            
+            <xsd:element name="GetAllPayloadsRequest">
+                <xsd:complexType/>
+            </xsd:element>
+            
+            <xsd:element name="GetAllPayloadsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="payloads" type="tns:Payload" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+                <xsd:complexType name="Payload">
+                    <xsd:sequence>
+                        <xsd:element name="id" type="xsd:int"/>
+                        <xsd:element name="externalId" type="xsd:string"/>
+                        <xsd:element name="name" type="xsd:string"/>
+                        <xsd:element name="type" type="xsd:string"/>
+                        <xsd:element name="weight" type="xsd:decimal"/>
+                        <xsd:element name="orbit" type="xsd:string"/>
+                        <xsd:element name="apoapsis" type="xsd:int"/>
+                        <xsd:element name="periapsis" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            
             <xsd:element name="GetLaunchpadByExternalIdRequest">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -54,6 +102,7 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            
             <xsd:element name="GetLaunchpadByExternalIdResponse">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -66,6 +115,30 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+
+            <xsd:element name="GetAllLaunchpadsRequest">
+                <xsd:complexType/>
+            </xsd:element>
+            
+            <xsd:element name="GetAllLaunchpadsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="launchpads" type="tns:Launchpad" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+                <xsd:complexType name="Launchpad">
+                    <xsd:sequence>
+                        <xsd:element name="id" type="xsd:int"/>
+                        <xsd:element name="externalId" type="xsd:string"/>
+                        <xsd:element name="name" type="xsd:string"/>
+                        <xsd:element name="locality" type="xsd:string"/>
+                        <xsd:element name="region" type="xsd:string"/>
+                        <xsd:element name="status" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+
+
             <xsd:element name="GetLaunchByExternalIdRequest">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -73,6 +146,7 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            
             <xsd:element name="GetLaunchByExternalIdResponse">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -86,6 +160,29 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+
+            <xsd:element name="GetAllLaunchesRequest">
+                <xsd:complexType/>
+            </xsd:element>
+            
+            <xsd:element name="GetAllLaunchesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="launches" type="tns:Launch" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+                <xsd:complexType name="Launch">
+                    <xsd:sequence>
+                        <xsd:element name="id" type="xsd:int"/>
+                        <xsd:element name="externalId" type="xsd:string"/>
+                        <xsd:element name="success" type="xsd:boolean"/>
+                        <xsd:element name="details" type="xsd:string"/>
+                        <xsd:element name="launchName" type="xsd:string"/>
+                        <xsd:element name="date" type="xsd:string"/>
+                        <xsd:element name="rocketName" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
 
             <xsd:element name="CreateLaunchpadRequest">
                 <xsd:complexType>
@@ -317,11 +414,23 @@
     <message name="GetRocketByExternalIdResponseMessage">
         <part name="parameters" element="tns:GetRocketByExternalIdResponse"/>
     </message>
+    <message name="GetAllRocketsRequestMessage">
+        <part name="parameters" element="tns:GetAllRocketsRequest"/>
+    </message>
+    <message name="GetAllRocketsResponseMessage">
+        <part name="parameters" element="tns:GetAllRocketsResponse"/>
+    </message>
     <message name="GetPayloadByExternalIdRequestMessage">
         <part name="parameters" element="tns:GetPayloadByExternalIdRequest"/>
     </message>
     <message name="GetPayloadByExternalIdResponseMessage">
         <part name="parameters" element="tns:GetPayloadByExternalIdResponse"/>
+    </message>
+    <message name="GetAllPayloadsRequestMessage">
+        <part name="parameters" element="tns:GetAllPayloadsRequest"/>
+    </message>
+    <message name="GetAllPayloadsResponseMessage">
+        <part name="parameters" element="tns:GetAllPayloadsResponse"/>
     </message>
     <message name="GetLaunchpadByExternalIdRequestMessage">
         <part name="parameters" element="tns:GetLaunchpadByExternalIdRequest"/>
@@ -329,11 +438,23 @@
     <message name="GetLaunchpadByExternalIdResponseMessage">
         <part name="parameters" element="tns:GetLaunchpadByExternalIdResponse"/>
     </message>
+    <message name="GetAllLaunchpadsRequestMessage">
+        <part name="parameters" element="tns:GetAllLaunchpadsRequest"/>
+    </message>
+    <message name="GetAllLaunchpadsResponseMessage">
+        <part name="parameters" element="tns:GetAllLaunchpadsResponse"/>
+    </message>
     <message name="GetLaunchByExternalIdRequestMessage">
         <part name="parameters" element="tns:GetLaunchByExternalIdRequest"/>
     </message>
     <message name="GetLaunchByExternalIdResponseMessage">
         <part name="parameters" element="tns:GetLaunchByExternalIdResponse"/>
+    </message>
+    <message name="GetAllLaunchesRequestMessage">
+        <part name="parameters" element="tns:GetAllLaunchesRequest"/>
+    </message>
+    <message name="GetAllLaunchesResponseMessage">
+        <part name="parameters" element="tns:GetAllLaunchesResponse"/>
     </message>
     <message name="CreateLaunchpadRequestMessage">
         <part name="parameters" element="tns:CreateLaunchpadRequest"/>
@@ -420,9 +541,19 @@
             <output message="tns:GetRocketByExternalIdResponseMessage"/>
             <fault message="tns:FaultMessage" name="Fault"/>
         </operation>
+        <operation name="GetAllRockets">
+            <input message="tns:GetAllRocketsRequestMessage"/>
+            <output message="tns:GetAllRocketsResponseMessage"/>
+            <fault message="tns:FaultMessage" name="Fault"/>
+        </operation>
         <operation name="GetPayloadByExternalId">
             <input message="tns:GetPayloadByExternalIdRequestMessage"/>
             <output message="tns:GetPayloadByExternalIdResponseMessage"/>
+            <fault message="tns:FaultMessage" name="Fault"/>
+        </operation>
+        <operation name="GetAllPayloads">
+            <input message="tns:GetAllPayloadsRequestMessage"/>
+            <output message="tns:GetAllPayloadsResponseMessage"/>
             <fault message="tns:FaultMessage" name="Fault"/>
         </operation>
         <operation name="GetLaunchpadByExternalId">
@@ -430,9 +561,19 @@
             <output message="tns:GetLaunchpadByExternalIdResponseMessage"/>
             <fault message="tns:FaultMessage" name="Fault"/>
         </operation>
+        <operation name="GetAllLaunchpads">
+            <input message="tns:GetAllLaunchpadsRequestMessage"/>
+            <output message="tns:GetAllLaunchpadsResponseMessage"/>
+            <fault message="tns:FaultMessage" name="Fault"/>
+        </operation>
         <operation name="GetLaunchByExternalId">
             <input message="tns:GetLaunchByExternalIdRequestMessage"/>
             <output message="tns:GetLaunchByExternalIdResponseMessage"/>
+            <fault message="tns:FaultMessage" name="Fault"/>
+        </operation>
+        <operation name="GetAllLaunches">
+            <input message="tns:GetAllLaunchesRequestMessage"/>
+            <output message="tns:GetAllLaunchesResponseMessage"/>
             <fault message="tns:FaultMessage" name="Fault"/>
         </operation>
         <operation name="CreateLaunchpad">
@@ -512,9 +653,22 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
+        <operation name="GetAllRockets">
+            <soap:operation soapAction="http://example.com/GetAllRockets"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="Fault">
+                <soap:fault name="Fault" use="literal"/>
+            </fault>
+        </operation>
+        
         <operation name="GetPayloadByExternalId">
             <soap:operation soapAction="http://example.com/GetPayloadByExternalId"/>
             <input>
@@ -524,7 +678,19 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="GetAllPayloads">
+            <soap:operation soapAction="http://example.com/GetAllPayloads"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="Fault">
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="GetLaunchpadByExternalId">
@@ -536,7 +702,19 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="GetAllLaunchpads">
+            <soap:operation soapAction="http://example.com/GetAllLaunchpads"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="Fault">
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="GetLaunchByExternalId">
@@ -548,7 +726,19 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="GetAllLaunches">
+            <soap:operation soapAction="http://example.com/GetAllLaunches"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="Fault">
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
 
@@ -561,7 +751,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="CreateLaunch">
@@ -573,7 +763,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="CreateRocket">
@@ -585,7 +775,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="CreatePayload">
@@ -597,7 +787,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
 
@@ -610,7 +800,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="UpdateLaunch">
@@ -622,7 +812,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="UpdateRocket">
@@ -634,7 +824,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="UpdatePayload">
@@ -646,7 +836,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
 
@@ -659,7 +849,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="DeletePayloadByExternalId">
@@ -671,7 +861,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="DeleteLaunchpadByExternalId">
@@ -683,7 +873,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
         <operation name="DeleteLaunchByExternalId">
@@ -695,7 +885,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="Fault">
-                <soap:fault name="fault" use="literal"/>
+                <soap:fault name="Fault" use="literal"/>
             </fault>
         </operation>
 

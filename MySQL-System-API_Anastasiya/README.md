@@ -3,7 +3,7 @@
 <br>http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
 ## Endpoint for SoapUI
-<br>http://0.0.0.0:8081/SpaceXdbService/SpaceXdbServiceSoapPort</br>
+<br>http://0.0.0.0:8080/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
 ## Input Create Launch
 ```xml
@@ -304,7 +304,7 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <pay:GetPayloadByExternalIdResponse xmlns:pay="http://example.com/rocketservice">
+      <roc:GetPayloadByExternalIdResponse xmlns:pay="http://example.com/rocketservice">
          <id>1</id>
          <externalId>PLD1</externalId>
          <name>Starlink-1</name>
@@ -314,10 +314,158 @@
          <apoapsis>550</apoapsis>
          <periapsis>550</periapsis>
          <rocketId>2</rocketId>
-      </pay:GetPayloadByExternalIdResponse>
+      </roc:GetPayloadByExternalIdResponse>
    </soap:Body>
 </soap:Envelope>
 ```
+## Input for GET All
 
+```xml
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <roc:GetAllLaunchesRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>
 
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <roc:GetAllLaunchpadsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>
 
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <roc:GetAllPayloadsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <roc:GetAllRocketsRequest/>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
+## Output for GET All Launch example
+```xml
+soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <roc:AllLaunchesResponse xmlns:roc="http://example.com/rocketservice">
+         <Launch>
+            <id>1</id>
+            <externalId>RKT1</externalId>
+            <success/>
+            <details/>
+            <launchName/>
+            <date/>
+            <rocketName/>
+            <launchpad_id/>
+         </Launch>
+         <Launch>
+            <id>2</id>
+            <externalId>RKT2</externalId>
+            <success/>
+            <details/>
+            <launchName/>
+            <date/>
+            <rocketName/>
+            <launchpad_id/>
+         </Launch>
+    </roc:AllLaunchesResponse>
+   </soap:Body>
+</soap:Envelope>
+```
+## Output for GET All Launchpad example
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <roc:AllLaunchpadsResponse xmlns:roc="http://example.com/rocketservice">
+         <Launchpad>
+            <id>1</id>
+            <externalId>RKT1</externalId>
+            <name>Falcon 1</name>
+            <locality/>
+            <region/>
+            <status/>
+         </Launchpad>
+         <Launchpad>
+            <id>2</id>
+            <externalId>RKT2</externalId>
+            <name>Falcon 9</name>
+            <locality/>
+            <region/>
+            <status/>
+         </Launchpad>
+         <Launchpad>
+            <id>3</id>
+            <externalId>RKT3</externalId>
+            <name>Falcon Heavy</name>
+            <locality/>
+            <region/>
+            <status/>
+         </Launchpad>
+      </roc:AllLaunchpadsResponse>
+   </soap:Body>
+</soap:Envelope>
+```
+## Output for GET All Rocket example
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <roc:AllRocketsResponse xmlns:roc="http://example.com/rocketservice">
+         <Rocket>
+            <id>1</id>
+            <externalId>RKT1</externalId>
+            <name>Falcon 1</name>
+            <active>true</active>
+            <stages>2</stages>
+            <costPerLaunch>6700000</costPerLaunch>
+            <description>First orbital rocket developed by SpaceX.</description>
+         </Rocket>
+         <Rocket>
+            <id>2</id>
+            <externalId>RKT2</externalId>
+            <name>Falcon 9</name>
+            <active>true</active>
+            <stages>2</stages>
+            <costPerLaunch>62000000</costPerLaunch>
+            <description>Partially reusable rocket designed and manufactured by SpaceX.</description>
+         </Rocket>
+      </roc:AllRocketsResponse>
+   </soap:Body>
+</soap:Envelope>
+```
+## Output for GET All Launchpad example
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <roc:AllPayloadsResponse xmlns:roc="http://example.com/rocketservice">
+         <Payload>
+            <id>1</id>
+            <externalId>PLD1</externalId>
+            <name>Starlink-1</name>
+            <type>Communications</type>
+            <weight>260</weight>
+            <orbit>LEO</orbit>
+            <apoapsis>550</apoapsis>
+            <periapsis>550</periapsis>
+            <rocketId>2</rocketId>
+         </Payload>
+         <Payload>
+            <id>2</id>
+            <externalId>PLD2</externalId>
+            <name>GPS III SV05</name>
+            <type>Navigation</type>
+            <weight>3880</weight>
+            <orbit>MEO</orbit>
+            <apoapsis>20200</apoapsis>
+            <periapsis>20200</periapsis>
+            <rocketId>2</rocketId>
+         </Payload>
+      </roc:AllPayloadsResponse>
+   </soap:Body>
+</soap:Envelope>
+```

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module"
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd">
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="getLaunchpadByExternalId" doc:id="2f2086b8-a32a-4239-8721-86bc961db46c" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#GetLaunchpadByExternalIdRequest.externalId]" doc:name="Set externalId for Launchpad" doc:id="bde62d51-638e-4932-8ae8-b2ceaea957f2" variableName="externalId"/>
 		<validation:is-not-null doc:name="Check externalId for Launchpad is not null" doc:id="cfb83072-fe25-4ab9-84f4-be93a689d66c" value="#[vars.externalId]"/>
@@ -114,10 +115,10 @@ ns roc http://example.com/rocketservice
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/xml
-ns pay http://example.com/rocketservice
+ns roc http://example.com/rocketservice
 ---
 {
-    pay#GetPayloadByExternalIdResponse: {
+    roc#GetPayloadByExternalIdResponse: {
         id: payload[0].id,
         externalId: payload[0].externalId,
         name: payload[0].name,
@@ -133,6 +134,120 @@ ns pay http://example.com/rocketservice
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="85ae4078-8f52-400d-81ce-d5868f87df7d" message='#["SUCCESS: Payload with externalID #[vars.externalId] was received."]' />
 		<error-handler ref="global-error-handlingError_Handler" />
+	</flow>
+	<flow name="getAllPayloads" doc:id="ee97a3ec-0e5e-4279-bd27-a2cb28250821" >
+		<db:select doc:name="select all Payloads" doc:id="fca4330e-3bc6-4a7e-82cd-d01f69f802ef" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select * from Payloads]]></db:sql>
+		</db:select>
+		<validation:is-not-empty-collection doc:name="Check response from bd is not empty " doc:id="26c4333a-294d-4cc1-81f1-6ef421ebc0ed" message="empty response from bd" />
+		<ee:transform doc:name="Prepare Payload output" doc:id="298d9f80-6d40-4a8b-b19c-93db24f34b5d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+---
+{
+    roc#AllPayloadsResponse: {
+        Payload: payload map (item) -> {
+            id: item.id,
+            externalId: item.externalId,
+            name: item.name,
+            'type': item.'type',
+            weight: item.weight,
+            orbit: item.orbit,
+            apoapsis: item.apoapsis,
+            periapsis: item.periapsis,
+            rocketId: item.rocketId
+        }
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="d73ce83f-18a0-4402-9212-2ceba59534e4" message='#["SUCCESS: Payload with all payloads was received."]' />
+	</flow>
+	<flow name="getAllRockets" doc:id="2acbce2d-ab73-43fa-9dc0-da3d4a5857a3" >
+		<db:select doc:name="select all Rockets" doc:id="96849e4e-f470-4d73-97f4-c744ba49280c" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select * from Rockets]]></db:sql>
+		</db:select>
+		<validation:is-not-empty-collection doc:name="Check response from bd is not empty " doc:id="4e8f742b-d166-45b9-92e1-edc7ee31363b" message="empty response from bd" />
+		<ee:transform doc:name="Prepare Rocket output" doc:id="cfffafd9-6439-49d1-806d-014399ac898a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+---
+{
+    roc#AllRocketsResponse: {
+        Rocket: payload map (item, index) -> {
+        id: item.id,
+        externalId: item.externalId,
+        name: item.name,
+        active: item.active,
+        stages: item.stages,
+        costPerLaunch: item.costPerLaunch,
+        description: item.description
+    } 
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ed9663b7-bfc7-46d0-aad8-f085bface571" message='#["SUCCESS: Payload with all rockets was received."]' />
+	</flow>
+	<flow name="getAllLaunches" doc:id="4be14c3d-421f-4345-94cf-81f1d5cd913f" >
+		<db:select doc:name="select all Launches" doc:id="86cfc21f-7cd3-4f5c-ac03-bf35af9d63b9" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select * from Rockets]]></db:sql>
+		</db:select>
+		<validation:is-not-empty-collection doc:name="Check response from bd is not empty " doc:id="a5413cc2-5efd-4855-b143-a47a4b8307ac" message="empty response from bd" />
+		<ee:transform doc:name="Prepare Launch output" doc:id="b3522b59-5e99-4977-aa8b-41ac3987ee7e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+---
+{
+   roc#AllLaunchesResponse: {
+        Launch: payload map (item, index) -> {
+        id: item.id,
+        externalId: item.externalId,
+        success: item.success,
+        details: item.details,
+        launchName: item.launchName,
+        date: item.date,
+        rocketName: item.rocketName,
+        launchpad_id: item.launchpad_id
+    }
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="701cdfd4-17e3-4e4e-80e9-7b80ea13e44c" message='#["SUCCESS: Payload with all launches was received."]' />
+	</flow>
+	<flow name="getAllLaunchpads" doc:id="ac178cb8-b357-49ad-be01-866826fb6274" >
+		<db:select doc:name="select all Launches" doc:id="346445a3-adf0-44c1-94c7-88fb76dc8116" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select * from Rockets]]></db:sql>
+		</db:select>
+		<validation:is-not-empty-collection doc:name="Check response from bd is not empty " doc:id="d5e3621e-cafe-494f-a17c-88a091454f1f" message="empty response from bd" />
+		<ee:transform doc:name="Prepare Launchpads output" doc:id="395fe590-931e-4c90-bb55-75589341ce2f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+---
+{
+    roc#AllLaunchpadsResponse: {
+        Launchpad: payload map(item, index) -> {
+            id: item.id,
+            externalId: item.externalId,
+            name: item.name,
+            locality: item.locality,
+            region: item.region,
+            status: item.status
+        }
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2e7898ce-5d4c-4ed8-84d4-bb2d50e1aef2" message='#["SUCCESS: Payload with all launchpads was received."]' />
 	</flow>
 	<flow name="createLauncpad" doc:id="1ce37d54-8e04-400f-8417-d5c8327ea953" >
 		<ee:transform doc:name="Prepare SOAP request body" doc:id="c491ea1d-ea6c-4e4f-85a0-59678e646d4e" >
