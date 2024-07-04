@@ -17,7 +17,6 @@
          <launchName>Cargo Mission 8</launchName>
          <date>2023-03-23</date>
          <rocketName>Falcon 3</rocketName>
-         <launchpad_id>2</launchpad_id>
       </roc:CreateLaunchRequest>
    </soapenv:Body>
 </soapenv:Envelope>
@@ -68,7 +67,6 @@
 		  <orbit>LEO</orbit>
 		  <apoapsis>550</apoapsis>
 		  <periapsis>550</periapsis>
-		  <rocketId>2</rocketId>
       </roc:CreatePayloadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
