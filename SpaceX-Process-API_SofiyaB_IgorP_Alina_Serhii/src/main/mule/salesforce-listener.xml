@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="salesforce-listener" doc:id="4bbec579-4f9a-4cfc-9df4-3fe62dc61047" >
+		<salesforce:new-object-listener doc:name="On New Object" doc:id="5a1b325c-7fee-402b-b90f-a99c7731935b" objectType="Contract" config-ref="Salesforce_Config">
+		    <scheduling-strategy>
+                <fixed-frequency frequency="10000"/>
+            </scheduling-strategy>
+		</salesforce:new-object-listener>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="b72b2f3d-7d0d-41b4-9a2f-ed69b8d2acec" message="#[typeOf(payload)&#93;"/> [STUDIO] -->
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="d1e6a448-8f3c-43b3-ab0e-68811b43edab" message="#[payload&#93;"/> [STUDIO] -->
+		<ee:transform doc:name="Transform Message" doc:id="59e79ada-ccae-43a4-bbed-f4760f4c6a93" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+---
+{soapenv#Envelope:
+   {soapenv#Header: "",
+    soapenv#Body:
+      {roc#CreateLaunchRequest: payload}
+   }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="2498ad6e-679e-4182-bfff-593d75f037cd" message="#[payload&#93;"/> [STUDIO] -->
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="403b09a9-967c-4f67-851b-e6509edb9e3f" type="ANY"/>
+		</error-handler>
+	</flow>
+	<flow name="salesforce-listenerFlow" doc:id="a87dbe84-c134-4735-8543-2813b1fac5d6" >
+		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="4a7adbc6-5b48-42e1-b170-bf362a3587d3" objectType="Contract" since="2024-06-26 12:00:00" config-ref="Salesforce_Config">
+		    <scheduling-strategy>
+                <fixed-frequency frequency="10000"/>
+            </scheduling-strategy>
+		</salesforce:modified-object-listener>
+		
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="3d30dd13-1c18-422f-a101-2eb8441f842b" message="#[typeOf(payload)&#93;"/> [STUDIO] -->
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="722c1695-65ca-4110-8140-541274952283" message="#[payload&#93;"/> [STUDIO] -->
+		<ee:transform doc:name="Transform Message" doc:id="3e11f675-dd87-458a-a22e-af706e62606a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+---
+{soapenv#Envelope:
+   {soapenv#Header: "",
+    soapenv#Body:
+      {roc#UpdateLaunchRequest: payload}
+   }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="796f2a10-a98d-45b5-9205-4111c218002e" message="#[payload&#93;"/> [STUDIO] -->
+		<logger level="INFO" doc:name="Logger" doc:id="bde14fd0-017b-4544-a9a5-19ebda3f5d1e" message="It works!!!!!!!!!!!!!"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0b8a945c-c35e-4fd9-83d7-de7d40a81309" type="ANY"/>
+		</error-handler>
+	</flow>
+</mule>
