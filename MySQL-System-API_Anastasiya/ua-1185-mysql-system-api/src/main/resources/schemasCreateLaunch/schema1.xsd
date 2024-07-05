@@ -11,8 +11,7 @@
         <xs:element ref="launchName" />
         <xs:element ref="date" />
         <xs:element ref="rocketName" />
-        <xs:element ref="launchpad_id" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-</xs:schema>
+</xs:schema> 

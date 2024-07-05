@@ -5,7 +5,7 @@
   <xs:element name="UpdateRocketRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" ref="externalId" />
+        <xs:element ref="externalId" />
         <xs:element minOccurs="0" ref="name" />
         <xs:element minOccurs="0" ref="active" />
         <xs:element minOccurs="0" ref="stages" />

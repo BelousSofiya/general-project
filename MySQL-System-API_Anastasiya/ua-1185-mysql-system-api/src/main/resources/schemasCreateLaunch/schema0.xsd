@@ -23,5 +23,4 @@
   <xs:element name="launchName" type="xs:string" />
   <xs:element name="date" type="xs:date" />
   <xs:element name="rocketName" type="xs:string" />
-  <xs:element name="launchpad_id" type="xs:unsignedShort" />
 </xs:schema>

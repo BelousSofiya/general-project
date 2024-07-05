@@ -6,10 +6,10 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="externalId" />
-        <xs:element ref="name" />
-        <xs:element ref="locality" />
-        <xs:element ref="region" />
-        <xs:element ref="status" />
+        <xs:element minOccurs="0" ref="name" />
+        <xs:element minOccurs="0" ref="locality" />
+        <xs:element minOccurs="0" ref="region" />
+        <xs:element minOccurs="0" ref="status" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

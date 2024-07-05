@@ -19,8 +19,8 @@
   </xs:element>
   	<xs:element name="externalId" type="xs:string" />
     <xs:element name="name" type="xs:string" />
-    <xs:element name="active" type="xs:unsignedByte" />
-    <xs:element name="stages" type="xs:unsignedByte" />
+    <xs:element name="active" type="xs:integer"/>
+    <xs:element name="stages" type="xs:integer"/>
     <xs:element name="costPerLaunch" type="xs:decimal" />
     <xs:element name="description" type="xs:string" />
 </xs:schema>

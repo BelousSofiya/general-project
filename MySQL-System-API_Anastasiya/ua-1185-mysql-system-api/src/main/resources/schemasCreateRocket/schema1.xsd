@@ -5,12 +5,12 @@
   <xs:element name="CreateRocketRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" ref="externalId" />
-        <xs:element minOccurs="0" ref="name" />
-        <xs:element minOccurs="0" ref="active" />
-        <xs:element minOccurs="0" ref="stages" />
-        <xs:element minOccurs="0" ref="costPerLaunch" />
-        <xs:element minOccurs="0" ref="description" />
+        <xs:element ref="externalId" />
+        <xs:element ref="name" />
+        <xs:element ref="active" />
+        <xs:element ref="stages" />
+        <xs:element ref="costPerLaunch" />
+        <xs:element ref="description" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
