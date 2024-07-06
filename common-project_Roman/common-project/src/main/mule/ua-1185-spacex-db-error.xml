@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="ua-1185-spacex-mysql-Error_Handler" doc:id="254427ac-ae69-44a7-9c02-ddaf01a6b20f" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cdaecdfb-fb84-4d8b-a29d-ec6157a750f8" type="DB:CONNECTIVITY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 503,&#10;	"message": "Service Unavailable",&#10;	"errorType": "DB:CONNECTIVITY",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable DB:CONNECTIVITY" doc:id="4a3e35e7-024f-4d4a-98ec-ea449e8a97b4" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="3b014b0b-4a88-496e-933a-5f18fb27a2b9" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="33fd6b3e-7660-4f0a-b803-8d16ccaddc09" type="DB:BAD_SQL_SYNTAX">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "DB:BAD_SQL_SYNTAX",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable DB:BAD_SQL_SYNTAX" doc:id="0ca1341a-e60c-4379-aba1-347002807e7c" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="9b8bebd7-c55e-41b1-adc7-b252673fc4c8" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="78827feb-711a-49e9-b539-3db941c82355" type="DB:QUERY_EXECUTION">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "DB:QUERY_EXECUTION",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable  DB:QUERY_EXECUTION" doc:id="8ebd2186-4bf1-48db-9773-5f18ec3a88d4" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="d9bf4e85-c002-40c3-8926-507cf8290d75" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0422165c-88ad-4f8e-b0d0-67b9b31ef80a" type="VALIDATION:BLANK_STRING">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 422,&#10;	"message": "Unprocessable Entity",&#10;	"errorType": "VALIDATION:BLANK_STRING",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable  VALIDATION:BLANK_STRING" doc:id="4d87f12a-622b-45c7-9622-9744a5d3dbb2" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="ce26a429-8721-456f-ac52-7249017c3270" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="79df8470-4074-4085-a64d-b87b6147a33c" type="VALIDATION:EMPTY_COLLECTION">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 404,&#10;	"message": "Not Found",&#10;	"errorType": "VALIDATION:EMPTY_COLLECTION",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable  VALIDATION:EMPTY_COLLECTION" doc:id="320011f2-ed88-4cca-b7e6-a95a2f7db6ee" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="f840ca57-70b3-417a-82c6-45c8d77f4560" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5106a18f-1bd9-4f4b-a6d9-f3b59d437d7b" type="EXPRESSION">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "logType":"Error: ",&#10;	"code": 500,&#10;	"message": "Internal Server Error",&#10;	"errorType": "EXPRESSION",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable  EXPRESSION" doc:id="665bd365-32a7-47f0-8e95-92b209fc737a" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="8eb79912-a2c7-4a79-b786-4e460d563ee6" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7faa34c6-3df3-4fbe-8403-a3698e8d7f4d" type="XML-MODULE:SCHEMA_NOT_HONOURED">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 422,&#10;	"message": "Unprocessable Entity",&#10;	"description": "XML-MODULE:SCHEMA_NOT_HONOURED",&#10;	"dateTime": now(),&#10;	"description": "Test description",&#10;	"source": "Test source: 123456"&#10;}]' doc:name="Variable  XML-MODULE:SCHEMA_NOT_HONOURED" doc:id="2e695db4-bd31-40e6-ac62-1af641fb203d" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="d463ba2d-05a6-4963-8778-3a28825a38ec" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+	</error-handler>
+</mule>
