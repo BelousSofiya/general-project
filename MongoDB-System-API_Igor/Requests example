@@ -97,26 +97,26 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
-      <roc:CreateRocketRequest>
+      <tns:CreateRocketRequest>
          <externalId>test0d96eda699382d09test</externalId>
          <name>Test-1</name>
          <active>true</active>
          <stages>5</stages>
          <costPerLaunch>5500000</costPerLaunch>
          <description>An expendable launch system used for heavy payloads.</description>
-      </roc:CreateRocketRequest>
+      </tns:CreateRocketRequest>
    </soapenv:Body>
 </soapenv:Envelope>
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
-      <roc:CreatePayloadRequest>
+      <tns:CreatePayloadRequest>
          <externalId>test0d96eda699382d09test</externalId>
          <name>Test-1</name>
          <type>Satelite</type>
@@ -124,38 +124,38 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
          <orbit>LEO</orbit>
          <apoapsis>681.258</apoapsis>
          <periapsis>548.258</periapsis>
-      </roc:CreatePayloadRequest>
+      </tns:CreatePayloadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
-      <roc:CreateLaunchRequest>
+      <tns:CreateLaunchRequest>
          <externalId>test0d96eda699382d09test</externalId>
          <name>Test-1</name>
          <success>true</success>
          <details>Ratsat was carried to orbit on the first successful orbital launch of …</details>
          <date>2006-03-24T22:30:00.000Z</date>
          <rocketName>Test-11</rocketName>
-      </roc:CreateLaunchRequest>
+      </tns:CreateLaunchRequest>
    </soapenv:Body>
 </soapenv:Envelope>
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:roc="http://example.com/rocketservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
-      <roc:CreateLaunchPadRequest>
+      <tns:CreateLaunchPadRequest>
          <externalId>test0d96eda699382d09test</externalId>
          <name>Test-1</name>
          <locality>Boca Chica Village</locality>
          <region>Texas</region>
          <status>test</status>
-      </roc:CreateLaunchPadRequest>
+      </tns:CreateLaunchPadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
 
