@@ -10,9 +10,9 @@
 
     <Appenders>
          <Http name="DATADOG"
-              url="https://http-intake.logs.datadoghq.eu/api/v2/logs?host=Anypoint&amp;ddsource=Mulesoft&amp;service=DatadogMule">
+              url="https://http-intake.logs.${sys:doghost}/api/v2/logs?host=SpacexProcessApi&amp;ddsource=generalProject&amp;service=DatadogMule">
              <Property name="Content-Type" value="application/json" />
-             <Property name="DD-API-KEY" value="606999587bc833c63f2f403b6aa54929" />
+             <Property name="DD-API-KEY" value="${sys:dogkey}" />
              <JsonLayout compact="false" properties="true"> </JsonLayout>
         </Http>
         <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}datadog.log"
