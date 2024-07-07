@@ -17,7 +17,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/payloadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetPayloadByExternalIdRequest>
@@ -28,7 +28,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetLaunchByExternalIdRequest>
@@ -39,7 +39,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchpadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetLaunchPadByExternalIdRequest>
@@ -61,7 +61,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchpadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetAllLaunchPadsRequest/>
@@ -70,7 +70,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchpadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetAllLaunchesRequest/>
@@ -79,7 +79,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchpadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetAllRocketsRequest/>
@@ -88,7 +88,7 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/launchpadservice">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
       <tns:GetAllPayloadsRequest/>
