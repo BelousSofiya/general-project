@@ -160,3 +160,67 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 </soapenv:Envelope>
 
 ------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:UpdateRocketRequest>
+         <externalId>test0d96edatest82d09test</externalId>
+         <name>testsssstest</name>
+         <active>0</active>
+         <stages>5</stages>
+         <costPerLaunch>550000000</costPerLaunch>
+         <description>An expendable launch system used for heavy payloads.</description>
+      </tns:UpdateRocketRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:UpdatePayloadRequest>
+         <externalId>testtesteda699382d09test</externalId>
+         <name>Test-1</name>
+         <type>testc</type>
+         <weight>200</weight>
+         <orbit>LEO</orbit>
+         <apoapsis>681.258</apoapsis>
+         <periapsis>548.258</periapsis>
+      </tns:UpdatePayloadRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:UpdateLaunchRequest>
+         <externalId>testtesteda699382d09test</externalId>
+         <name>Test-33</name>
+         <success>true</success>
+         <details>Ratsat was carried to orbit on the first successful orbital launch of …</details>
+         <date>2006-03-24T22:30:00.000Z</date>
+         <rocketName>Test-11</rocketName>
+      </tns:UpdateLaunchRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:UpdateLaunchPadRequest>
+         <externalId>testtesteda699382d09test</externalId>
+         <name>Test-33</name>
+         <locality>Boca Chica Village</locality>
+         <region>Texas</region>
+         <status>testb</status>
+      </tns:UpdateLaunchPadRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
