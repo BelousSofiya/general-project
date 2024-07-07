@@ -1,0 +1,492 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:tns="http://www.example.com/mongodbapi"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             name="MongoDBSystemAPI"
+             targetNamespace="http://www.example.com/mongodbapi">
+
+  <!-- Types -->
+  <types>
+    <xs:schema targetNamespace="http://www.example.com/mongodbapi">
+      <xs:element name="Rocket" type="tns:Rocket"/>
+      <xs:element name="Payload" type="tns:Payload"/>
+      <xs:element name="Launch" type="tns:Launch"/>
+      <xs:element name="LaunchPad" type="tns:LaunchPad"/>
+
+      <xs:complexType name="Rocket">
+        <xs:sequence>
+          <xs:element name="externalId" type="xs:string"/>
+          <xs:element name="docType" type="xs:string"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="active" type="xs:boolean"/>
+          <xs:element name="stages" type="xs:int"/>
+          <xs:element name="costPerLaunch" type="xs:double"/>
+          <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="Payload">
+        <xs:sequence>
+          <xs:element name="externalId" type="xs:string"/>
+          <xs:element name="docType" type="xs:string"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="type" type="xs:string"/>
+          <xs:element name="weight" type="xs:double"/>
+          <xs:element name="orbit" type="xs:string"/>
+          <xs:element name="apoapsis" type="xs:string"/>
+          <xs:element name="periapsis" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="Launch">
+        <xs:sequence>
+          <xs:element name="externalId" type="xs:string"/>
+          <xs:element name="docType" type="xs:string"/>
+          <xs:element name="launchName" type="xs:string"/>
+          <xs:element name="succes" type="xs:boolean"/>
+          <xs:element name="details" type="xs:string"/>
+          <xs:element name="date" type="xs:dateTime"/>
+          <xs:element name="rocketName" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="LaunchPad">
+        <xs:sequence>
+          <xs:element name="externalId" type="xs:string"/>
+          <xs:element name="docType" type="xs:string"/>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="locality" type="xs:string"/>
+          <xs:element name="region" type="xs:string"/>
+          <xs:element name="status" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </types>
+
+  <!-- Messages -->
+  <!-- Rocket CRUD -->
+  <message name="CreateRocketRequest">
+    <part name="Rocket" type="tns:Rocket"/>
+  </message>
+  <message name="CreateRocketResponse">
+    <part name="Rocket" type="tns:Rocket"/>
+  </message>
+  <message name="GetRocketByExternalIdRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="GetRocketByExternalIdResponse">
+    <part name="Rocket" type="tns:Rocket"/>
+  </message>
+  <message name="UpdateRocketRequest">
+    <part name="Rocket" type="tns:Rocket"/>
+  </message>
+  <message name="UpdateRocketResponse">
+    <part name="Rocket" type="tns:Rocket"/>
+  </message>
+  <message name="DeleteRocketRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="DeleteRocketResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="GetAllRocketsRequest">
+  	<part name="parameters" type="tns:Rockets"/>
+  </message>
+  <message name="GetAllRocketsResponse">
+    <part name="Rockets" type="tns:Rockets"/>
+  </message>
+
+  <!-- Payload CRUD -->
+  <message name="CreatePayloadRequest">
+    <part name="Payload" type="tns:Payload"/>
+  </message>
+  <message name="CreatePayloadResponse">
+    <part name="Payload" type="tns:Payload"/>
+  </message>
+  <message name="GetPayloadByExternalIdRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="GetPayloadByExternalIdResponse">
+    <part name="Payload" type="tns:Payload"/>
+  </message>
+  <message name="UpdatePayloadRequest">
+    <part name="Payload" type="tns:Payload"/>
+  </message>
+  <message name="UpdatePayloadResponse">
+    <part name="Payload" type="tns:Payload"/>
+  </message>
+  <message name="DeletePayloadRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="DeletePayloadResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="GetAllPayloadsRequest">
+  	<part name="parameters" type="tns:Payloads"/>
+  </message>
+  <message name="GetAllPayloadsResponse">
+    <part name="Payloads" type="tns:Payloads"/>
+  </message>
+
+  <!-- Launch CRUD -->
+  <message name="CreateLaunchRequest">
+    <part name="Launch" type="tns:Launch"/>
+  </message>
+  <message name="CreateLaunchResponse">
+    <part name="Launch" type="tns:Launch"/>
+  </message>
+  <message name="GetLaunchByExternalIdRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="GetLaunchByExternalIdResponse">
+    <part name="Launch" type="tns:Launch"/>
+  </message>
+  <message name="UpdateLaunchRequest">
+    <part name="Launch" type="tns:Launch"/>
+  </message>
+  <message name="UpdateLaunchResponse">
+    <part name="Launch" type="tns:Launch"/>
+  </message>
+  <message name="DeleteLaunchRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="DeleteLaunchResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="GetAllLaunchesRequest">
+  	<part name="parameters" type="tns:Launches"/>
+  </message>
+  <message name="GetAllLaunchesResponse">
+    <part name="Launches" type="tns:Launches"/>
+  </message>
+
+  <!-- LaunchPad CRUD -->
+  <message name="CreateLaunchPadRequest">
+    <part name="LaunchPad" type="tns:LaunchPad"/>
+  </message>
+  <message name="CreateLaunchPadResponse">
+    <part name="LaunchPad" type="tns:LaunchPad"/>
+  </message>
+  <message name="GetLaunchPadByExternalIdRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="GetLaunchPadByExternalIdResponse">
+    <part name="LaunchPad" type="tns:LaunchPad"/>
+  </message>
+  <message name="UpdateLaunchPadRequest">
+    <part name="LaunchPad" type="tns:LaunchPad"/>
+  </message>
+  <message name="UpdateLaunchPadResponse">
+    <part name="LaunchPad" type="tns:LaunchPad"/>
+  </message>
+  <message name="DeleteLaunchPadRequest">
+    <part name="externalId" type="xsd:string"/>
+  </message>
+  <message name="DeleteLaunchPadResponse">
+    <part name="result" type="xsd:string"/>
+  </message>
+
+  <message name="GetAllLaunchPadsRequest">
+  	<part name="parameters" type="tns:LaunchPads"/>
+  </message>
+  <message name="GetAllLaunchPadsResponse">
+    <part name="LaunchPads" type="tns:LaunchPads"/>
+  </message>
+
+  <!-- Port Type -->
+  <portType name="MongoDBSystemAPIPortType">
+    <!-- Rocket Operations -->
+    <operation name="CreateRocket">
+      <input message="tns:CreateRocketRequest"/>
+      <output message="tns:CreateRocketResponse"/>
+    </operation>
+    <operation name="GetRocketByExternalId">
+      <input message="tns:GetRocketByExternalIdRequest"/>
+      <output message="tns:GetRocketByExternalIdResponse"/>
+    </operation>
+    <operation name="UpdateRocket">
+      <input message="tns:UpdateRocketRequest"/>
+      <output message="tns:UpdateRocketResponse"/>
+    </operation>
+    <operation name="DeleteRocket">
+      <input message="tns:DeleteRocketRequest"/>
+      <output message="tns:DeleteRocketResponse"/>
+    </operation>
+    <operation name="GetAllRockets">
+      <input message="tns:GetAllRocketsRequest"/>
+      <output message="tns:GetAllRocketsResponse"/>
+    </operation>
+
+    <!-- Payload Operations -->
+    <operation name="CreatePayload">
+      <input message="tns:CreatePayloadRequest"/>
+      <output message="tns:CreatePayloadResponse"/>
+    </operation>
+    <operation name="GetPayloadByExternalId">
+      <input message="tns:GetPayloadByExternalIdRequest"/>
+      <output message="tns:GetPayloadByExternalIdResponse"/>
+    </operation>
+    <operation name="UpdatePayload">
+      <input message="tns:UpdatePayloadRequest"/>
+      <output message="tns:UpdatePayloadResponse"/>
+    </operation>
+    <operation name="DeletePayload">
+      <input message="tns:DeletePayloadRequest"/>
+      <output message="tns:DeletePayloadResponse"/>
+    </operation>
+    <operation name="GetAllPayloads">
+      <input message="tns:GetAllPayloadsRequest"/>
+      <output message="tns:GetAllPayloadsResponse"/>
+    </operation>
+
+    <!-- Launch Operations -->
+    <operation name="CreateLaunch">
+      <input message="tns:CreateLaunchRequest"/>
+      <output message="tns:CreateLaunchResponse"/>
+    </operation>
+    <operation name="GetLaunchByExternalId">
+      <input message="tns:GetLaunchByExternalIdRequest"/>
+      <output message="tns:GetLaunchByExternalIdResponse"/>
+    </operation>
+    <operation name="UpdateLaunch">
+      <input message="tns:UpdateLaunchRequest"/>
+      <output message="tns:UpdateLaunchResponse"/>
+    </operation>
+    <operation name="DeleteLaunch">
+      <input message="tns:DeleteLaunchRequest"/>
+      <output message="tns:DeleteLaunchResponse"/>
+    </operation>
+    <operation name="GetAllLaunches">
+      <input message="tns:GetAllLaunchesRequest"/>
+      <output message="tns:GetAllLaunchesResponse"/>
+    </operation>
+
+    <!-- LaunchPad Operations -->
+    <operation name="CreateLaunchPad">
+      <input message="tns:CreateLaunchPadRequest"/>
+      <output message="tns:CreateLaunchPadResponse"/>
+    </operation>
+    <operation name="GetLaunchPadByExternalId">
+      <input message="tns:GetLaunchPadByExternalIdRequest"/>
+      <output message="tns:GetLaunchPadByExternalIdResponse"/>
+    </operation>
+    <operation name="UpdateLaunchPad">
+      <input message="tns:UpdateLaunchPadRequest"/>
+      <output message="tns:UpdateLaunchPadResponse"/>
+    </operation>
+    <operation name="DeleteLaunchPad">
+      <input message="tns:DeleteLaunchPadRequest"/>
+      <output message="tns:DeleteLaunchPadResponse"/>
+    </operation>
+    <operation name="GetAllLaunchPads">
+      <input message="tns:GetAllLaunchPadsRequest"/>
+      <output message="tns:GetAllLaunchPadsResponse"/>
+    </operation>
+  </portType>
+
+  <!-- Binding -->
+  <binding name="MongoDBSystemAPIBinding" type="tns:MongoDBSystemAPIPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+    <!-- Rocket Operations -->
+    <operation name="CreateRocket">
+      <soap:operation soapAction="createRocket"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetRocketByExternalId">
+      <soap:operation soapAction="getRocketByExternalId"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="UpdateRocket">
+      <soap:operation soapAction="updateRocket"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteRocket">
+      <soap:operation soapAction="deleteRocket"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetAllRockets">
+      <soap:operation soapAction="getAllRockets"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <!-- Payload Operations -->
+    <operation name="CreatePayload">
+      <soap:operation soapAction="createPayload"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetPayloadByExternalId">
+      <soap:operation soapAction="getPayloadByExternalId"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="UpdatePayload">
+      <soap:operation soapAction="updatePayload"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeletePayload">
+      <soap:operation soapAction="deletePayload"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetAllPayloads">
+      <soap:operation soapAction="getAllPayloads"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <!-- Launch Operations -->
+    <operation name="CreateLaunch">
+      <soap:operation soapAction="createLaunch"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetLaunchByExternalId">
+      <soap:operation soapAction="getLaunchByExternalId"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="UpdateLaunch">
+      <soap:operation soapAction="updateLaunch"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteLaunch">
+      <soap:operation soapAction="deleteLaunch"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetAllLaunches">
+      <soap:operation soapAction="getAllLaunches"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <!-- LaunchPad Operations -->
+    <operation name="CreateLaunchPad">
+      <soap:operation soapAction="createLaunchPad"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetLaunchPadByExternalId">
+      <soap:operation soapAction="getLaunchPadByExternalId"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="UpdateLaunchPad">
+      <soap:operation soapAction="updateLaunchPad"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteLaunchPad">
+      <soap:operation soapAction="deleteLaunchPad"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="GetAllLaunchPads">
+      <soap:operation soapAction="getAllLaunchPads"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+
+  <!-- Service -->
+  <service name="MongoDBSystemAPIService">
+    <documentation>MongoDBSystemAPI Service</documentation>
+    <port name="MongoDBSystemAPIPort" binding="tns:MongoDBSystemAPIBinding">
+      <soap:address location="http://www.example.com/mongodbapi"/>
+    </port>
+  </service>
+</definitions>
