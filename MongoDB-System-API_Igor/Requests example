@@ -64,6 +64,39 @@ http://ua-1185-mongodb-system-api.us-e2.cloudhub.io/api
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
    <soapenv:Header/>
    <soapenv:Body>
+      <tns:DeletePayloadRequest>
+         <tns:externalId>5eb0e4b6b6c3bb0006eeb1e2</tns:externalId>
+      </tns:DeletePayloadRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:DeleteLaunchRequest>
+         <tns:externalId>5eb87ceaffd86e000604b33d</tns:externalId>
+      </tns:DeleteLaunchRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tns:DeleteLaunchPadRequest>
+         <tns:externalId>testtesteda699382d09test</tns:externalId>
+      </tns:DeleteLaunchPadRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.example.com/rocketservice">
+   <soapenv:Header/>
+   <soapenv:Body>
       <tns:GetAllLaunchPadsRequest/>
    </soapenv:Body>
 </soapenv:Envelope>
