@@ -13,8 +13,8 @@ http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="getLaunchpadByExternalId" doc:id="2f2086b8-a32a-4239-8721-86bc961db46c" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#GetLaunchpadByExternalIdRequest.externalId]" doc:name="Set externalId for Launchpad" doc:id="bde62d51-638e-4932-8ae8-b2ceaea957f2" variableName="externalId"/>
-		<validation:is-not-null doc:name="Check externalId for Launchpad is not null" doc:id="cfb83072-fe25-4ab9-84f4-be93a689d66c" value="#[vars.externalId]"/>
-	<db:select doc:name="Select Launchpad by externalId from db" doc:id="dd56bbf7-c757-43cf-a27b-712ada1e41a0" config-ref="Database_Config">
+	<validation:is-not-blank-string doc:name="Check externalId for Launchpad is not blank" doc:id="348cbe2b-eeb5-49d1-88f3-1e7270bacf05" value="#[vars.externalId]" message="externalId is blank" />
+		<db:select doc:name="Select Launchpad by externalId from db" doc:id="dd56bbf7-c757-43cf-a27b-712ada1e41a0" config-ref="Database_Config">
 			<db:sql><![CDATA[SELECT * FROM Launchpads
 WHERE externalId=:val]]></db:sql>
 			<db:input-parameters><![CDATA[#[{val: vars.externalId}]]]></db:input-parameters>
@@ -43,7 +43,7 @@ ns roc http://example.com/rocketservice
 </flow>
 	<flow name="getLaunchByExternalId" doc:id="acba5c77-e1b7-45b9-b568-cce8eabd0146" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#GetLaunchByExternalIdRequest.externalId]" doc:name="Set externalId for Launch" doc:id="02f5bc80-9f59-4368-a8d1-f073651df7c1" variableName="externalId"/>
-		<validation:is-not-null doc:name="Check externalId for Launch is not null" doc:id="a7285223-051a-4e0e-8d8c-9ae30f4174ef" value="#[vars.externalId]"/>
+		<validation:is-not-blank-string doc:name="Check externalId for Launch is not blank" doc:id="4b423ac6-82bc-4a6a-afb9-e8c25feb2183" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="Select Launch by externalId from db" doc:id="a3ec6521-8e93-43e6-a1bd-f2263d54c16e" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Launches
 WHERE externalId=:val]]></db:sql>
@@ -75,7 +75,7 @@ ns roc http://example.com/rocketservice
 </flow>
 	<flow name="getRocketByExternalId" doc:id="94f0000c-6b1d-44b3-b083-fff8770caea3" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#GetRocketByExternalIdRequest.externalId]" doc:name="Set externalId for Rocket" doc:id="06525444-9653-4335-9c64-8811ba03ffc6" variableName="externalId" />
-		<validation:is-not-blank-string doc:name="Check externalId for Rocket is not null" doc:id="829a7bee-c918-44ce-aaea-79a26c173c1e" value="#[vars.externalId]" message="externalId is blank" />
+		<validation:is-not-blank-string doc:name="Check externalId for Rocket is not blank" doc:id="829a7bee-c918-44ce-aaea-79a26c173c1e" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="select from Rockets by externalId" doc:id="af8784cd-f0ff-4d62-b9b4-a53ba0ecbfea" config-ref="Database_Config">
 			<db:sql ><![CDATA[select * from Rockets where externalId=:val ]]></db:sql>
 			<db:input-parameters ><![CDATA[#[val:vars.externalId]]]></db:input-parameters>
@@ -105,7 +105,7 @@ ns roc http://example.com/rocketservice
 	</flow>
 	<flow name="getPayloadByExternalId" doc:id="1b03ed6c-ae6b-4fba-88b4-b488a2ae6d9c" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#GetPayloadByExternalIdRequest.externalId]" doc:name="Set externalId for Payload" doc:id="e39571c2-5ff4-4064-acf1-406363a63bf1" variableName="externalId" />
-		<validation:is-not-blank-string doc:name="Check externalId for Payload is not null" doc:id="456359d2-6906-4ad9-a9be-65323d77ff3d" value="#[vars.externalId]" message="externalId is blank" />
+		<validation:is-not-blank-string doc:name="Check externalId for Payload is not blank" doc:id="456359d2-6906-4ad9-a9be-65323d77ff3d" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="select from Payloads by externalId" doc:id="b84f2a92-303d-4fd2-b703-fb81b1e6a6aa" config-ref="Database_Config">
 			<db:sql ><![CDATA[select * from Payloads where externalId=:val ]]></db:sql>
 			<db:input-parameters ><![CDATA[#[val:vars.externalId]]]></db:input-parameters>
@@ -223,7 +223,7 @@ ns roc http://example.com/rocketservice
 		<logger level="INFO" doc:name="Logger" doc:id="701cdfd4-17e3-4e4e-80e9-7b80ea13e44c" message='#["SUCCESS: Payload with all launches was received."]' />
 	</flow>
 	<flow name="getAllLaunchpads" doc:id="ac178cb8-b357-49ad-be01-866826fb6274" >
-		<db:select doc:name="select all Launches" doc:id="346445a3-adf0-44c1-94c7-88fb76dc8116" config-ref="Database_Config" >
+		<db:select doc:name="select all Launchpads" doc:id="346445a3-adf0-44c1-94c7-88fb76dc8116" config-ref="Database_Config" >
 			<db:sql ><![CDATA[select * from Launchpads]]></db:sql>
 		</db:select>
 		<validation:is-not-empty-collection doc:name="Check response from bd is not empty " doc:id="d5e3621e-cafe-494f-a17c-88a091454f1f" message="empty response from bd" />
@@ -679,7 +679,7 @@ ns ns0 http://example.com/rocketservice
 WHERE externalId=:val;]]></db:sql>
 			<db:input-parameters><![CDATA[#[{val: vars.externalId}]]]></db:input-parameters>
 		</db:select>
-		<validation:is-not-empty-collection doc:name="Check payload from db is empty collection" doc:id="50ea97da-1290-4d04-be26-3187c308819c" />
+		<validation:is-not-empty-collection doc:name="Check payload from db is not empty collection" doc:id="50ea97da-1290-4d04-be26-3187c308819c" />
 		<db:update doc:name="Update Launch in db" doc:id="91dea8d7-0a88-452d-b96d-2ee0764806a1" config-ref="Database_Config">
 			<db:sql><![CDATA[UPDATE Payloads
 SET 
@@ -722,7 +722,7 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 	</flow>
 	<flow name="deleteLaunchpadByExternalId" doc:id="63d19d5a-a636-4c37-aea0-337108f0bcd7" >
 	<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#DeleteLaunchpadByExternalIdRequest.externalId]" doc:name="Set externalId for Launchpad" doc:id="a59749cb-7d4f-4bfc-b936-1916241c9082" variableName="externalId"/>
-		<validation:is-not-null doc:name="Check externalId for Launchpad is not null" doc:id="6ee463f3-ecc2-49ad-80ca-19fc1c839640" value="#[vars.externalId]"/>
+		<validation:is-not-blank-string doc:name="Check externalId for Launchpad is not blank" doc:id="cb36daa9-27f1-4329-afa4-d56a44ef5028" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="Check if input externalId exists in db" doc:id="10be9564-baba-48c1-9f97-c50a5b52b162" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Launchpads
 WHERE externalId=:val;]]></db:sql>
@@ -754,7 +754,7 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 </flow>
 	<flow name="deleteLaunchByExternalId" doc:id="938637d2-2723-471a-b8dd-8ed67ef7c3a5" >
 	<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#DeleteLaunchByExternalIdRequest.externalId]" doc:name="Set externalId for Launch" doc:id="f1e550aa-4237-4a9e-baf6-18067942c30f" variableName="externalId"/>
-		<validation:is-not-null doc:name="Check externalId for Launch is not null" doc:id="6a4d9a1a-49c7-4116-95b6-6cc2c6933d9f" value="#[vars.externalId]"/>
+		<validation:is-not-blank-string doc:name="Check externalId for Launch is not blank" doc:id="f5cd2b02-71e1-419d-8f62-82c218c95d4e" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="Check if input externalId exists in db" doc:id="0793ec08-4470-4cce-a4ab-07c89ed03ce0" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Launches
 WHERE externalId=:val;]]></db:sql>
@@ -786,7 +786,7 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 </flow>
 	<flow name="deleteRocketByExternalId" doc:id="1b896d3c-916b-431b-b7fc-55928187ef56" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#DeleteRocketByExternalIdRequest.externalId]" doc:name="Set externalId for Rocket" doc:id="312cfd6c-f9da-4bd6-8a82-c4df9c821e5f" variableName="externalId" />
-		<validation:is-not-null doc:name="Check externalId for Rocket is not null" doc:id="1186a1c9-1371-4e00-9457-31d84fc9d208" value="#[vars.externalId]" />
+		<validation:is-not-blank-string doc:name="Check externalId for Rocket is not blank" doc:id="ece3da41-ea02-41c2-833c-f6b4d57b349c" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="Check if input externalId exists in db" doc:id="90a9c865-879b-468b-abfa-de3580c421ec" config-ref="Database_Config" >
 			<db:sql ><![CDATA[SELECT * FROM Rockets
 WHERE externalId=:val;]]></db:sql>
@@ -817,7 +817,7 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 	</flow>
 	<flow name="deletePayloadByExternalId" doc:id="23fe8fdc-df09-47a2-b87f-ed575bcee3c8" >
 		<set-variable value="#[ns ns0 http://example.com/rocketservice&#10;---&#10;payload.body.ns0#DeletePayloadByExternalIdRequest.externalId]" doc:name="Set externalId for Payload" doc:id="e3614065-2d79-4d2f-ada9-2d1c5c25d294" variableName="externalId" />
-		<validation:is-not-null doc:name="Check externalId for Payload is not null" doc:id="b2124caa-2a53-4d37-aaf1-7fcb25bc7235" value="#[vars.externalId]" />
+		<validation:is-not-blank-string doc:name="Check externalId for Payload is not blank" doc:id="04e449bc-a90f-4e27-bb30-dd1ffbd21048" value="#[vars.externalId]" message="externalId is blank" />
 		<db:select doc:name="Check if input externalId exists in db" doc:id="5d433e55-ee05-40bb-be41-c043477c4123" config-ref="Database_Config" >
 			<db:sql ><![CDATA[SELECT * FROM Payloads
 WHERE externalId=:val;]]></db:sql>

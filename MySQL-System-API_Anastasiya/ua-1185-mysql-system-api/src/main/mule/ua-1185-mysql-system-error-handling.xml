@@ -1,32 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-	<configuration doc:name="Configuration" doc:id="06101bac-ca91-4b39-aba7-857117b73413" defaultErrorHandler-ref="global-error-handlingError_Handler" />
+<mule xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd">
+	
 	<error-handler name="global-error-handlingError_Handler" doc:id="5cba450d-860c-4e39-961d-0fa217c9d0e9">
-		<on-error-continue enableNotifications="true" logException="true" doc:name="Database Connectivity Error" doc:id="001fcc9a-6cf6-4824-ac4e-12fecd3ba475" type="DB:CONNECTIVITY">
-			<ee:transform doc:name="Database Connectivity Error Message" doc:id="cacd74d0-908b-494b-b773-00787002e381">
-				<ee:message>
-					<ee:set-payload><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
----
-{
-	soap#Fault: {
-		errorMessage: "Database connection failed."
-	}
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables>
-					<ee:set-variable variableName="httpStatus"><![CDATA[503]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="ERROR" doc:name="Database Connectivity Error Logger" doc:id="b5e4ea35-4e85-47fe-822b-75c12eb4b7b9" message='#["\nDatabase connectivity error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
-		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="Blank ExternalID Validation Error" doc:id="c80f9cca-672e-48a9-aee8-22a96f6b6e7c" type="VALIDATION:BLANK_STRING">
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c80f9cca-672e-48a9-aee8-22a96f6b6e7c" type="VALIDATION:BLANK_STRING">
 			<ee:transform doc:name="Blank ExternalID Validation Error Message" doc:id="d7cf0d30-3eb8-4604-aa6a-df995b9285d5">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -40,12 +22,92 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
-					<ee:set-variable variableName="httpStatus"><![CDATA[422]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			<logger level="ERROR" doc:name="Blank ExternalID Validation Error Logger" doc:id="af355099-25f1-4990-8acc-4cf8600f51e2" message='#["\nBlank ExternalID validation error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
 		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="Empty DB Response Validation Error" doc:id="f0a1b516-9b61-4b10-84bf-0476b0146992" type="VALIDATION:EMPTY_COLLECTION">
+<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="686342ff-4d03-4587-ad7f-a7a41e6e5d40" type="XML-MODULE:INVALID_SCHEMA">
+			<ee:transform doc:name="Invalid input XML error message" doc:id="c22bcbf2-cd70-455b-af4d-e4b0968ecefc">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope
+---
+{
+	soap#Fault: {
+		errorMessage: "Invalid XML input for creating/updating"
+	}
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Invalid input XML error Logger" doc:id="0c86d072-dcb1-4fc9-8f07-563c2bec539d" message='#["\nInvalid XML input error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]'/>
+		</on-error-continue>
+		
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="93e4626d-a1ec-4dab-a8b5-d11fd70b60ba" type="DB:BAD_SQL_SYNTAX">
+			<ee:transform doc:name="Bad SQL syntax message" doc:id="8b3141a6-5277-4cc8-96b1-2367234e1a1d" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope
+ns ns0 http://example.com/rocketservice
+---
+{
+        soap#Fault: {
+            message: "SQL syntax is not correct."
+        }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="INFO" doc:name="Bad SQL syntax logger" doc:id="ec6a6d61-886f-4697-bec4-ac5f19ed1281" message="#[error.errorType]" />
+		</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="001fcc9a-6cf6-4824-ac4e-12fecd3ba475" type="DB:CONNECTIVITY">
+			<ee:transform doc:name="Database Connectivity Error Message" doc:id="cacd74d0-908b-494b-b773-00787002e381">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope
+---
+{
+	soap#Fault: {
+		errorMessage: "Database connection was failed."
+	}
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[503]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="ERROR" doc:name="Database Connectivity Error Logger" doc:id="b5e4ea35-4e85-47fe-822b-75c12eb4b7b9" message='#["\nDatabase connectivity error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0ea4f98d-906a-4a97-8315-d54d027c54b6" type="DB:QUERY_EXECUTION">
+			<ee:transform doc:name="Database not unique exernalID message" doc:id="25394752-2c63-49be-b449-c914af822d66">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope
+ns ns0 http://example.com/rocketservice
+---
+{
+        soap#Fault: {
+            message: "ExternalId has to be unique!"
+        }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<logger level="INFO" doc:name="Database query execution logger" doc:id="cf4f17d1-f2d3-4089-b57f-a7f33faa3c23" message='#["\nDatabase not unique exernalId error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
+		
+</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f0a1b516-9b61-4b10-84bf-0476b0146992" type="VALIDATION:EMPTY_COLLECTION">
 			<ee:transform doc:name="Empty DB response  Validation Error Message" doc:id="089774b1-2383-4fdf-86a4-bace152b3b1f">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -58,13 +120,13 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 	}
 }]]></ee:set-payload>
 				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-			<logger level="ERROR" doc:name="Empty DB Response Validation Error Logger" doc:id="f137c85e-a2ee-4802-bf87-5667fb09d125" message='#["\nEmpty DB response validation error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]'/>
+			<logger level="ERROR" doc:name="Empty DB Response Validation Error Logger" doc:id="f137c85e-a2ee-4802-bf87-5667fb09d125" message='#["\nEmpty DB response validation error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
 		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="Error Continue " doc:id="e3037729-6cdf-40f1-a75e-9767566106dc" type="EXPRESSION">
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e3037729-6cdf-40f1-a75e-9767566106dc" type="EXPRESSION">
 			<ee:transform doc:name="Wrong DateWeave Error Message" doc:id="bdec9eb1-ce29-45a5-bc04-e21b2756e9f2">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -78,100 +140,12 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 }]]></ee:set-payload>
 				</ee:message>
 				<ee:variables>
-					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-			<logger level="ERROR" doc:name="Wrong DateWeave Logger" doc:id="82cc5c93-dfb8-4208-9a9f-9aab84ac5583" message='#["\nWrong input error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]'/>
+			<logger level="ERROR" doc:name="Wrong DateWeave Logger" doc:id="82cc5c93-dfb8-4208-9a9f-9aab84ac5583" message='#["\nWrong input error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
 		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0ea4f98d-906a-4a97-8315-d54d027c54b6" type="DB:QUERY_EXECUTION">
-			<ee:transform doc:name="Database not unique exernalID message" doc:id="25394752-2c63-49be-b449-c914af822d66" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
-ns ns0 http://example.com/rocketservice
----
-{
-    body: {
-        soap#Response: {
-            message: "ExternalId has to be unique!"
-        }
-    }
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="INFO" doc:name="Database query execution logger" doc:id="cf4f17d1-f2d3-4089-b57f-a7f33faa3c23" message="#[error.errorType]" />
-		
-</on-error-continue>
-<on-error-continue enableNotifications="true" logException="true" doc:name="Invalid Error Schema" doc:id="686342ff-4d03-4587-ad7f-a7a41e6e5d40" type="XML-MODULE:INVALID_SCHEMA">
-			<ee:transform doc:name="Invalid input XML error message" doc:id="c22bcbf2-cd70-455b-af4d-e4b0968ecefc">
-				<ee:message>
-					<ee:set-payload><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
----
-{
-	soap#Fault: {
-		errorMessage: "Invalid XML input"
-	}
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="ERROR" doc:name="Invalid input XML error Logger" doc:id="0c86d072-dcb1-4fc9-8f07-563c2bec539d" message='#["\nAny error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]'/>
-		</on-error-continue>
-		
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="93e4626d-a1ec-4dab-a8b5-d11fd70b60ba" type="DB:BAD_SQL_SYNTAX">
-			<ee:transform doc:name="Bad SQL syntax message" doc:id="8b3141a6-5277-4cc8-96b1-2367234e1a1d" >
-				<ee:message >
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
-ns ns0 http://example.com/rocketservice
----
-{
-    body: {
-        soap#Response: {
-            message: "SQL syntax is not correct."
-        }
-    }
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="INFO" doc:name="Bad SQL syntax logger" doc:id="ec6a6d61-886f-4697-bec4-ac5f19ed1281" message="#[error.errorType]" />
-		</on-error-propagate>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e01e97b1-ed3c-43d9-a90b-22a386515a94" type="XML-MODULE:SCHEMA_NOT_HONOURED">
-			<ee:transform doc:name="Wrong input xml message" doc:id="0e31aa86-79b2-492e-9d02-30586505a70d">
-				<ee:message>
-					<ee:set-payload><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
-ns ns0 http://example.com/rocketservice
----
-{
-    body: {
-        soap#Response: {
-            message: "Your input xml is wrong"
-        }
-    }
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables>
-					<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="INFO" doc:name="Wrong input xml logger" doc:id="800d896b-0473-44a8-8783-8411abe785f4" message="#[error.errorType]" />
-		
-</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="Any Error Handler" doc:id="4ec308e6-7350-49f7-bd41-0e950b29daca" type="ANY">
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="4ec308e6-7350-49f7-bd41-0e950b29daca" type="ANY">
 			<ee:transform doc:name="Any Error Handler Message" doc:id="9d071395-835e-4b10-90bc-37edb7ff04ad">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
@@ -187,6 +161,7 @@ ns soap http://schemas.xmlsoap.org/soap/envelope
 			</ee:transform>
 			<logger level="ERROR" doc:name="Any Error Handler Logger" doc:id="8eb84b94-3a7b-44ed-86be-b7f006f37369" message='#["\nAny error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
 		</on-error-continue>
+		
 		
 	
 </error-handler>

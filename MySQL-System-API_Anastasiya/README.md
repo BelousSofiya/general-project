@@ -1,8 +1,8 @@
 
-## Endpoint for Postman 
+## Endpoint 
 <br>http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
-## Endpoint for SoapUI
+## Endpoint for Local
 <br>http://0.0.0.0:8081/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
 ## Input Create Launch

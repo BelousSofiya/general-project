@@ -9,6 +9,12 @@
         see them in the mule_ee.log file. -->
 
     <Appenders>
+        <Http name="DATADOG"
+              url="https://http-intake.logs.${sys:doghost}/api/v2/logs?host=${sys:hostName}&amp;ddsource=MuleSoft&amp;service=mysql-system-api">
+             <Property name="Content-Type" value="application/json" />
+             <Property name="DD-API-KEY" value="${sys:dogkey}" />
+             <JsonLayout compact="false" properties="true"> </JsonLayout>
+        </Http>
         <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}ua-1185-rockets-system-api.log"
                  filePattern="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}ua-1185-rockets-system-api-%i.log">
             <PatternLayout pattern="%-5p %d [%t] [processor: %X{processorPath}; event: %X{correlationId}] %c: %m%n"/>
@@ -20,6 +26,7 @@
     <Loggers>
         <!-- Http Logger shows wire traffic on DEBUG -->
         <!--AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="DEBUG"/-->
+        <AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="DEBUG"/>
         <AsyncLogger name="org.mule.service.http" level="WARN"/>
         <AsyncLogger name="org.mule.extension.http" level="WARN"/>
 
@@ -27,6 +34,7 @@
         <AsyncLogger name="org.mule.runtime.core.internal.processor.LoggerMessageProcessor" level="INFO"/>
 
         <AsyncRoot level="INFO">
+        	<AppenderRef ref="DATADOG"/>
             <AppenderRef ref="file"/>
         </AsyncRoot>
     </Loggers>
