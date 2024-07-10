@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd">
+	<global-property doc:name="Global Property" doc:id="cecc4ca9-f986-48ba-a639-ac63c0bc7d0a" name="MAIL_PORT" value="587" />
+	<global-property doc:name="Global Property" doc:id="f90be955-9b6c-4d80-9723-6721c60bf6ae" name="MAIL_HOST" value="smtp.gmail.com" />
+    <azure-key-vault:config name="Azure_Key_Vault_Config" doc:name="Azure Key Vault Config" doc:id="bc968d66-d0c8-45a9-8672-f802853867aa" >
+		<azure-key-vault:connection clientId="${AZURE_CLIENT_ID}" tenantId="${AZURE_TENANT_ID}" clientSecret="${AZURE_CLIENT_SECRET}" vaultName="${MULE_AZURE_KEY_VAULT_NAME}" />
+	</azure-key-vault:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="09d8f36e-bfdb-47b1-8815-c4e29f65c73e" >
+    	<email:smtp-connection host="${MAIL_HOST}" port="${MAIL_PORT}" user="#[vars.secrets.user]" password="#[vars.secrets.password]" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.required" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+</mule>

@@ -1,15 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="a82f0a40-e489-478d-8b79-be669a5c82d5" basePath="/api/v2">
-		<http:request-connection host="http-intake.logs.${doghost}" protocol="HTTPS"/>
-	</http:request-config>
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd">
 	<sub-flow name="ua-1185-spacex-common-project-impl-Sub_Flow" doc:id="2453f030-321b-47d6-ac74-d37cdd85b958" >
 		<set-variable value='#[%dw 2.0&#10;output application/dw&#10;---&#10;(&#10;    (vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ &#10;    (vars.ERROR_MESSAGE."description" default " "  ) ++&#10;    "." ++&#10;    (vars.ERROR_MESSAGE."source" default " " ) ++&#10;    ". Error details: {" ++ &#10;    (vars.ERROR_MESSAGE."message" default " ") ++ &#10;    "," ++ &#10;    (vars.ERROR_MESSAGE."code" default 500) ++ &#10;    "}"&#10;)]' doc:name="Set Variable errorLog" doc:id="14a0e9f4-fbd4-406b-bd5e-49e6c5054d68" variableName="errorLog" />
+		<scatter-gather doc:name="Scatter-Gather" doc:id="fac2e69c-fb4f-4cda-9e27-1b1ec3214472" >
+			<route >
+				<azure-key-vault:get-secret doc:id="9fd8e269-1a0a-43b9-aaea-e1e13c875dc6" name="report-mail" config-ref="Azure_Key_Vault_Config"/>
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Set Variable secrets" doc:id="33b87bb2-529b-458e-91f6-a618123fd2ff" variableName="secrets" />
+				<try doc:name="Try" doc:id="804269e5-0944-4dad-952e-cd5111d803f6" >
+					<email:send doc:id="a087f2ce-442e-4e65-9da2-77e9bb8dc629" config-ref="Email_SMTP" fromAddress="ua.1185.si.mulesoft.report@gmail.com" subject="Error Log" doc:name="Send error email to report mail box">
+			<email:to-addresses>
+				<email:to-address value="ua.1185.si.mulesoft.report@gmail.com" />
+			</email:to-addresses>
+			<email:body contentType="text/plain">
+				<email:content><![CDATA[#[(vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ 
+(vars.ERROR_MESSAGE."description" default " "  ) ++
+"." ++
+(vars.ERROR_MESSAGE."source" default " " ) ++
+". Error details: {" ++ 
+(vars.ERROR_MESSAGE."message" default " ") ++ 
+"," ++ 
+(vars.ERROR_MESSAGE."code" default 500) ++ 
+"}"]]]></email:content>
+			</email:body>
+		</email:send>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="571e356d-f179-45bb-846e-1d961876a632" type="ANY">
+							<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "BAD_REQUEST",&#10;	"dateTime": now(),&#10;	"description": "Error log-mail-connector ",&#10;	"source": "Common project"&#10;}]' doc:name="Variable Error mail connector" doc:id="c933937d-8ed3-4e03-ad77-be4dd037b7a3" variableName="ERROR_MESSAGE" />
+							<set-variable value='#[%dw 2.0&#10;output application/dw&#10;---&#10;(&#10;    (vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ &#10;    (vars.ERROR_MESSAGE."description" default " "  ) ++&#10;    "." ++&#10;    (vars.ERROR_MESSAGE."source" default " " ) ++&#10;    ". Error details: {" ++ &#10;    (vars.ERROR_MESSAGE."message" default " ") ++ &#10;    "," ++ &#10;    (vars.ERROR_MESSAGE."code" default 500) ++ &#10;    "}"&#10;)]' doc:name="Set Variable errorLog" doc:id="784ff477-7be9-4368-9ec7-404bb9ee4cc2" variableName="errorLog" />
+							<logger level="INFO" doc:name="mail connector errorLog" doc:id="42d03903-a333-426f-8d64-ec7edb3d801f" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]"/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route >
+				<logger level="INFO" doc:name="Logger errorLog" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]" />
+			</route>
+		</scatter-gather>
 		<ee:transform doc:name="Transform Message Error out" doc:id="bc43641d-c713-44e5-9b28-be98dddfea2f">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -29,6 +62,5 @@ var inputZone = vars.ERROR_MESSAGE."dateTime" as TimeZone
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-		<logger level="INFO" doc:name="Logger errorLog" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]"/>
 	</sub-flow>
 </mule>
