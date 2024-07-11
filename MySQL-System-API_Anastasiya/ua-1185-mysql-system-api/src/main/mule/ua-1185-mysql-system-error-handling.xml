@@ -107,25 +107,6 @@ ns ns0 http://example.com/rocketservice
 			<logger level="INFO" doc:name="Database query execution logger" doc:id="cf4f17d1-f2d3-4089-b57f-a7f33faa3c23" message='#["\nDatabase not unique exernalId error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
 		
 </on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f0a1b516-9b61-4b10-84bf-0476b0146992" type="VALIDATION:EMPTY_COLLECTION">
-			<ee:transform doc:name="Empty DB response  Validation Error Message" doc:id="089774b1-2383-4fdf-86a4-bace152b3b1f">
-				<ee:message>
-					<ee:set-payload><![CDATA[%dw 2.0
-output application/xml
-ns soap http://schemas.xmlsoap.org/soap/envelope
----
-{
-	soap#Fault: {
-		errorMessage: "There are no results for your request."
-	}
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables>
-					<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			<logger level="ERROR" doc:name="Empty DB Response Validation Error Logger" doc:id="f137c85e-a2ee-4802-bf87-5667fb09d125" message='#["\nEmpty DB response validation error: #[error.description]. &#10;Cause: #[error.cause]. &#10;Error type: #[error.errorType]."]' />
-		</on-error-continue>
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e3037729-6cdf-40f1-a75e-9767566106dc" type="EXPRESSION">
 			<ee:transform doc:name="Wrong DateWeave Error Message" doc:id="bdec9eb1-ce29-45a5-bc04-e21b2756e9f2">
 				<ee:message>

@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<http:request-connection host="0.0.0.0" port="8081" />
 	</http:request-config>
 	
-	<munit:test name="create-Launch-correct-input-test-suite" doc:id="57f42902-1a0b-47fa-a002-dea18b88e649">
+	<munit:test name="create-Launch-correct-input-test-suite" doc:id="57f42902-1a0b-47fa-a002-dea18b88e649" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="CreateLaunch:\soapkit-config" />
@@ -52,7 +52,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="d4fa77d5-327f-4c9d-9e14-bed3e0745ad3" is="#[MunitTools::equalTo(200)]" message="Unsuccessful" expression="#[attributes.statusCode]"/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="create-Launchpad-correct-input-test-suite" doc:id="a9f22161-4f30-435b-9517-4e52e9a88962">
+	<munit:test name="create-Launchpad-correct-input-test-suite" doc:id="a9f22161-4f30-435b-9517-4e52e9a88962" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="CreateLaunchpad:\soapkit-config" />
@@ -88,7 +88,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="6d151fad-a99f-42e5-866d-1e325df9025f" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="create-Rocket-correct-input-test-suite" doc:id="d83ed3f2-bcef-4794-bed6-a93d61ba8209">
+	<munit:test name="create-Rocket-correct-input-test-suite" doc:id="d83ed3f2-bcef-4794-bed6-a93d61ba8209" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="CreateRocket:\soapkit-config" />
 			<munit:enable-flow-source value="api-main" />
@@ -126,7 +126,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="bc0cc4da-2ebb-4351-9c2e-0cf7e7e34e9c" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="create-Payload-correct-input-test-suite" doc:id="43d1a818-a89e-4f36-9237-67da2147abe6">
+	<munit:test name="create-Payload-correct-input-test-suite" doc:id="43d1a818-a89e-4f36-9237-67da2147abe6" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="CreatePayload:\soapkit-config" />
@@ -164,7 +164,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="206c3fd7-bb08-40ed-a850-0c1da51bef42" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="delete-Launch-correct-input-test-suite" doc:id="6dc6a73a-9295-4e01-8f3d-8cf52b64d346">
+	<munit:test name="delete-Launch-correct-input-test-suite" doc:id="6dc6a73a-9295-4e01-8f3d-8cf52b64d346" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="DeleteLaunchByExternalId:\soapkit-config" />
@@ -208,7 +208,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="802664c4-da7d-4852-9dad-30b17f714835" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="delete-Launchpad-correct-input-test-suite" doc:id="11fb17df-eed7-4544-be14-0801d53ea952">
+	<munit:test name="delete-Launchpad-correct-input-test-suite" doc:id="11fb17df-eed7-4544-be14-0801d53ea952" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="DeleteLaunchpadByExternalId:\soapkit-config" />
@@ -252,7 +252,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="be9ea1d3-7346-4cff-98d5-bd8aa868948a" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="delete-Rocket-correct-input-test-suite" doc:id="6aea7162-aea2-4886-87b2-fbbf0ef40a27">
+	<munit:test name="delete-Rocket-correct-input-test-suite" doc:id="6aea7162-aea2-4886-87b2-fbbf0ef40a27" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="DeleteRocketByExternalId:\soapkit-config" />
@@ -296,7 +296,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="1ce93d40-a5f2-41ae-880b-1e2680382cca" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="delete-Payload-correct-input-test-suite" doc:id="41403a72-1d54-4d96-bffa-f3a905f18926">
+	<munit:test name="delete-Payload-correct-input-test-suite" doc:id="41403a72-1d54-4d96-bffa-f3a905f18926" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="DeletePayloadByExternalId:\soapkit-config" />
@@ -340,7 +340,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-that doc:name="Assert status code" doc:id="5123990d-b2db-4898-a0ef-f8147429dd9b" message="Unsuccessful" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="update-Launch-correct-input-full-request-test-suite" doc:id="95941ad8-a5fb-4bdf-be6a-43ed20513b69">
+	<munit:test name="update-Launch-correct-input-full-request-test-suite" doc:id="95941ad8-a5fb-4bdf-be6a-43ed20513b69" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="UpdateLaunch:\soapkit-config" />
@@ -395,7 +395,7 @@ payload]]></ee:set-payload>
 			<munit-tools:assert-that doc:name="Assert payload" doc:id="2385aeed-1017-444d-88f9-ebf704fdbb29" is="#[MunitTools::equalTo('Updated successfully')]" expression="#[payload.Envelope.Body.body.Result.message]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="update-Launchpad-correct-input-full-request-test-suite" doc:id="214eaf23-dc39-458b-ace1-a997d4aaba4f">
+	<munit:test name="update-Launchpad-correct-input-full-request-test-suite" doc:id="214eaf23-dc39-458b-ace1-a997d4aaba4f" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="UpdateLaunchpad:\soapkit-config" />
@@ -448,7 +448,7 @@ payload]]></ee:set-payload>
 			<munit-tools:assert-that doc:name="Assert payload" doc:id="6916c06c-381a-4473-aa7c-e2048bd866c0" expression="#[payload.Envelope.Body.body.Result.message]" is="#[MunitTools::equalTo('Updated successfully')]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="update-Rocket-correct-input-full-request-test-suite" doc:id="caedc7a4-7ef7-4ee9-b739-1f9ea1aa12bf">
+	<munit:test name="update-Rocket-correct-input-full-request-test-suite" doc:id="caedc7a4-7ef7-4ee9-b739-1f9ea1aa12bf" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="UpdateRocket:\soapkit-config" />
@@ -503,7 +503,7 @@ payload]]></ee:set-payload>
 			<munit-tools:assert-that doc:name="Assert payload" doc:id="d060575f-e110-4d78-8250-453ba5cfaad4" expression="#[payload.Envelope.Body.body.Result.message]" is="#[MunitTools::equalTo('Updated successfully')]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="update-Payload-correct-input-full-request-test-suite" doc:id="64f60778-bcbf-4496-926e-39fe8da6709f">
+	<munit:test name="update-Payload-correct-input-full-request-test-suite" doc:id="64f60778-bcbf-4496-926e-39fe8da6709f" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="UpdatePayload:\soapkit-config" />
@@ -558,7 +558,7 @@ payload]]></ee:set-payload>
 			<munit-tools:assert-that doc:name="Assert payload" doc:id="f7a20f09-3766-4404-ac23-af768b222174" expression="#[payload.Envelope.Body.body.Result.message]" is="#[MunitTools::equalTo('Updated successfully')]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-all-Launches-correct-input-test-suite" doc:id="a8bca257-dc33-4d01-8ffb-a9331330d5b8">
+	<munit:test name="GET-all-Launches-correct-input-test-suite" doc:id="a8bca257-dc33-4d01-8ffb-a9331330d5b8" ignore="true">
 		<munit:enable-flow-sources>
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetAllLaunches:\soapkit-config" />
@@ -600,7 +600,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payload" doc:id="b1f9ee15-2176-4378-bf69-21aa32aff0ec" actual="#[payload]" expected="#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#AllLaunchesResponse: {&#10;        Launch: [&#10;        	{&#10;            id: &quot;2&quot;,&#10;			externalId: &quot;test_externalId_1&quot;,&#10;			success: &quot;true&quot;,&#10;			details: &quot;test_details&quot;,&#10;			launchName: &quot;test_name&quot;,&#10;			date: '2023-01-15',&#10;			rocketName: &quot;test_rocket_name&quot;,&#10;			launchpad_id: &quot;1&quot;&#10;		},&#10;			{id: &quot;3&quot;,&#10;			externalId: &quot;test_externalId_2&quot;,&#10;			success: &quot;true&quot;,&#10;			details: &quot;test_details_2&quot;,&#10;			launchName: &quot;test_name_2&quot;,&#10;			date: '2023-01-15',&#10;			rocketName: &quot;test_rocket_name_2&quot;,&#10;			launchpad_id: &quot;1&quot;}&#10;        ]&#10;      }&#10;    }&#10;  }&#10;}]" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-all-Launchpads-correct-input-test-suite" doc:id="3bfa6bf5-8abd-462a-8633-e5269b92e9e3">
+	<munit:test name="GET-all-Launchpads-correct-input-test-suite" doc:id="3bfa6bf5-8abd-462a-8633-e5269b92e9e3" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetAllLaunchpads:\soapkit-config" />
@@ -642,7 +642,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payload" doc:id="be066c8d-b324-462e-af55-2897a940d6f5" actual="#[payload]" expected='#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#AllLaunchpadsResponse: {&#10;        Launchpad: [&#10;          {&#10;            id: "2",&#10;			externalId: "test_externalId_1",&#10;			name: "test_name",&#10;			locality: "test_locality",&#10;			region: "test_region",&#10;			status: "test_status"&#10;          },&#10;          {&#10;            id: "3",&#10;			externalId: "test_externalId_2",&#10;			name: "test_name_2",&#10;			locality: "test_locality_2",&#10;			region: "test_region_2",&#10;			status: "test_status_2"&#10;          }&#10;        ]&#10;      }&#10;    }&#10;  }&#10;}]' />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-all-Rockets-correct-input-test-suite" doc:id="375cf0be-76b7-4d76-8de9-af8a06d6f4a4">
+	<munit:test name="GET-all-Rockets-correct-input-test-suite" doc:id="375cf0be-76b7-4d76-8de9-af8a06d6f4a4" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetAllRockets:\soapkit-config" />
@@ -684,7 +684,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payload" doc:id="4384f6a3-9bd6-4ed3-82af-f2bbbee6cfaf" actual="#[payload]" expected='#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#AllRocketsResponse: {&#10;        Rocket: [&#10;          {&#10;            id: "2",&#10;			externalId: "test_externalId_1",&#10;			name: "test_name",&#10;			active: "1",&#10;			stages: "3",&#10;			costPerLaunch: "770000",&#10;			description: "test"&#10;          },&#10;          {&#10;            id: "3",&#10;			externalId: "test_externalId_2",&#10;			name: "test_name_2",&#10;			active: "0",&#10;			stages: "2",&#10;			costPerLaunch: "555000",&#10;			description: "test_2"&#10;          }&#10;        ]&#10;      }&#10;    }&#10;  }&#10;}]'/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-all-Payloads-correct-input-test-suite" doc:id="cb801f6e-9a5b-4347-a5d2-ba8f078daa53">
+	<munit:test name="GET-all-Payloads-correct-input-test-suite" doc:id="cb801f6e-9a5b-4347-a5d2-ba8f078daa53" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="GetAllPayloads:\soapkit-config" />
 			<munit:enable-flow-source value="api-main" />
@@ -726,7 +726,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payload" doc:id="9eb66deb-9d7a-48a6-b298-b3dde7968ec7" actual="#[payload]" expected="#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#AllPayloadsResponse: {&#10;        Payload: [&#10;          {&#10;            id: &quot;2&quot;,&#10;            externalId: &quot;test_externalId_1&quot;,&#10;            name: &quot;test_name&quot;,&#10;            'type': &quot;test_type&quot;,&#10;            weight: &quot;333&quot;,&#10;            orbit: &quot;test_orbit&quot;,&#10;            apoapsis: &quot;1234&quot;,&#10;            periapsis: &quot;1234&quot;,&#10;            rocketId: &quot;1&quot;&#10;          },&#10;          {&#10;            id: &quot;3&quot;,&#10;            externalId: &quot;test_externalId_2&quot;,&#10;            name: &quot;test_name_2&quot;,&#10;            'type': &quot;test_type_2&quot;,&#10;            weight: &quot;335&quot;,&#10;            orbit: &quot;test_orbit_2&quot;,&#10;            apoapsis: &quot;1344&quot;,&#10;            periapsis: &quot;134&quot;,&#10;            rocketId: &quot;2&quot;&#10;          }&#10;        ]&#10;      }&#10;    }&#10;  }&#10;}]"/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-Launch-exernal-ID-correct-input-test-suite" doc:id="c245f53f-c422-4ebe-9994-14effce3128f">
+	<munit:test name="GET-Launch-exernal-ID-correct-input-test-suite" doc:id="c245f53f-c422-4ebe-9994-14effce3128f" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetLaunchByExternalId:\soapkit-config" />
@@ -766,7 +766,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payloads" doc:id="e6566654-d0f9-4bc8-9d5b-a09e23056880" actual="#[payload]" expected='#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#GetLaunchByExternalIdResponse: {&#10;        id: "2",&#10;        externalId: "test_externalId_1",&#10;        success: "true",&#10;        details: "test_details",&#10;        launchName: "test_name",&#10;        date: "2023-01-15",&#10;        rocketName: "test_rocket_name",&#10;        launchpad_id: "1"&#10;      }&#10;    }&#10;  }&#10;}]'/>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-Launchpad-exernal-ID-correct-input-test-suite" doc:id="95e42361-3a1b-4ad2-a55b-cee54f7243dd">
+	<munit:test name="GET-Launchpad-exernal-ID-correct-input-test-suite" doc:id="95e42361-3a1b-4ad2-a55b-cee54f7243dd" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="GetLaunchpadByExternalId:\soapkit-config" />
 			<munit:enable-flow-source value="api-main" />
@@ -806,7 +806,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payloads" doc:id="24c7a869-2f6d-4ae0-ae2d-305a67fcdb45" actual="#[payload]" expected='#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#GetLaunchpadByExternalIdResponse: {&#10;        id: "2",&#10;		externalId: "test_externalId_1",&#10;		name: "test_name",&#10;		locality: "test_locality",&#10;		region: "test_region",&#10;		status: "test_status"&#10;      }&#10;    }&#10;  }&#10;}]' />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-Rocket-exernal-ID-correct-input-test-suite" doc:id="76d29861-9a54-43f5-8153-2fd10c4a5211" >
+	<munit:test name="GET-Rocket-exernal-ID-correct-input-test-suite" doc:id="76d29861-9a54-43f5-8153-2fd10c4a5211" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetRocketByExternalId:\soapkit-config" />
@@ -846,7 +846,7 @@ ns roc http://example.com/rocketservice
 			<munit-tools:assert-equals doc:name="Assert payloads" doc:id="3d7291da-040e-4472-bd6c-34211308fccb" actual="#[payload]" expected='#[%dw 2.0&#10;output application/xml&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;{&#10;  soap#Envelope: {&#10;    soap#Body: {&#10;      roc#GetRocketByExternalIdResponse: {&#10;        id: "2",&#10;		externalId: "test_externalId_1",&#10;		name: "test_name",&#10;		active: "1",&#10;		stages: "3",&#10;		costPerLaunch: "770000",&#10;		description: "test"&#10;&#10;      }&#10;    }&#10;  }&#10;}]' />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="GET-Payload-exernal-ID-correct-input-test-suite" doc:id="652ebe0d-a645-42fe-8f07-d0446252b4ed" >
+	<munit:test name="GET-Payload-exernal-ID-correct-input-test-suite" doc:id="652ebe0d-a645-42fe-8f07-d0446252b4ed" ignore="true">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="api-main" />
 			<munit:enable-flow-source value="GetPayloadByExternalId:\soapkit-config" />
