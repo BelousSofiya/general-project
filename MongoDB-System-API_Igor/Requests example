@@ -50,7 +50,6 @@ http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api
          <launchName></launchName>
          <date></date>
          <rocketName></rocketName>
-         <launchpad_id></launchpad_id>
       </roc:CreateLaunchRequest>
    </soapenv:Body>
 </soapenv:Envelope>
