@@ -36,8 +36,18 @@ mvn clean package install:install
 ```
 ## 4. Add in global config 
 - import(configuration) name imported flow (ua-****-error.xml)
+## 5. Add in Run 
+```In Mule RUN
 
-## 5. Restart project
+-M-Ddogkey=*****54929 
+-M-Ddoghost=datadoghq.eu
+-M-DAZURE_CLIENT_ID=1a7d48c******85c8fbfd5
+-M-DAZURE_TENANT_ID=b00a1ab0--*******55-d2019c39f914
+-M-DAZURE_CLIENT_SECRET=nn38Q~lhmb1qb******RdkoaN4 
+-M-DMULE_AZURE_KEY_VAULT_NAME=******
+
+```
+## 6. Restart project
 
 # Project structure
 
