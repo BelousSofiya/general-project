@@ -17,10 +17,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-   <xs:element name="externalId" type="xs:string" />
-  <xs:element name="success" type="xs:unsignedByte" />
+  <xs:element name="externalId" type="xs:string" />
+  <xs:element name="success" type="xs:string" />
   <xs:element name="details" type="xs:string" />
   <xs:element name="launchName" type="xs:string" />
-  <xs:element name="date" type="xs:date" />
+  <xs:element name="date" type="xs:string" />
   <xs:element name="rocketName" type="xs:string" />
 </xs:schema>

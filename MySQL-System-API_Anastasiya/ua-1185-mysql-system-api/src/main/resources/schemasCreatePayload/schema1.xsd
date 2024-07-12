@@ -12,7 +12,6 @@
          <xs:element ref="orbit" />
          <xs:element ref="apoapsis" />
          <xs:element ref="periapsis" />
-         <xs:element ref="rocketId" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

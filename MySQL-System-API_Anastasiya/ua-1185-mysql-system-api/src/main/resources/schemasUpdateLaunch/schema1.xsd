@@ -6,12 +6,11 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="externalId" />
-        <xs:element ref="success" />
-        <xs:element ref="details" />
-        <xs:element ref="launchName" />
-        <xs:element ref="date" />
-        <xs:element ref="rocketName" />
-
+        <xs:element minOccurs="0" ref="success" />
+        <xs:element minOccurs="0" ref="details" />
+        <xs:element minOccurs="0" ref="launchName" />
+        <xs:element minOccurs="0" ref="date" />
+        <xs:element minOccurs="0" ref="rocketName" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

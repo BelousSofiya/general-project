@@ -6,12 +6,12 @@
     <xs:complexType>
       <xs:sequence>
          <xs:element ref="externalId" />
-         <xs:element ref="name" />
-         <xs:element ref="type" />
-         <xs:element ref="weight" />
-         <xs:element ref="orbit" />
-         <xs:element ref="apoapsis" />
-         <xs:element ref="periapsis" />
+         <xs:element minOccurs="0" ref="name" />
+         <xs:element minOccurs="0" ref="type" />
+         <xs:element minOccurs="0" ref="weight" />
+         <xs:element minOccurs="0" ref="orbit" />
+         <xs:element minOccurs="0" ref="apoapsis" />
+         <xs:element minOccurs="0" ref="periapsis" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

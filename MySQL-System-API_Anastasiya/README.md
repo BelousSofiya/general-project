@@ -1,9 +1,9 @@
 
-## Endpoint for Postman 
+## Endpoint 
 <br>http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
-## Endpoint for SoapUI
-<br>http://0.0.0.0:8080/SpaceXdbService/SpaceXdbServiceSoapPort</br>
+## Endpoint for Local
+<br>http://0.0.0.0:8081/SpaceXdbService/SpaceXdbServiceSoapPort</br>
 
 ## Input Create Launch
 ```xml
@@ -17,7 +17,6 @@
          <launchName>Cargo Mission 8</launchName>
          <date>2023-03-23</date>
          <rocketName>Falcon 3</rocketName>
-         <launchpad_id>2</launchpad_id>
       </roc:CreateLaunchRequest>
    </soapenv:Body>
 </soapenv:Envelope>
@@ -68,7 +67,6 @@
 		  <orbit>LEO</orbit>
 		  <apoapsis>550</apoapsis>
 		  <periapsis>550</periapsis>
-		  <rocketId>2</rocketId>
       </roc:CreatePayloadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
@@ -76,14 +74,12 @@
 ## Output Create 
 
 ```xml
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-   <soap:Body>
-      <body>
-         <soap:Result xmlns:soap="http://schemas.xmlsoap.org/soap/envelope">
+<<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+        <soap:Result xmlns:soap="http://schemas.xmlsoap.org/soap/envelope">
             <message>Created successfully</message>
-         </soap:Result>
-      </body>
-   </soap:Body>
+        </soap:Result>
+    </soap:Body>
 </soap:Envelope>
 ```
 
@@ -155,11 +151,9 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <body>
          <soap:Result xmlns:soap="http://schemas.xmlsoap.org/soap/envelope">
             <message>Updated successfully</message>
          </soap:Result>
-      </body>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -205,11 +199,9 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <body>
          <soap:Result xmlns:soap="http://schemas.xmlsoap.org/soap/envelope">
             <message>Deleted successfully</message>
          </soap:Result>
-      </body>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -256,7 +248,7 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:GetLaunchByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:GetLaunchByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
          <id>12</id>
          <externalId>LN10</externalId>
          <success>true</success>
@@ -265,7 +257,7 @@
          <date>2023-03-24</date>
          <rocketName>Falcon 3</rocketName>
          <launchpad_id>2</launchpad_id>
-      </roc:GetLaunchByExternalIdResponse>
+      </soap:GetLaunchByExternalIdResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -273,14 +265,14 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:GetLaunchpadByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:GetLaunchpadByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
          <id>8</id>
          <externalId>LP8</externalId>
          <name>Launchpad 8</name>
          <locality>Locality 8</locality>
          <region>Region 8</region>
          <status>Active</status>
-      </roc:GetLaunchpadByExternalIdResponse>
+      </soap:GetLaunchpadByExternalIdResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -288,7 +280,7 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:GetRocketByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:GetRocketByExternalIdResponse xmlns:roc="http://example.com/rocketservice">
          <id>5</id>
          <externalId>RKT5</externalId>
          <name>Vega-2</name>
@@ -296,7 +288,7 @@
          <stages>5</stages>
          <costPerLaunch>5500000</costPerLaunch>
          <description>An expendable launch system used for heavy payloads.</description>
-      </roc:GetRocketByExternalIdResponse>
+      </soap:GetRocketByExternalIdResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -304,7 +296,7 @@
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:GetPayloadByExternalIdResponse xmlns:pay="http://example.com/rocketservice">
+      <soap:GetPayloadByExternalIdResponse xmlns:pay="http://example.com/rocketservice">
          <id>1</id>
          <externalId>PLD1</externalId>
          <name>Starlink-1</name>
@@ -314,7 +306,7 @@
          <apoapsis>550</apoapsis>
          <periapsis>550</periapsis>
          <rocketId>2</rocketId>
-      </roc:GetPayloadByExternalIdResponse>
+      </soap:GetPayloadByExternalIdResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -353,7 +345,7 @@
 ```xml
 soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:AllLaunchesResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:AllLaunchesResponse xmlns:roc="http://example.com/rocketservice">
          <Launch>
             <id>1</id>
             <externalId>RKT1</externalId>
@@ -374,7 +366,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <rocketName/>
             <launchpad_id/>
          </Launch>
-    </roc:AllLaunchesResponse>
+    </soap:AllLaunchesResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -382,7 +374,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:AllLaunchpadsResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:AllLaunchpadsResponse xmlns:roc="http://example.com/rocketservice">
          <Launchpad>
             <id>1</id>
             <externalId>RKT1</externalId>
@@ -407,7 +399,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <region/>
             <status/>
          </Launchpad>
-      </roc:AllLaunchpadsResponse>
+      </soap:AllLaunchpadsResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -415,7 +407,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:AllRocketsResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:AllRocketsResponse xmlns:roc="http://example.com/rocketservice">
          <Rocket>
             <id>1</id>
             <externalId>RKT1</externalId>
@@ -434,7 +426,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <costPerLaunch>62000000</costPerLaunch>
             <description>Partially reusable rocket designed and manufactured by SpaceX.</description>
          </Rocket>
-      </roc:AllRocketsResponse>
+      </soap:AllRocketsResponse>
    </soap:Body>
 </soap:Envelope>
 ```
@@ -442,7 +434,7 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
-      <roc:AllPayloadsResponse xmlns:roc="http://example.com/rocketservice">
+      <soap:AllPayloadsResponse xmlns:roc="http://example.com/rocketservice">
          <Payload>
             <id>1</id>
             <externalId>PLD1</externalId>
@@ -465,7 +457,8 @@ soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <periapsis>20200</periapsis>
             <rocketId>2</rocketId>
          </Payload>
-      </roc:AllPayloadsResponse>
+      </soap:AllPayloadsResponse>
    </soap:Body>
 </soap:Envelope>
 ```
+

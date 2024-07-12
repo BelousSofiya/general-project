@@ -24,5 +24,4 @@
     <xs:element name="orbit" type="xs:string" />
     <xs:element name="apoapsis" type="xs:unsignedShort" />
     <xs:element name="periapsis" type="xs:unsignedShort" />
-    <xs:element name="rocketId" type="xs:unsignedByte" />
 </xs:schema>
