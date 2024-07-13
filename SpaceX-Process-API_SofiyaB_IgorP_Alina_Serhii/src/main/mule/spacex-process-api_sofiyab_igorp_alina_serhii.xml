@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd">
 	<!-- [STUDIO:"common-apiFlow"]<flow name="common-apiFlow" doc:id="9f457958-d028-4ad3-a96c-e82d3f32a516" >
 		<http:listener doc:name="Listener" doc:id="69e97f02-361d-4b96-b916-87437ff97f7c" config-ref="HTTP_Listener_config" path="/salesforceListener" allowedMethods="GET"/>
 		<flow-ref doc:name="Flow Reference" doc:id="481be62b-e092-49c1-9d8b-d5ca091bd0df" name="salesforce-listener"/>
 	</flow> [STUDIO] -->
+	<flow name="spacex-process-api_sofiyab_igorp_alina_serhiiFlow" doc:id="9bcbefe0-f774-4e00-b1b0-46e9eb945cb2" >
+		<azure-key-vault:get-secret doc:name="Get Secret" doc:id="8fdb7fb6-77fe-4998-8588-f6ccb13a439a" config-ref="Azure_Key_Vault_Config" name="salesforce"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b0a2ddc4-fee2-4987-9693-e3ee8e0d71c6" message="#[payload]"/>
+	</flow>
 </mule>

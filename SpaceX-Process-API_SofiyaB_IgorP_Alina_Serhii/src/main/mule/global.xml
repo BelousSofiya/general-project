@@ -22,6 +22,6 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 		<http:request-connection host="ua-1185-mysql-system-api.us-e2.cloudhub.io" connectionIdleTimeout="300000"/>
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration_Mongo" doc:name="HTTP Request configuration" doc:id="404094a2-23a3-4e55-96a7-cdcee7c94092" >
-		<http:request-connection host="ua-1185-mongodb-system-api.us-e2.cloudhub.io" />
+		<http:request-connection host="ua-1185-mongo-system-api.us-e2.cloudhub.io" />
 	</http:request-config>
 </mule>
