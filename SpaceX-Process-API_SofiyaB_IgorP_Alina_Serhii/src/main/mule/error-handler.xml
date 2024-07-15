@@ -4,7 +4,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<error-handler name="randomize-error-handlerError_Handler" doc:id="7fdd0bf9-884e-450a-9cca-8b15f34e2c5b" >
+	<error-handler name="common-error-handlerError_Handler" doc:id="7fdd0bf9-884e-450a-9cca-8b15f34e2c5b" >
 		<on-error-propagate enableNotifications="true" logException="false" doc:name="On Error Propagate" doc:id="aa099fca-4d4d-4650-a1a1-fea3778c1a29" type="VALIDATION:INVALID_SIZE">
 			<ee:transform doc:name="Set Current Operation" doc:id="2e325be8-0d7b-4acc-a6c9-a913ac12c050" >
 				<ee:message >
