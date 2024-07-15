@@ -12,8 +12,9 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+
 	<flow name="maybebatchfor3entity" doc:id="da3286bb-5b13-49bf-a769-281fc78d717b">
-		<http:listener doc:name="Listener" doc:id="8319a90b-cf35-4e7e-bc61-73b2ca9aa330" config-ref="HTTP_Listener_config" path="/test" />
+		<http:listener doc:name="Listener" doc:id="8319a90b-cf35-4e7e-bc61-73b2ca9aa330" config-ref="HTTP_Listener_config" path="/sync_test" />
 		<set-variable value="#[attributes.queryParams.safetyMode as Boolean]" doc:name="mode" doc:id="efddc3d6-0dbe-415e-adec-473df742ddd2" variableName="mode" />
 		<!-- [STUDIO:"entity"]<set-variable value="Rockets" doc:name="entity" doc:id="761319bd-adb8-491d-96f8-b3aaa51f98ae" variableName="entity"/> [STUDIO] -->
 		<!-- [STUDIO:"entityFields"]<set-variable value="externalId, name, active, stages, costPerLaunch, description" doc:name="entityFields" doc:id="e128dff8-f8e1-48e7-9406-f49e23a9434f" variableName="entityFields"/> [STUDIO] -->
@@ -108,7 +109,7 @@ ns roc http://example.com/rocketservice
 	<sub-flow name="entityInfoGatherFlow" doc:id="b79ae170-db36-4d85-be73-f6f355fe07ed" >
 		<logger level="INFO" doc:name="Logger" doc:id="70d70c21-6363-4646-81d8-6fc8d306ee83" message="#[vars.entity]" />
 		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;ns soapenv http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#10;var entity = vars.entity as String&#10;&#10;var requestString = "&lt;roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/&gt;"&#10;var requestXml = read(requestString, "application/xml")&#10;&#10;---&#10;{&#10;    soapenv#Envelope: {&#10;        soapenv#Header: null,&#10;        soapenv#Body: requestXml&#10;    }&#10;}]' doc:name="requestGetAll" doc:id="c9df74a8-fa8a-4d30-b739-71ad4c59bf1c" variableName="requestGetAll"/>
-		<http:request method="POST" doc:name="Request query to MySQL" doc:id="e309d6a6-6daa-4454-87b6-5ae1fb839379" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+		<http:request method="POST" doc:name="Request query to MySQL" doc:id="e309d6a6-6daa-4454-87b6-5ae1fb839379" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
 ---
@@ -117,10 +118,10 @@ ns roc http://example.com/rocketservice
 }]]]></http:headers>
 		</http:request>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mysqlEntity" doc:id="9fa0f96b-ed9e-4ba3-aee0-1108500a2e3b" variableName="mysqlEntity" />
-		<file:write doc:name="Write" doc:id="b56043c0-6891-4491-806d-facea8c9bfea" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mysqlEntity.txt" mode="APPEND">
+		<file:write doc:name="Write" doc:id="b56043c0-6891-4491-806d-facea8c9bfea" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mysqlEntity.txt" mode="APPEND">
 			<file:content ><![CDATA[#[vars.mysqlEntity]]]></file:content>
 		</file:write>
-		<http:request method="POST" doc:name="Request query to Mongo" doc:id="5183de02-186f-4bda-a889-88be56691b75" config-ref="HTTP_Request_configuration2" path="/api">
+		<http:request method="POST" doc:name="Request query to Mongo" doc:id="5183de02-186f-4bda-a889-88be56691b75" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
 ---
@@ -129,12 +130,12 @@ ns roc http://example.com/rocketservice
 }]]]></http:headers>
 		</http:request>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mongoEntity" doc:id="34a1fb29-3605-4b34-a3b4-da713287c6c6" variableName="mongoEntity" />
-		<file:write doc:name="Write1" doc:id="e72e895a-aec4-45ee-acf7-18d665bad37e" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND">
+		<file:write doc:name="Write1" doc:id="e72e895a-aec4-45ee-acf7-18d665bad37e" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND">
 			<file:content><![CDATA[#[vars.mongoEntity]]]></file:content>
 		</file:write>
-		<http:request method="GET" doc:name="Request query to SpaceX" doc:id="9329d832-72e6-4553-ac0a-fcbe63df7877" config-ref="HTTP_Request_configuration" path='#["api/" ++ lower(vars.entity)]' />
+		<!-- [STUDIO:"Request query to SpaceX"]<http:request method="GET" doc:name="Request query to SpaceX" doc:id="9329d832-72e6-4553-ac0a-fcbe63df7877" config-ref="HTTP_Request_configuration" path='#["api/" ++ lower(vars.entity)&#93;' /> [STUDIO] -->
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var entityField = vars.entityFields&#10;var externalField = vars.externalField&#10;var entityFieldsList = entityField splitBy(",") map ((item) -&gt; trim(item))&#10;var externalFieldsList = externalField splitBy(",") map ((item) -&gt; trim(item))&#10;---&#10;payload map ((obj) -&gt; &#10;    entityFieldsList map ((ent, index) -&gt; &#10;            {&#10;	(ent): obj[externalFieldsList[index]]&#10;}&#10;        ) reduce ((acc, item) -&gt; acc ++ item))]' doc:name="entityFromSpaceX" doc:id="ac9dd1bf-fcb1-466d-94e8-4d813ec47e04" variableName="entityFromSpaceX" />
-		<file:write doc:name="Write2" doc:id="89fb9c90-a1b8-4f7a-9a7a-1a963522e63b" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND">
+		<file:write doc:name="Write2" doc:id="89fb9c90-a1b8-4f7a-9a7a-1a963522e63b" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND">
 			<file:content><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
 		</file:write>
 		<ee:transform doc:name="Transform Message" doc:id="9ec809eb-9a06-4301-b207-e1b4873ff048">
@@ -240,7 +241,7 @@ toUpdate]]></ee:set-payload>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="33241eb9-cfbf-4a6e-821f-b329eaa0e730">
 			<when expression="#[isEmpty(vars.mysqlCurrent)]">
-				<http:request method="POST" doc:name="Create query to MySQL" doc:id="d7805283-8d89-43ec-a3a4-545aae19ef88" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+				<http:request method="POST" doc:name="Create query to MySQL" doc:id="d7805283-8d89-43ec-a3a4-545aae19ef88" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
 					<http:body ><![CDATA[#[%dw 2.0
 import * from dw::core::Strings
 output application/xml writeDeclaration=false
@@ -273,12 +274,12 @@ var create = entityFields map ((ent, index) -> (ent): boolToNum(externalData[ent
 	"Content-Type" : "application/xml"
 }]]]></http:headers>
 				</http:request>
-				<file:write doc:name="Write" doc:id="50abb606-3806-4cb2-9480-3ed07e57773a" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMysql.txt" mode="APPEND" >
+				<file:write doc:name="Write" doc:id="50abb606-3806-4cb2-9480-3ed07e57773a" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMysql.txt" mode="APPEND" >
 					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
 				</file:write>
 			</when>
 			<when expression="#[!isEmpty(payload map ((item) -&gt; isEmpty(item)) filter ((item) -&gt; !item ))]">
-				<http:request method="POST" doc:name="Update query to MySQL" doc:id="12f5145d-5921-496b-a95e-107ed48b5573" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+				<http:request method="POST" doc:name="Update query to MySQL" doc:id="12f5145d-5921-496b-a95e-107ed48b5573" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
 					<http:body ><![CDATA[#[%dw 2.0
 import * from dw::core::Strings
 output application/xml writeDeclaration=false
@@ -306,7 +307,7 @@ var requestString = "roc:Update" ++ entity ++ "Request"
 	"Content-Type" : "application/xml"
 }]]]></http:headers>
 				</http:request>
-				<file:write doc:name="Write" doc:id="5cc68413-ba31-4bb4-a360-894b181e4fbe" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMysql.txt" mode="APPEND" >
+				<file:write doc:name="Write" doc:id="5cc68413-ba31-4bb4-a360-894b181e4fbe" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMysql.txt" mode="APPEND" >
 					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
 				</file:write>
 			</when>
@@ -339,7 +340,7 @@ toUpdate]]></ee:set-payload>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="6cf416f2-bbaf-40bb-9e9a-c7537bd8ac62">
 			<when expression="#[isEmpty(vars.mongoCurrent)]">
-				<http:request method="POST" doc:name="Create query to Mongo" doc:id="c974096e-b996-4e41-9f4f-080126c21545" config-ref="HTTP_Request_configuration2" path="/api">
+				<http:request method="POST" doc:name="Create query to Mongo" doc:id="c974096e-b996-4e41-9f4f-080126c21545" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 					<http:body><![CDATA[#[%dw 2.0
 import * from dw::core::Strings
 output application/xml writeDeclaration=false
@@ -368,12 +369,12 @@ var create = entityFields map ((ent, index) -> (ent): externalData[entityFields[
 	"Content-Type" : "application/xml"
 }]]]></http:headers>
 				</http:request>
-				<file:write doc:name="Write" doc:id="ae8f970c-5816-48c0-9d48-f9b88e8b6c7c" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMongo.txt" mode="APPEND" >
+				<file:write doc:name="Write" doc:id="ae8f970c-5816-48c0-9d48-f9b88e8b6c7c" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMongo.txt" mode="APPEND" >
 					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
 				</file:write>
 			</when>
 			<when expression="#[!isEmpty(payload map ((item) -&gt; isEmpty(item)) filter ((item) -&gt; !item ))]">
-				<http:request method="POST" doc:name="Create query to Mongo" doc:id="b3472eed-7c63-40a8-b605-1458049210f7" config-ref="HTTP_Request_configuration2" path="/api">
+				<http:request method="POST" doc:name="Create query to Mongo" doc:id="b3472eed-7c63-40a8-b605-1458049210f7" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 					<http:body><![CDATA[#[%dw 2.0
 import * from dw::core::Strings
 output application/xml writeDeclaration=false
@@ -401,7 +402,7 @@ var requestString = "roc:Update" ++ entity ++ "Request"
 	"Content-Type" : "application/xml"
 }]]]></http:headers>
 				</http:request>
-				<file:write doc:name="Write" doc:id="73388008-a9db-437d-98a6-df1e49919ef5" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMongo.txt" mode="APPEND" >
+				<file:write doc:name="Write" doc:id="73388008-a9db-437d-98a6-df1e49919ef5" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMongo.txt" mode="APPEND" >
 					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
 				</file:write>
 			</when>
@@ -429,7 +430,7 @@ output application/json
 payload map ((item) -> read(item, "application/json"))&#93;&#93;></ee:set-payload>
 							</ee:message>
 						</ee:transform> [STUDIO] -->
-		<file:write doc:name="Write" doc:id="c0ede0fc-dd38-4f0c-9768-b9a68ac27507" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mix.txt" mode="APPEND" >
+		<file:write doc:name="Write" doc:id="c0ede0fc-dd38-4f0c-9768-b9a68ac27507" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mix.txt" mode="APPEND" >
 		</file:write>
 	</sub-flow>
 	<sub-flow name="agregationBatchFlow" doc:id="159bfa08-417c-4a8c-b316-744ff2ab2e00" >

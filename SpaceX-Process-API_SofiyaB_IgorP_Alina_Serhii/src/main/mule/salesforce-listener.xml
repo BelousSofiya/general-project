@@ -56,34 +56,34 @@ output application/xml
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:tns":"http://www.example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://www.example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
-            "tns:CreateLaunchRequest": vars.LaunchFieldsData
+            "roc:CreateLaunchRequest": vars.LaunchFieldsData
             
         }
     }
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<!-- [STUDIO:"Request to MySQL system api"]<http:request method="POST" doc:name="Request to MySQL system api" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
-			<http:body ><![CDATA[#[vars.XMLForMySQL&#93;&#93;&#93;></http:body>
+		<http:request method="POST" doc:name="Request to MySQL system api" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+			<http:body ><![CDATA[#[vars.XMLForMySQL]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
-&#45;&#45;-
+---
 {
 	"Content-Type" : "application/xml"
-}&#93;&#93;&#93;></http:headers>
-		</http:request> [STUDIO] -->
+}]]]></http:headers>
+		</http:request>
 		<http:request method="POST" doc:name="Request to Mongo to check if externalId exist in db" doc:id="e558dc47-b0b6-47f6-b483-a330df7b8774" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:tns":"http://www.example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://www.example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
-            "tns:GetLaunchByExternalIdRequest": 
-            	"tns:externalId": vars.externalId        
+            "roc:GetLaunchByExternalIdRequest": 
+            	"externalId": vars.externalId        
         }
     }
 }]]]></http:body>
@@ -162,34 +162,34 @@ output application/xml
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:tns":"http://example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
-            "tns:UpdateLaunchRequest": vars.LaunchFieldsData
+            "roc:UpdateLaunchRequest": vars.LaunchFieldsData
             
         }
     }
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<!-- [STUDIO:"Request to MySQL system api"]<http:request method="POST" doc:name="Request to MySQL system api" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
-			<http:body ><![CDATA[#[vars.XMLForMySQL&#93;&#93;&#93;></http:body>
+		<http:request method="POST" doc:name="Request to MySQL system api" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+			<http:body ><![CDATA[#[vars.XMLForMySQL]]]></http:body>
 			<http:headers ><![CDATA[#[output application/java
-&#45;&#45;-
+---
 {
 	"Content-Type" : "application/xml"
-}&#93;&#93;&#93;></http:headers>
-		</http:request> [STUDIO] -->
+}]]]></http:headers>
+		</http:request>
 		<http:request method="POST" doc:name="Request to Mongo to check if externalId exist in db" doc:id="70de624f-2d0f-43cb-bccb-a18f6da82679" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:tns":"http://www.example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://www.example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
-            "tns:GetLaunchByExternalIdRequest": 
-            	"tns:externalId": vars.externalId        
+            "roc:GetLaunchByExternalIdRequest": 
+            	"externalId": vars.externalId        
         }
     }
 }]]]></http:body>

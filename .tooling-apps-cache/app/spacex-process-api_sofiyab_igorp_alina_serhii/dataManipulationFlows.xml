@@ -15,7 +15,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	</wsc:config>
 	<flow name="prepareDataForJobsFlow" doc:id="aac5d683-0587-4489-b709-1179fcaf73e5" >
 		<set-variable value="#[[]]" doc:name="Set Data" doc:id="d3f11fa0-9e7b-42b8-b820-dd6a01dd5360" variableName="data" />
-		<wsc:consume doc:name="Retrieve Data From SQL Database" doc:id="7a868a29-2523-43a3-a1a6-93bd1fc12068" config-ref="SQL_Web_Service_Consumer_Config" operation="#[(vars.connectivityConfig.'sql-get-request-name' as String) replace &quot;Request&quot; with(&quot;&quot;)]">
+		<wsc:consume doc:name="Retrieve Data From SQL Database" doc:id="7a868a29-2523-43a3-a1a6-93bd1fc12068" operation="#[(vars.connectivityConfig.'sql-get-request-name' as String) replace &quot;Request&quot; with(&quot;&quot;)]" config-ref="Web_Service_Consumer_Config_SQL">
 			<wsc:message >
 				<wsc:body ><![CDATA[#[%dw 2.0
 output application/xml
@@ -48,7 +48,7 @@ flatten(vars.data + (response map ((item) -> item mergeWith {db: "SQL"})))
 else vars.data]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<wsc:consume doc:name="Retrieve Data From MONGO Database" doc:id="8bbbe001-dfbe-4d6e-82d9-0aeef0b9b331" config-ref="MONGO_Web_Service_Consumer_Config" operation="#[(vars.connectivityConfig.'mongo-get-request-name' as String) replace &quot;Request&quot; with(&quot;&quot;)]">
+		<wsc:consume doc:name="Retrieve Data From MONGO Database" doc:id="8bbbe001-dfbe-4d6e-82d9-0aeef0b9b331" config-ref="Web_Service_Consumer_Config_MONGO" operation="#[(vars.connectivityConfig.'mongo-get-request-name' as String) replace &quot;Request&quot; with(&quot;&quot;)]">
 			<wsc:message >
 				<wsc:body ><![CDATA[#[%dw 2.0
 output application/xml
