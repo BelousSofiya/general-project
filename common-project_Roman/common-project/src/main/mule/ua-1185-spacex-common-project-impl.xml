@@ -35,6 +35,19 @@ http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/sche
 				</try>
 			</route>
 			<route >
+				<try doc:name="Try" doc:id="422c4721-e511-435b-8c39-0ec3f0dca1f2">
+					<azure-key-vault:get-secret doc:name="Get Secret key-case" doc:id="20d7ec2a-d7d7-4ed6-9dcd-c8686cfd97ed" config-ref="Azure_Key_Vault_Config" name="key-case" />
+					<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Set Variable secrets" doc:id="d4fed052-96fa-4d7d-9eb2-c0aa323acbe6" variableName="secretsCase" />
+					<logger level="INFO" doc:name="Logger" doc:id="e7c84a28-8279-4c28-99ca-cb56c75de7b6" message="#[vars.secretsCase]" />
+					<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;[{&#10;	"Status": "Working",&#10;	"Origin": "Web",&#10;	"Description": vars.ERROR_MESSAGE."message" default " ",&#10;	"Subject": vars.ERROR_MESSAGE."source" default " ",&#10;	"Priority": "High"&#10;}]]' doc:name="Set Variable request body" doc:id="2cda29ba-e5e3-4242-a870-9119eeaaf550" variableName="requestBody" />
+					<http:request method="GET" doc:name="Request to spaceX Case" doc:id="69666eea-ff21-4f1f-b78f-1931315fbf91" config-ref="HTTP_Request_config_to_log_in_Case" path="/" sendBodyMode="ALWAYS">
+						<http:body><![CDATA[#[vars.requestBody]]]></http:body>
+					</http:request>
+					<logger level="INFO" doc:name="Logger" doc:id="3d76403e-e61e-498e-ac49-46b841b4c4ad" message="SUCCESS: Sended noification to salesforce case . Common project" />
+					<error-handler ref="ua-1185-spacex-main-salesforce-connector-Error_Handler" />
+				</try>
+			</route>
+			<route >
 				<logger level="ERROR" doc:name="Logger errorLog" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]" />
 			</route>
 		</scatter-gather>
