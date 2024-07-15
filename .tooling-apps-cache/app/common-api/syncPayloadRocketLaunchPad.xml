@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="maybebatchfor3entity" doc:id="da3286bb-5b13-49bf-a769-281fc78d717b">
+		<http:listener doc:name="Listener" doc:id="8319a90b-cf35-4e7e-bc61-73b2ca9aa330" config-ref="HTTP_Listener_config" path="/test" />
+		<set-variable value="#[attributes.queryParams.safetyMode as Boolean]" doc:name="mode" doc:id="efddc3d6-0dbe-415e-adec-473df742ddd2" variableName="mode" />
+		<!-- [STUDIO:"entity"]<set-variable value="Rockets" doc:name="entity" doc:id="761319bd-adb8-491d-96f8-b3aaa51f98ae" variableName="entity"/> [STUDIO] -->
+		<!-- [STUDIO:"entityFields"]<set-variable value="externalId, name, active, stages, costPerLaunch, description" doc:name="entityFields" doc:id="e128dff8-f8e1-48e7-9406-f49e23a9434f" variableName="entityFields"/> [STUDIO] -->
+		<!-- [STUDIO:"externalField"]<set-variable value="id, name, active, stages, cost_per_launch, description" doc:name="externalField" doc:id="ca2184f3-cf2f-4236-9049-e53729d0bd26" variableName="externalField"/> [STUDIO] -->
+		<set-variable value="#[attributes.queryParams.entity]" doc:name="entity1" doc:id="ea1cacba-f2cf-4a57-809a-29ce3dc5d467" variableName="entity" />
+		<set-variable value="#[attributes.queryParams.entityFields]" doc:name="entityFields1" doc:id="d9e9ec9a-54ff-408e-9a68-286add11c414" variableName="entityFields" />
+		<set-variable value="#[attributes.queryParams.externalField]" doc:name="externalField1" doc:id="81a055e7-9c11-4cb2-8740-7d48b8ef3d11" variableName="externalField" />
+		<flow-ref doc:name="Flow Reference" doc:id="3cefd042-bbdb-4ba7-80aa-7c52fe319408" name="entityInfoGatherFlow"/>
+		<!-- [STUDIO:"Flow Reference"]<flow-ref doc:name="Flow Reference" doc:id="12b5638f-5b3f-44fb-a8cf-d17b7ad5404e" name="scatterFlowRockets"/> [STUDIO] -->
+		<!-- [STUDIO:"output to xml"]<ee:transform doc:name="output to xml" doc:id="820996d7-50f5-44d6-ac04-09254631a836" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+&#45;&#45;-
+{
+    roc#GetRocketByExternalIdResponse: {
+        id: payload[0&#93;.id,
+        externalId: payload[0&#93;.externalId,
+        name: payload[0&#93;.name,
+        active: payload[0&#93;.active,
+        stages: payload[0&#93;.stages,
+        costPerLaunch: payload[0&#93;.costPerLaunch,
+        description: payload[0&#93;.description
+    }
+}&#93;&#93;></ee:set-payload>
+						</ee:message>
+					</ee:transform> [STUDIO] -->
+		<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="9ef8ed0d-04fc-4e68-b920-06541e9609ac" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload.GetRocketByExternalIdResponse&#93;&#93;></ee:set-payload>
+						</ee:message>
+					</ee:transform> [STUDIO] -->
+		<!-- [STUDIO:"demo2startBatch_Job1"]<batch:job jobName="demo2startBatch_Job1" doc:id="181c82f0-467e-47b5-9cc0-4c50d160e4c8" >
+			<batch:process-records >
+				<batch:step name="Batch_Step1" doc:id="8b90fc48-480d-4b4d-bb2a-0938d3f46374" >
+					<logger level="INFO" doc:name="Logger" doc:id="343ac474-d0e8-4f5f-96e9-2c8979cdb2af" message="#[payload&#93;"/>
+					<set-variable value="#[payload.id&#93;" doc:name="externalId" doc:id="515366b0-d73f-4dfc-8db5-25712c8bfa03" variableName="externalId" />
+					<logger level="INFO" doc:name="Logger" doc:id="5a26c2e0-1c6c-49c4-878f-81860ff20eec" message="#[%dw 2.0&#10;output application/json&#10;&#45;&#45;-&#10;payload&#93;" />
+					<set-variable value="#[vars.rockets filter(((item, index) -&gt; vars.rockets[index&#93;.id==vars.externalId))&#93;" doc:name="item" doc:id="ff0fb640-cfaa-4f8a-8692-0d1c9c54f45e" variableName="item" />
+				</batch:step>
+			</batch:process-records>
+		</batch:job> [STUDIO] -->
+		<!-- [STUDIO:"Request query to system app1"]<http:request method="GET" doc:name="Request query to system app1" doc:id="ec461e6f-47a6-4c4a-8bae-2dadf99cdb7d" config-ref="HTTP_Request_configuration" path="api/launchpads" /> [STUDIO] -->
+		<!-- [STUDIO:"Request query to system app"]<http:request method="GET" doc:name="Request query to system app" doc:id="8973a09c-1b54-4972-a3a2-216ab39076f5" config-ref="HTTP_Request_configuration" path="api/payloads" /> [STUDIO] -->
+		<!-- [STUDIO:"demo2startBatch_Job"]<batch:job jobName="demo2startBatch_Job" doc:id="8a23e5e8-c532-426e-b8b5-6411a6e8f40e" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="c3df8aef-dc61-4d06-9698-1b555514ce99" />
+			</batch:process-records>
+		</batch:job> [STUDIO] -->
+		<!-- [STUDIO:"Choice"]<choice doc:name="Choice" doc:id="3eddee02-5d6b-4b34-9678-bfa19ba223fd" >
+			<when expression="#[vars.safetyMode == false&#93;">
+				<http:request method="GET" doc:name="Request to db" doc:id="d577ed4d-a65d-4428-8a69-01d9625465e6" />
+				<batch:job jobName="createorupdate" doc:id="426d2f12-20fc-4d55-ab0c-4d3582a95a1e">
+			<batch:process-records>
+				<batch:step name="Batch_Step1" doc:id="d35ab00b-7952-4562-a095-82bb8d1c22b4" />
+			</batch:process-records>
+		</batch:job>
+				<os:store doc:name="Storeallentity" doc:id="5092551b-ee42-4f6b-94d1-7c1811f1015b" />
+				<os:retrieve-all doc:name="Retrieve all" doc:id="14fa69ec-8258-4af9-bc22-9a4aa78401e0" />
+			</when>
+		</choice> [STUDIO] -->
+		<!-- [STUDIO:"Select"]<db:select doc:name="Select" doc:id="9c1fac72-8aba-43c3-a9e4-90833c70f7e1" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from Rockets where externalId=:val &#93;&#93;></db:sql>
+			<db:input-parameters><![CDATA[#[val:"5e9d0d96eda699382d09d1ee"&#93;&#93;&#93;></db:input-parameters>
+		</db:select> [STUDIO] -->
+		<!-- [STUDIO:"reportonlyifcreateorupdate"]<ee:transform doc:name="reportonlyifcreateorupdate" doc:id="2104ad26-e9ef-43dd-aa91-346904ff18c1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns roc http://example.com/rocketservice
+&#45;&#45;-
+{
+    roc#GetRocketByExternalIdResponse: {
+        id: payload[0&#93;.id,
+        externalId: payload[0&#93;.externalId,
+        name: payload[0&#93;.name,
+        active: payload[0&#93;.active,
+        stages: payload[0&#93;.stages,
+        costPerLaunch: payload[0&#93;.costPerLaunch,
+        description: payload[0&#93;.description
+    }
+}&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
+		<!-- [STUDIO:"Requesttoemail"]<http:request method="GET" doc:name="Requesttoemail" doc:id="ee6ee02e-9e88-4539-b540-dbe27e413aea" /> [STUDIO] -->
+		<!-- [STUDIO:"Clear"]<os:clear doc:name="Clear" doc:id="d2cb6019-38ad-4c03-8c5b-2966ea6ff2c5" /> [STUDIO] -->
+	</flow>
+	<sub-flow name="entityInfoGatherFlow" doc:id="b79ae170-db36-4d85-be73-f6f355fe07ed" >
+		<logger level="INFO" doc:name="Logger" doc:id="70d70c21-6363-4646-81d8-6fc8d306ee83" message="#[vars.entity]" />
+		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;ns soapenv http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#10;var entity = vars.entity as String&#10;&#10;var requestString = "&lt;roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/&gt;"&#10;var requestXml = read(requestString, "application/xml")&#10;&#10;---&#10;{&#10;    soapenv#Envelope: {&#10;        soapenv#Header: null,&#10;        soapenv#Body: requestXml&#10;    }&#10;}]' doc:name="requestGetAll" doc:id="c9df74a8-fa8a-4d30-b739-71ad4c59bf1c" variableName="requestGetAll"/>
+		<http:request method="POST" doc:name="Request query to MySQL" doc:id="e309d6a6-6daa-4454-87b6-5ae1fb839379" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+		</http:request>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mysqlEntity" doc:id="9fa0f96b-ed9e-4ba3-aee0-1108500a2e3b" variableName="mysqlEntity" />
+		<file:write doc:name="Write" doc:id="b56043c0-6891-4491-806d-facea8c9bfea" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mysqlEntity.txt" mode="APPEND">
+			<file:content ><![CDATA[#[vars.mysqlEntity]]]></file:content>
+		</file:write>
+		<http:request method="POST" doc:name="Request query to Mongo" doc:id="5183de02-186f-4bda-a889-88be56691b75" config-ref="HTTP_Request_configuration2" path="/api">
+			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+		</http:request>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mongoEntity" doc:id="34a1fb29-3605-4b34-a3b4-da713287c6c6" variableName="mongoEntity" />
+		<file:write doc:name="Write1" doc:id="e72e895a-aec4-45ee-acf7-18d665bad37e" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND">
+			<file:content><![CDATA[#[vars.mongoEntity]]]></file:content>
+		</file:write>
+		<http:request method="GET" doc:name="Request query to SpaceX" doc:id="9329d832-72e6-4553-ac0a-fcbe63df7877" config-ref="HTTP_Request_configuration" path='#["api/" ++ lower(vars.entity)]' />
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var entityField = vars.entityFields&#10;var externalField = vars.externalField&#10;var entityFieldsList = entityField splitBy(",") map ((item) -&gt; trim(item))&#10;var externalFieldsList = externalField splitBy(",") map ((item) -&gt; trim(item))&#10;---&#10;payload map ((obj) -&gt; &#10;    entityFieldsList map ((ent, index) -&gt; &#10;            {&#10;	(ent): obj[externalFieldsList[index]]&#10;}&#10;        ) reduce ((acc, item) -&gt; acc ++ item))]' doc:name="entityFromSpaceX" doc:id="ac9dd1bf-fcb1-466d-94e8-4d813ec47e04" variableName="entityFromSpaceX" />
+		<file:write doc:name="Write2" doc:id="89fb9c90-a1b8-4f7a-9a7a-1a963522e63b" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND">
+			<file:content><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
+		</file:write>
+		<ee:transform doc:name="Transform Message" doc:id="9ec809eb-9a06-4301-b207-e1b4873ff048">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ((item) -> {
+	"id": item.id
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="bd838683-3402-4677-953b-b1dc2c851ac6" name="batchFlow" />
+	</sub-flow>
+	<flow name="batchFlow" doc:id="b10416b1-32ad-417d-94a8-160b011644e4" >
+		<batch:job jobName="batch" doc:id="0d580823-760b-48c1-933f-b7cdae61f62a">
+			<batch:process-records>
+				<batch:step name="Batch_Step" doc:id="889884e3-4f46-4a64-8eb8-63c99518a556">
+					<flow-ref doc:name="Flow Reference" doc:id="f423ddf0-43e4-4d35-a885-33eefedae624" name="currentItemBatchStepFlow"/>
+					<!-- [STUDIO:"Batch Aggregator"]<batch:aggregator doc:name="Batch Aggregator" doc:id="e04965da-b6b0-4273-a6df-1750cc746031" size="10">
+						<flow-ref doc:name="Flow Reference" doc:id="b7fc51eb-f5f9-4a16-818c-c3ac12191110" name="agregationBatchFlow"/>
+						<scatter-gather doc:name="Scatter-Gather" doc:id="538a058f-1889-410b-a555-0d8bcdce5c9c">
+							<route>
+								<ee:transform doc:name="Transform Message" doc:id="ad15dbc1-5fd1-4438-a460-222d034906f1">
+									<ee:message>
+										<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload.create_mongo.create&#93;&#93;></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<flow-ref doc:name="Flow Reference" doc:id="893ebe05-cf91-4bae-9daa-ea9c83cc98bb" name="insertMongo" />
+							</route>
+							<route>
+								<ee:transform doc:name="Transform Message" doc:id="fdea4da1-50d1-4638-9873-3d53a3a14e19">
+									<ee:message>
+										<ee:set-payload><![CDATA[payload.create_mysql.create&#93;&#93;></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<flow-ref doc:name="Flow Reference" doc:id="8fb22c43-ccb0-4517-b3a6-cc1c360c36f2" name="insertMysql" />
+							</route>
+							<route>
+								<ee:transform doc:name="Transform Message" doc:id="de4c898e-c3cb-4681-9712-5b0f4e6ee052">
+									<ee:message>
+										<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload.update_mysql&#93;&#93;></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<flow-ref doc:name="Flow Reference" doc:id="a88d0968-bcd6-4208-a465-7484898b1cae" name="updateMysql" />
+							</route>
+							<route>
+								<ee:transform doc:name="Transform Message" doc:id="a30431b0-ad8b-40ed-88aa-59665f0b7540">
+									<ee:message>
+										<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload.update_mongo&#93;&#93;></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<flow-ref doc:name="Flow Reference" doc:id="09eccb27-53e8-417e-96b2-00e467d688aa" name="updateMongo" />
+							</route>
+						</scatter-gather>
+					</batch:aggregator> [STUDIO] -->
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete>
+				<logger level="INFO" doc:name="Logger" doc:id="82e3a317-f9fc-4698-99b2-325f97398c44" message="1111" />
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+	<sub-flow name="currentItemBatchStepFlow" doc:id="3dd6cd75-518c-4fda-8111-aa143867a2d4">
+		<set-variable value="#[payload.id]" doc:name="externalId" doc:id="468aa049-4935-413c-b639-c964ae3edbd7" variableName="externalId" />
+		<set-variable value="#[(vars.entityFromSpaceX filter(((item, index) -&gt; vars.entityFromSpaceX[index].externalId==vars.externalId)))[0]]" doc:name="spaceXCurrent" doc:id="125d6fe0-60a2-4123-b8b7-f01f0eea3ee8" variableName="spaceXCurrent" />
+		<logger level="INFO" doc:name="Logger" doc:id="da96630f-a39b-4ed8-aaf7-4dcc9d52b872" message="#[vars.spaceXCurrent]" />
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;(vars.mysqlEntity filter ((item) -&gt; item.externalId == vars.externalId))[0]]" doc:name="mysqlCurrent" doc:id="f2d9af6a-ad72-4061-ae55-14b17dc24921" variableName="mysqlCurrent" />
+		<logger level="INFO" doc:name="Logger" doc:id="fc604730-ce2c-4ec3-abc9-8f7e2e4e80ea" message="#[vars.mysqlCurrent]" />
+		<ee:transform doc:name="Transform Message" doc:id="5d48d751-0971-4479-9c3e-7ad45116df17" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var dbData = vars.mysqlCurrent
+var externalData = vars.spaceXCurrent
+var entityFields = vars.entityFields splitBy ", "
+fun boolToNum(value) = 
+  if ( value is Boolean ) (if ( value ) 1 else 0)
+  else 
+    value
+fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField
+fun processField(field) =
+    if ( dbData[field] == null ) "" 
+    else if ( isFieldDifferent(dbData[field] as String, externalData[field] as String) ) externalData[field] 
+    else null
+var toUpdate = 
+    entityFields map ((field) -> 
+        {
+	(field): boolToNum(processField((field)))
+} filterObject ((value) -> value != null))
+---
+toUpdate]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="33241eb9-cfbf-4a6e-821f-b329eaa0e730">
+			<when expression="#[isEmpty(vars.mysqlCurrent)]">
+				<http:request method="POST" doc:name="Create query to MySQL" doc:id="d7805283-8d89-43ec-a3a4-545aae19ef88" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+					<http:body ><![CDATA[#[%dw 2.0
+import * from dw::core::Strings
+output application/xml writeDeclaration=false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+fun boolToNum(value) = 
+  if (value is Boolean) 
+    (if (value) 1 else 0)
+  else 
+    value
+var externalData = vars.spaceXCurrent
+var entity =  substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)
+var requestString = "roc:Create" ++ entity ++ "Request"
+var entityFields = vars.entityFields splitBy ", "
+var create = entityFields map ((ent, index) -> (ent): boolToNum(externalData[entityFields[index]]))
+---
+{
+    soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+        soapenv#Header: null,
+        soapenv#Body: {
+            (requestString): {
+                (create)
+            }
+        }
+    }
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<file:write doc:name="Write" doc:id="50abb606-3806-4cb2-9480-3ed07e57773a" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMysql.txt" mode="APPEND" >
+					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+				</file:write>
+			</when>
+			<when expression="#[!isEmpty(payload map ((item) -&gt; isEmpty(item)) filter ((item) -&gt; !item ))]">
+				<http:request method="POST" doc:name="Update query to MySQL" doc:id="12f5145d-5921-496b-a95e-107ed48b5573" config-ref="HTTP_Request_configuration1" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+					<http:body ><![CDATA[#[%dw 2.0
+import * from dw::core::Strings
+output application/xml writeDeclaration=false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+ 
+var id = vars.spaceXCurrent.externalId
+var entity =  substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)
+var requestString = "roc:Update" ++ entity ++ "Request"
+---
+{
+    soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+        soapenv#Header: null,
+        soapenv#Body: {
+            (requestString): {
+               externalId: id,
+                (payload)
+            }
+        }
+    }
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<file:write doc:name="Write" doc:id="5cc68413-ba31-4bb4-a360-894b181e4fbe" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMysql.txt" mode="APPEND" >
+					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+				</file:write>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="c921ac60-3cab-48ef-85f6-5984a79e37f5" message="mysql update"/>
+			</otherwise>
+		</choice>
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;(vars.mongoEntity filter ((item) -&gt; item.externalId == vars.externalId))[0]]" doc:name="mongoCurrent" doc:id="015db2ab-c0f7-47a9-a57e-4c597a9b5eb6" variableName="mongoCurrent" />
+		<logger level="INFO" doc:name="Logger" doc:id="fe6dfc47-6f66-4d13-b110-9474dca62118" message="#[vars.mongoCurrent]" />
+		<ee:transform doc:name="Transform Message" doc:id="034b723a-0ce4-4045-a16c-fccc2c32efee">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var dbData = vars.mongoCurrent
+var externalData = vars.spaceXCurrent
+var entityFields = vars.entityFields splitBy ", "
+fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField
+fun processField(field) =
+    if ( dbData[field] == null ) "" 
+    else if ( isFieldDifferent(dbData[field] as String, externalData[field] as String) ) externalData[field] 
+    else null
+var toUpdate = 
+    entityFields map ((field) -> 
+        {
+	(field): processField((field))
+} filterObject ((value) -> value != null))
+---
+toUpdate]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="6cf416f2-bbaf-40bb-9e9a-c7537bd8ac62">
+			<when expression="#[isEmpty(vars.mongoCurrent)]">
+				<http:request method="POST" doc:name="Create query to Mongo" doc:id="c974096e-b996-4e41-9f4f-080126c21545" config-ref="HTTP_Request_configuration2" path="/api">
+					<http:body><![CDATA[#[%dw 2.0
+import * from dw::core::Strings
+output application/xml writeDeclaration=false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var externalData = vars.spaceXCurrent
+var entity =  substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)
+var requestString = "roc:Create" ++ entity ++ "Request"
+var entityFields = vars.entityFields splitBy ", "
+var create = entityFields map ((ent, index) -> (ent): externalData[entityFields[index]])
+---
+{
+    soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+        soapenv#Header: null,
+        soapenv#Body: {
+            (requestString): {
+                (create)
+            }
+        }
+    }
+}]]]></http:body>
+					<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<file:write doc:name="Write" doc:id="ae8f970c-5816-48c0-9d48-f9b88e8b6c7c" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMongo.txt" mode="APPEND" >
+					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+				</file:write>
+			</when>
+			<when expression="#[!isEmpty(payload map ((item) -&gt; isEmpty(item)) filter ((item) -&gt; !item ))]">
+				<http:request method="POST" doc:name="Create query to Mongo" doc:id="b3472eed-7c63-40a8-b605-1458049210f7" config-ref="HTTP_Request_configuration2" path="/api">
+					<http:body><![CDATA[#[%dw 2.0
+import * from dw::core::Strings
+output application/xml writeDeclaration=false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+ 
+var id = vars.spaceXCurrent.externalId
+var entity =  substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)
+var requestString = "roc:Update" ++ entity ++ "Request"
+---
+{
+    soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+        soapenv#Header: null,
+        soapenv#Body: {
+            (requestString): {
+               externalId: id,
+                (payload)
+            }
+        }
+    }
+}]]]></http:body>
+					<http:headers><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<file:write doc:name="Write" doc:id="73388008-a9db-437d-98a6-df1e49919ef5" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMongo.txt" mode="APPEND" >
+					<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+				</file:write>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="9679bf5f-796e-481b-9b6d-3441ace02ef2" message="mongo update" />
+			</otherwise>
+		</choice>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var dbData = vars.mysqlCurrent&#10;var externalData = vars.spaceXCurrent&#10;var entityFields = vars.entityFields splitBy ", "&#10;&#10;fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField&#10;fun processField(field) =&#10;    if ( dbData[field] == null ) "" &#10;    else if ( isFieldDifferent(dbData[field] as String, externalData[field]  as String) ) dbData[field] &#10;    else null&#10;var toUpdate = &#10;    entityFields map ((field) -&gt; &#10;        {&#10;	(field): processField((field))&#10;}&#10;    ) reduce ((acc, item) -&gt; acc ++ item) filterObject ((value, key) -&gt; value != null)&#10;---&#10;if ( isEmpty(dbData) ) {&#10;	mysql: {&#10;		create: vars.externalId&#10;	}&#10;} else if ( isEmpty(toUpdate) ) {&#10;} else {&#10;	mysql: {&#10;		update: toUpdate&#10;	}&#10;}]' doc:name="mysqlDiffer" doc:id="efb20d3f-2709-4f39-9a18-95d318ec84ef" variableName="mysqlDiffer" />
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var dbData = vars.mongoCurrent&#10;var externalData = vars.spaceXCurrent&#10;var entityFields = vars.entityFields splitBy ", "&#10;&#10;fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField&#10;fun processField(field) =&#10;    if ( dbData[field] == null ) "" &#10;    else if ( isFieldDifferent(dbData[field] as String, externalData[field] as String) ) dbData[field] &#10;    else null&#10;var toUpdate = &#10;    entityFields map ((field) -&gt; &#10;        {&#10;	(field): processField((field))&#10;}&#10;    ) reduce ((acc, item) -&gt; acc ++ item) filterObject ((value, key) -&gt; value != null)&#10;---&#10;if ( isEmpty(dbData) ) {&#10;	mongo: {&#10;		create: vars.externalId&#10;	}&#10;} else if ( isEmpty(toUpdate) ) {&#10;} else {&#10;	mongo: {&#10;		update: toUpdate&#10;	}&#10;}]' doc:name="mongoDiffer" doc:id="365bf0b1-0427-44f3-8328-6a30083cb8a3" variableName="mongoDiffer" />
+		<ee:transform doc:name="Transform Message" doc:id="ad5ab36a-c22c-4a5e-a3d1-8b23d435ec54">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+(vars.externalId): {
+	(vars.mysqlDiffer ++ vars.mongoDiffer)
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+		<!-- [STUDIO:"Transform Message"]<ee:transform doc:name="Transform Message" doc:id="21cc62f1-48b6-4cdb-b2e2-6d3087447468">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+payload map ((item) -> read(item, "application/json"))&#93;&#93;></ee:set-payload>
+							</ee:message>
+						</ee:transform> [STUDIO] -->
+		<file:write doc:name="Write" doc:id="c0ede0fc-dd38-4f0c-9768-b9a68ac27507" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mix.txt" mode="APPEND" >
+		</file:write>
+	</sub-flow>
+	<sub-flow name="agregationBatchFlow" doc:id="159bfa08-417c-4a8c-b316-744ff2ab2e00" >
+		<logger level="INFO" doc:name="Logger" doc:id="77da36de-ab2f-4d9f-9121-ef81921c00d8" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="c6a39408-cbb1-45e9-b2f5-d8707ab866fc">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  create_mysql: payload map ((item) -> item filterObject ((value) -> value.mysql.create != null)) filter ((item) -> !isEmpty(item)) map ((item) -> item mapObject ((value) -> value.mysql)),
+  create_mongo: payload map ((item) -> item filterObject ((value) -> value.mongo.create != null)) filter ((item) -> !isEmpty(item)) map ((item) -> item mapObject ((value) -> value.mongo)),
+  update_mysql: payload map ((item) -> item mapObject ((value, key) -> if (value.mysql.update != null)
+        {
+          (value.mysql.update),
+          id: key
+        }
+      else
+        {})) filter ((item) -> !isEmpty(item)),
+  update_mongo: payload map ((item) -> item mapObject ((value, key) -> if (value.mongo.update != null)
+        {
+          (value.mongo.update),
+          id: key
+        }
+      else
+        {})) filter ((item) -> !isEmpty(item))
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b1a9f5c9-cb71-4ae0-8a5a-c88100dc8f7e" message="#[payload]" />
+	</sub-flow>
+	<!-- [STUDIO:"updateMongo"]<sub-flow name="updateMongo" doc:id="e76c517b-3662-4f38-8622-71ae5ddbfca9" >
+		<choice doc:name="Choice" doc:id="9961bde2-e2c7-4543-9fe4-0a63496a21e7" >
+			<when expression="#[!isEmpty(payload)&#93;">
+				<logger level="INFO" doc:name="Logger1" doc:id="1bcf6ac9-f79d-482d-93d3-b7763a4427ed" message="#[payload&#93;" />
+				<set-variable value="#[%dw 2.0&#10;output text/plain&#10;var rockets = vars.rockets&#10;var externalIds = payload map ((item) -&gt; item.id)&#10;var name = payload filter ((item) -&gt; item.name != null)&#10;var active = payload filter ((item) -&gt; item.active != null)&#10;var stages = payload filter ((item) -&gt; item.stages != null)&#10;var costPerLaunch = payload filter ((item) -&gt; item.costPerLaunch != null)&#10;var description = payload filter ((item) -&gt; item.description != null)&#10;&#10;var caseName = if (!isEmpty(name)) &#10;&quot; name = CASE &quot; ++ (flatten(&#10; name map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN '&quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.name) )joinBy  &quot;&quot;) ++ &quot;' &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE name END&quot;&#10; else &quot;&quot;&#10;&#10;var caseActive = if (!isEmpty(active))&#10;&quot; active = CASE &quot; ++ (flatten(&#10;active map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.active)) joinBy &quot;&quot;) ++ &quot; &quot;)) &#10;joinBy &quot;&quot;) ++ &quot;ELSE active END&quot;&#10;else &quot;&quot;&#10;&#10;var caseStage = if (!isEmpty(stages)) &#10;&quot; stages = CASE &quot; ++ (flatten(&#10;stages map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.stages) )joinBy  &quot;&quot;) ++ &quot; &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE stages END&quot;&#10; else &quot;&quot;&#10;&#10;var caseCostPerLaunch = if (!isEmpty(costPerLaunch)) &#10;&quot; costPerLaunch = CASE &quot; ++ (flatten(&#10;costPerLaunch map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.costPerLaunch) )joinBy  &quot;&quot;) ++ &quot; &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE costPerLaunch END&quot;&#10; else &quot;&quot;&#10;&#10;var caseDescription = if (!isEmpty(description)) &#10;&quot; description = CASE &quot; ++ (flatten(&#10; description map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN '&quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.description) )joinBy  &quot;&quot;) ++ &quot;' &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE description END&quot;&#10; else &quot;&quot;&#10;&#10;var cases = [caseName, caseActive, caseStage, caseCostPerLaunch, caseDescription&#93; filter ((c) -&gt; c != &quot;&quot;) joinBy &quot;,&quot;&#10;&#10;&#45;&#45;-&#10;&quot;UPDATE Rockets SET&quot; ++ cases &#10;++ &quot; WHERE externalId IN (&quot; ++ (externalIds map ((id) -&gt; &quot;'&quot; ++ id ++ &quot;'&quot;) joinBy &quot;, &quot;) ++ &quot;);&quot;&#93;" doc:name="Set Variable" doc:id="e6b60358-13d9-4eaa-aaa4-dca062dc3331" variableName="query" />
+				<set-payload value="#[[&#10;            {&#10;                'externalId': '5e9d0d95eda69974db09d1ed',&#10;                'name': 'Falcon Heavy',&#10;                'description': 'Updated description for Falcon Heavy.'&#10;            },&#10;            {&#10;                'externalId': '5e9d0d96eda699382d09d1ee',&#10;                'name': 'Falcon 9',&#10;                'description': 'Updated description for Falcon 9.'&#10;            }&#10;        &#93;&#93;" doc:name="Set Payload" doc:id="9aa825a1-e654-4c44-8665-81b4718c441b" />
+				<mongo:update-documents doc:name="Update documents" doc:id="cc965a56-f1e0-44c4-b083-80ad1baa90a9" config-ref="MongoDB_Config" collectionName="Rockets">
+					<mongo:query><![CDATA[#[{
+  "externalId": payload.externalId
+}&#93;&#93;&#93;></mongo:query>
+					<mongo:content-to-update><![CDATA[#[{
+  "\$set": {
+    "name": payload.name,
+    "description": payload.description
+  }
+}&#93;&#93;&#93;></mongo:content-to-update>
+				</mongo:update-documents>
+				<logger level="INFO" doc:name="Logger" doc:id="fa4bd6c2-a625-41f5-a8c2-59047f233e8a" message="#[payload&#93;" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="7030dfad-8f00-4779-879b-b99138e63c5d" message="#[payload&#93;" />
+			</otherwise>
+		</choice>
+	</sub-flow> [STUDIO] -->
+	<!-- [STUDIO:"updateMysql"]<sub-flow name="updateMysql" doc:id="e72093f5-a71b-46fc-9b60-49f96d904265">
+		<choice doc:name="Choice" doc:id="9a9411ce-8ad3-4898-95ae-0263e12877f1">
+			<when expression="#[!isEmpty(payload)&#93;">
+				<logger level="INFO" doc:name="Logger1" doc:id="f8c240b5-dcaf-47b9-9221-c707eb2f6f80" message="#[payload&#93;" />
+				<set-variable value="#[%dw 2.0&#10;output text/plain&#10;var rockets = vars.entityFromSpaceX&#10;var externalIds = payload map ((item) -&gt; item.id)&#10;var name = payload filter ((item) -&gt; item.name != null)&#10;var active = payload filter ((item) -&gt; item.active != null)&#10;var stages = payload filter ((item) -&gt; item.stages != null)&#10;var costPerLaunch = payload filter ((item) -&gt; item.costPerLaunch != null)&#10;var description = payload filter ((item) -&gt; item.description != null)&#10;&#10;var caseName = if (!isEmpty(name)) &#10;&quot; name = CASE &quot; ++ (flatten(&#10; name map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN '&quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.name) )joinBy  &quot;&quot;) ++ &quot;' &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE name END&quot;&#10; else &quot;&quot;&#10;&#10;var caseActive = if (!isEmpty(active))&#10;&quot; active = CASE &quot; ++ (flatten(&#10;active map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.active)) joinBy &quot;&quot;) ++ &quot; &quot;)) &#10;joinBy &quot;&quot;) ++ &quot;ELSE active END&quot;&#10;else &quot;&quot;&#10;&#10;var caseStage = if (!isEmpty(stages)) &#10;&quot; stages = CASE &quot; ++ (flatten(&#10;stages map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.stages) )joinBy  &quot;&quot;) ++ &quot; &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE stages END&quot;&#10; else &quot;&quot;&#10;&#10;var caseCostPerLaunch = if (!isEmpty(costPerLaunch)) &#10;&quot; costPerLaunch = CASE &quot; ++ (flatten(&#10;costPerLaunch map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN &quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.costPerLaunch) )joinBy  &quot;&quot;) ++ &quot; &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE costPerLaunch END&quot;&#10; else &quot;&quot;&#10;&#10;var caseDescription = if (!isEmpty(description)) &#10;&quot; description = CASE &quot; ++ (flatten(&#10; description map ((i) -&gt; &quot;WHEN externalId = '&quot; ++ i.id ++ &quot;' THEN '&quot; ++ (flatten(rockets filter ((item) -&gt; item.externalId == i.id) then ((result) -&gt; result.description) )joinBy  &quot;&quot;) ++ &quot;' &quot;)) joinBy &quot;&quot;) ++ &quot;ELSE description END&quot;&#10; else &quot;&quot;&#10;&#10;var cases = [caseName, caseActive, caseStage, caseCostPerLaunch, caseDescription&#93; filter ((c) -&gt; c != &quot;&quot;) joinBy &quot;,&quot;&#10;&#10;&#45;&#45;-&#10;&quot;UPDATE Rockets SET&quot; ++ cases &#10;++ &quot; WHERE externalId IN (&quot; ++ (externalIds map ((id) -&gt; &quot;'&quot; ++ id ++ &quot;'&quot;) joinBy &quot;, &quot;) ++ &quot;);&quot;&#93;" doc:name="Set Variable" doc:id="3c2f212a-4ab0-48e2-a49e-bc4c11772e1f" variableName="query" />
+				<db:update doc:name="Update" doc:id="0dd0f5e2-16bd-484f-9ec9-ee050a574f9f" config-ref="Database_Config">
+					<db:sql ><![CDATA[#[vars.query&#93;&#93;&#93;></db:sql>
+				</db:update>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="69a2a847-829c-4eca-8a6b-cf778523380d" message="#[payload&#93;" />
+			</otherwise>
+		</choice>
+	</sub-flow> [STUDIO] -->
+	<!-- [STUDIO:"insertMongo"]<sub-flow name="insertMongo" doc:id="31adcf65-1886-4201-9dd3-20041787b4aa" >
+		<choice doc:name="Choice" doc:id="216e0a41-44a0-4607-9efe-4e815d958eee" >
+			<when expression="#[!isEmpty(payload)&#93;">
+				<logger level="INFO" doc:name="Logger1" doc:id="f32d5b98-abfe-43a7-ae38-8ba6b9f7c4db" message="#[payload&#93;" />
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;var externalIds = payload&#10;var insertValues = externalIds map (externalId) -&gt; do {&#10;	var item = (vars.entityFromSpaceX filter ((item) -&gt; item.externalId == externalId))[0&#93;&#10;	&#45;&#45;-&#10;	{&#10;		"externalId": externalId,&#10;		"name": item.name,&#10;		"active": item.active,&#10;		"stages": item.stages,&#10;		"costPerLaunch": item.costPerLaunch,&#10;		"description": item.description,&#10;		"docType": "Rocket"&#10;	}&#10;}&#10;&#45;&#45;-&#10;insertValues&#93;' doc:name="Set Variable" doc:id="72b9cbad-a667-4441-8387-85ac555b93b2" variableName="query"/>
+				<mongo:insert-documents collectionName="Rockets" doc:name="Insert documents" doc:id="a0f2c8dd-9d08-4a1e-bada-42755156e7c0" config-ref="MongoDB_Config">
+					<mongo:documents ><![CDATA[#[vars.query&#93;&#93;&#93;></mongo:documents>
+				</mongo:insert-documents>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="c8b19bc0-1890-47f7-850e-03fb6db78761" message="#[payload&#93;" />
+			</otherwise>
+		</choice>
+	</sub-flow> [STUDIO] -->
+	<!-- [STUDIO:"insertMysql"]<sub-flow name="insertMysql" doc:id="9dbe6d13-64cd-4324-8fa9-f3dbe6f28d32" >
+		<choice doc:name="Choice" doc:id="4cd3c739-55aa-4dd8-95fb-d325645e2690" >
+			<when expression="#[!isEmpty(payload)&#93;">
+				<logger level="INFO" doc:name="Logger1" doc:id="e54953a5-f043-49f6-a898-5ef631dd8d76" message="#[payload&#93;" />
+				<set-variable value="#[%dw 2.0&#10;output text/plain&#10;var externalIds = payload&#10;var insertValues = externalIds map (externalId) -&gt; do {&#10;    var item = (vars.entityFromSpaceX filter ((item) -&gt; item.externalId == externalId))[0&#93;&#10;    &#45;&#45;-&#10;    &quot;('&quot; ++ externalId ++&#10;    &quot;', '&quot; ++ (item.name default '') ++  &#10;    &quot;', &quot; ++ (item.active as String default 'false') ++  &#10;    &quot;, &quot; ++ (item.stages as String default '0') ++  &#10;    &quot;, &quot; ++ (item.costPerLaunch as String default '0') ++  &#10;    &quot;, '&quot; ++ (item.description default '') ++&#10;    &quot;')&quot;&#10;}&#10;&#45;&#45;-&#10;&quot;INSERT INTO Rockets (externalId, name, active, stages, costPerLaunch, description) VALUES &quot; ++ (insertValues joinBy &quot;, &quot;)&#93;" doc:name="Set Variable" doc:id="cf5b5957-386b-4a00-a580-40b7136e1815" variableName="query" />
+				<db:insert doc:name="Insert" doc:id="35643ce9-63ae-481c-9e81-6396b404bb8b" config-ref="Database_Config">
+					<db:sql><![CDATA[#[vars.query&#93;&#93;&#93;></db:sql>
+				</db:insert>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="55d5380a-ccee-470f-9b95-0d1cd4af63f8" message="#[payload&#93;"/>
+			</otherwise>
+		</choice>
+	</sub-flow> [STUDIO] -->
+</mule>

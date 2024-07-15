@@ -11,6 +11,9 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<mongo:config name="MongoDB_Config" doc:name="MongoDB Config" doc:id="6bc1e471-af09-446c-8695-e1d47e3a24c6" >
+		<mongo:connection-string-connection connectionString="mongodb+srv://parcival:5nmAio2QzESvmoGj@cluster0.q5ch2aq.mongodb.net/SpaceX" />
+	</mongo:config>
 	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="ddce5e19-2089-4722-9898-65280eedde4e" />
 	<os:object-store name="Object_store" doc:name="Object store" doc:id="4e431b05-01b0-459d-903a-9887b4e5a05f" entryTtl="3" entryTtlUnit="HOURS" expirationInterval="3" expirationIntervalUnit="HOURS" config-ref="ObjectStore_Config" />
 	<wsc:config name="SQL_Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="2d014601-b159-410f-8605-47c98ff2a979" >
@@ -25,9 +28,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 	<http:request-config name="Mongo_Request_configuration" doc:name="HTTP Request configuration" doc:id="58c487ba-0bfe-4b16-8f0d-6ea4d9b5b616">
 		<http:request-connection host="ua-1185-mongo-system-api.us-e2.cloudhub.io" />
 	</http:request-config>
-	<file:config name="File_Config_randomizer_file_config" doc:name="File Config" doc:id="ad8f7ebf-2210-4ffb-8f79-0639ee3112f5" >
-		<file:connection workingDir="C:\Users\Lenovo\Desktop\mule_git\general-project\spacex-process-api_sofiyab_igorp_alina_serhii\src\main\resources" />
-	</file:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="ad8f7ebf-2210-4ffb-8f79-0639ee3112f5" />
 	<flow name="launchProcessingsFlow" doc:id="1ba8e518-5fd8-47ba-86ec-a7067efb086b" >
 		<flow-ref doc:name="Get Properties From Config File" doc:id="bf181f42-9124-441d-827c-3caea4bb644b" name="getPropertiesFlow"/>
 		<foreach doc:name="For Each" doc:id="97ff3cbf-4ee1-4c65-85d5-7cb6c71d65ea" collection="#[payload]">
@@ -271,7 +272,7 @@ report filterObject ((value) -> value > 0)]]></ee:set-payload>
 		</batch:job>
 	</flow>
 	<flow name="getPropertiesFlow" doc:id="1b8731a0-2a55-4f47-824d-350d6da42d85" >
-		<file:read doc:name="Read Config File" doc:id="034b38b9-868e-4d47-90c1-28675e3b5010" path="H:\mulesoft\Projects\randomizer-flows\src\main\resources\random-properties.json" config-ref="File_Config_randomizer_file_config"/>
+		<file:read doc:name="Read Config File" doc:id="034b38b9-868e-4d47-90c1-28675e3b5010" path="H:\mulesoft\Projects\randomizer-flows\src\main\resources\random-properties.json"/>
 		<ee:transform doc:name="Transform Data To Java Object" doc:id="0e4e01ad-1f12-47c4-9e63-647ac7ccaaae" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

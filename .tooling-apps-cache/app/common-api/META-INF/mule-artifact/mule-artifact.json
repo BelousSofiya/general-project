@@ -1,0 +1,44 @@
+{
+  "configs": [
+    "implementation.xml",
+    "syncPayloadRocketLaunchPad.xml",
+    "error-handler.xml",
+    "global.xml",
+    "spacex-process-api_sofiyab_igorp_alina_serhii.xml",
+    "main.xml",
+    "salesforce-listener.xml",
+    "reportManipulationFlows.xml",
+    "dataManipulationFlows.xml"
+  ],
+  "secureProperties": [],
+  "supportedJavaVersions": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:common-api:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.6.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "config/local-out.yaml",
+        "dataManipulationFlows.xml",
+        "error-handler.xml",
+        "global.xml",
+        "implementation.xml",
+        "log4j2.xml",
+        "main.xml",
+        "random-properties.json",
+        "reportManipulationFlows.xml",
+        "salesforce-listener.xml",
+        "spacex-process-api_sofiyab_igorp_alina_serhii.xml",
+        "syncPayloadRocketLaunchPad.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
