@@ -28,6 +28,9 @@ var inputZone = vars.ERROR_MESSAGE."dateTime" as TimeZone
     "source": vars.ERROR_MESSAGE."source" default ""  
 }]]></ee:set-payload>
 					</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[vars.ERROR_MESSAGE."code" default 500]]></ee:set-variable>
+			</ee:variables>
 				</ee:transform>
 		<flow-ref doc:name="Flow Reference to mail" doc:id="60bea52a-60fc-486b-8471-2e411a3b95ed" name="ua-1185-spacex-common-project-impl-mail-Sub_Flow" targetValue="#[vars.ERROR_MESSAGE]"/>
 		<flow-ref doc:name="Flow Reference to SalesForce" doc:id="3fe777ef-6919-4fc2-9b74-ca2ef896887d" name="ua-1185-spacex-common-project-impl-salesforce-Sub_Flow1" targetValue="#[vars.ERROR_MESSAGE]"/>
