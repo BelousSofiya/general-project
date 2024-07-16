@@ -101,7 +101,11 @@ output application/xml
 }]]]></http:headers>
 		</http:request>
 		<logger level="INFO" doc:name="Logger" doc:id="0eb40621-e138-4744-8fe5-6484026d51c7" message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
+<<<<<<< HEAD
 		<logger level="INFO" doc:name="Logger" doc:id="0ce51b81-f975-430f-b2c2-6195fd7c31e8" message="#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse]"/>
+=======
+		<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="0ce51b81-f975-430f-b2c2-6195fd7c31e8" message="#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse&#93;"/> [STUDIO] -->
+>>>>>>> develop
 		<choice doc:name="Choice" doc:id="d97f700b-d10a-4cce-ae88-c532cfdf617d" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse == "No result for provided id"]'>
 				<logger level="INFO" doc:name="Logger" doc:id="5f088e9d-442b-41ba-905a-eebf969501ac" message="??????????????????????????????????????" />
@@ -113,7 +117,7 @@ output application/xml
 	"Content-Type" : "application/xml"
 }]]]></http:headers>
 		</http:request>
-				<logger level="INFO" doc:name="Logger" doc:id="12dc52cc-7749-496a-ab4e-e962409e5076" message="#[payload]" />
+				<!-- [STUDIO:"Logger"]<logger level="INFO" doc:name="Logger" doc:id="12dc52cc-7749-496a-ab4e-e962409e5076" message="#[payload&#93;" /> [STUDIO] -->
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="5039ba8f-31e5-42b0-9789-a0169b7288be" message="There is such Launch in DB. Update it.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>

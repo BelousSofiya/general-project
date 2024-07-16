@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="c8cc235a-bfd4-4aee-8c63-12d40d0db1a4" >
+		<file:connection workingDir="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources" />
+	</file:config>
+	<sub-flow name="infoGatherFlow" doc:id="9624b1e4-e65f-4596-9a65-a794ed517122" >
+		<ee:transform doc:name="mode/entity/extenalFields/entityFields" doc:id="eeed3ea5-1c53-4846-a35a-30995d119a13" >
+			<ee:message >
+			</ee:message>
+				<ee:variables>
+				<ee:set-variable variableName="entity"><![CDATA[attributes.queryParams.entity]]></ee:set-variable>
+				<ee:set-variable variableName="entityFields"><![CDATA[attributes.queryParams.entityFields]]></ee:set-variable>
+				<ee:set-variable variableName="externalField"><![CDATA[attributes.queryParams.externalField]]></ee:set-variable>
+				<ee:set-variable variableName="mode"><![CDATA[attributes.queryParams.safetyMode as Boolean]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;ns soapenv http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;var entity = vars.entity as String&#10;var requestString = "&lt;roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/&gt;"&#10;var requestXml = read(requestString, "application/xml")&#10;---&#10;{&#10;	soapenv#Envelope: {&#10;		soapenv#Header: null,&#10;		soapenv#Body: requestXml&#10;	}&#10;}]' doc:name="requestGetAll" doc:id="4c50e570-e406-4821-a715-601b387cce02" variableName="requestGetAll"/>
+		<http:request method="POST" doc:name="Request query to MySQL" doc:id="aa0d9675-2773-41a6-8ae0-6d675682f4c4" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+			<http:body ><![CDATA[#[vars.requestGetAll]]]></http:body>
+		</http:request>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mysqlEntity" doc:id="c7c819f9-2c25-42c7-ac96-815533c2cf4e" variableName="mysqlEntity" />
+		<file:write doc:name="Write" doc:id="6c6ddf0d-5f07-45d1-b58c-74dd9bd5d1f8" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mysqlEntity.txt" mode="APPEND" >
+			<file:content ><![CDATA[#[vars.mysqlEntity]]]></file:content>
+		</file:write>
+		<http:request method="POST" doc:name="Request query to Mongo" doc:id="538e467f-8e1b-4c4b-96e1-c804d87ff13b" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+			<http:body ><![CDATA[#[vars.requestGetAll]]]></http:body>
+		</http:request>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mongoEntity" doc:id="16b985c5-7a61-441d-9ccd-5df4abe0c949" variableName="mongoEntity" />
+		<file:write doc:name="Write1" doc:id="7612e9b9-d709-43f8-983a-131962078c41" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND" >
+			<file:content ><![CDATA[#[vars.mongoEntity]]]></file:content>
+		</file:write>
+		<http:request method="GET" doc:name="Request query to SpaceX" doc:id="f7b12b30-1994-42d2-9c73-f72c3ab3cd71" config-ref="HTTP_Request_configuration_SpaceX" path='#["api/" ++ lower(vars.entity)]'/>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var entityFieldsList = vars.entityFields splitBy(",") map ((item) -&gt; trim(item))&#10;var externalFieldsList = vars.externalField splitBy(",") map ((item) -&gt; trim(item))&#10;---&#10;payload map ((obj) -&gt; &#10;    entityFieldsList map ((ent, index) -&gt; &#10;{&#10;	(ent): obj[externalFieldsList[index]]&#10;}&#10;        ) reduce ((acc, item) -&gt; acc ++ item))]' doc:name="entityFromSpaceX" doc:id="be836de1-bebe-4632-83de-b8f4b5b375b2" variableName="entityFromSpaceX" />
+		<file:write doc:name="Write2" doc:id="681cad8c-eef4-4d0b-ac8d-7ec9f6d9d4e5" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND" >
+			<file:content ><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
+		</file:write>
+		<flow-ref doc:name="Flow Reference" doc:id="e22dd25e-2ceb-4fb1-8d24-0ad0959e2501" name="batchFlow"/>
+	</sub-flow>
+	<flow name="batchFlow" doc:id="996a98d1-d9c8-479a-9193-f437f7a90262" >
+		<batch:job jobName="Batch_Job" doc:id="c4e1fe9e-d880-4a37-90e0-20993949dd17" maxFailedRecords="100">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="2f64c4aa-1deb-4dcd-b429-a68a6b3cf511" >
+					<ee:transform doc:name="externalId/spilledEntity/requestCreate/Update" doc:id="6476937b-2fb7-4416-930b-2f36c15227a1" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="requestCreateString" ><![CDATA[%dw 2.0
+output application/json
+import * from dw::core::Strings
+---
+"roc:Create" ++ (substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)) ++ "Request"]]></ee:set-variable>
+							<ee:set-variable variableName="requestUpdateString" ><![CDATA[%dw 2.0
+output application/json
+import * from dw::core::Strings
+---
+"roc:Update" ++ (substring (vars.entity as String, 0, sizeOf(vars.entity as String) - 1)) ++ "Request"]]></ee:set-variable>
+							<ee:set-variable variableName="splitedEntityFields" ><![CDATA[vars.entityFields as String splitBy ", "]]></ee:set-variable>
+							<ee:set-variable variableName="externalId" ><![CDATA[payload.id]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<ee:transform doc:name="currentSpacex/Mysql/Mongo/" doc:id="a0d5b2bd-6c46-44f8-969c-a08c23fb51c2" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="spaceXCurrent" ><![CDATA[(vars.entityFromSpaceX filter(((item, index) -> vars.entityFromSpaceX[index].externalId==vars.externalId)))[0]]]></ee:set-variable>
+							<ee:set-variable variableName="mysqlCurrent" ><![CDATA[(vars.mysqlEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
+							<ee:set-variable variableName="mongoCurrent" ><![CDATA[(vars.mongoEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<ee:transform doc:name="mysql/mongoOutput" doc:id="5dbe53e9-a92c-4bc2-bfdc-556ca0d74010" >
+						<ee:message />
+						<ee:variables >
+							<ee:set-variable variableName="mysqlOutput" ><![CDATA[%dw 2.0
+output application/json
+fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField
+fun toString(value) = 
+    if ( value == null ) null 
+    else value as String
+fun diffFieldsMysql(field) = 
+    if ( vars.mysqlCurrent[field] == null and vars.spaceXCurrent[field] == null ) true 
+    else if ( vars.mysqlCurrent[field] == null or vars.spaceXCurrent[field] == null ) false 
+    else if ( isFieldDifferent(toString(vars.mysqlCurrent[field]), toString(vars.spaceXCurrent[field])) ) false
+         else true
+var changeInMysql = vars.splitedEntityFields map ((field) -> {
+	(field): (diffFieldsMysql(field))
+} ) reduce ((acc, item) -> acc ++ item) filterObject ((value) -> !value)
+var create = vars.splitedEntityFields map ((ent, index) -> (ent): (vars.spaceXCurrent[vars.splitedEntityFields[index]]))
+var update = changeInMysql mapObject ((value, key) -> (key) : vars.spaceXCurrent[key])
+var createObj = {
+	(vars.requestCreateString): {
+		(create)
+	}
+}
+var updateObj = {
+	(vars.requestUpdateString): {
+		externalId: vars.externalId,
+		(update)
+	}
+}
+---
+if ( isEmpty(vars.mysqlCurrent) ) createObj else if ( !isEmpty(update) ) updateObj else ""]]></ee:set-variable>
+							<ee:set-variable variableName="mongoOutput" ><![CDATA[%dw 2.0
+output application/json
+fun isFieldDifferent(payloadField, comparisonField) = payloadField != comparisonField
+fun toString(value) = 
+    if ( value == null ) null 
+    else value as String
+fun diffFieldsMongo(field) = 
+    if ( vars.mongoCurrent[field] == null and vars.spaceXCurrent[field] == null ) true 
+    else if ( vars.mongoCurrent[field] == null or vars.spaceXCurrent[field] == null ) false 
+    else if ( isFieldDifferent(toString(vars.mongoCurrent[field]), toString(vars.spaceXCurrent[field])) ) false
+         else true
+var changeInMongo = vars.splitedEntityFields map ((field) -> {
+	(field): (diffFieldsMongo(field))
+} ) reduce ((acc, item) -> acc ++ item) filterObject ((value) -> !value)
+var create = vars.splitedEntityFields map ((ent, index) -> (ent): (vars.spaceXCurrent[vars.splitedEntityFields[index]]))
+var update = changeInMongo mapObject ((value, key) -> (key) : vars.spaceXCurrent[key])
+var createObj = {
+	(vars.requestCreateString): {
+		(create)
+	}
+}
+var updateObj = {
+	(vars.requestUpdateString): {
+		externalId: vars.externalId,
+		(update)
+	}
+}
+---
+if ( isEmpty(vars.mongoCurrent) ) createObj else if ( !isEmpty(update) ) updateObj else ""]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<logger level="INFO" doc:name="Logger" doc:id="c25c8914-800f-4982-a21b-be3772194a3c" message="#[vars.mysqlOutput]" />
+					<logger level="INFO" doc:name="Logger1" doc:id="0ada3b5b-ec20-41f7-8863-73958676ba21" message="#[vars.mongoOutput]" />
+					<flow-ref doc:name="Flow Reference" doc:id="ea5899e2-fac5-4411-8cac-b2bd660be9ad" name="choiceFlow"/>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+	<sub-flow name="choiceFlow" doc:id="c51ed580-6b11-44b4-8aeb-f8304031c626" >
+		<choice doc:name="Choice" doc:id="4ee8d9b6-7d0b-4b6a-9646-1f2cfb6fc57a" >
+			<when expression="#[!isEmpty(vars.mysqlOutput)]" >
+				<http:request method="POST" doc:name="Query to MySQL" doc:id="96d5ff41-7a76-49c9-b5ae-1febe2178a38" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+					<http:body ><![CDATA[#[%dw 2.0
+output application/xml writeDeclaration = false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+---
+{
+	soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+		soapenv#Header: null,
+		soapenv#Body: vars.mysqlOutput
+	}
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<choice doc:name="Choice" doc:id="f3e208ff-6aec-4536-be53-ea7d9df2a796" >
+					<when expression='#[!isEmpty(vars.mysqlOutput mapObject ((value, key, index) -&gt; "":key contains "Create") filterObject ((value, key, index) -&gt; value))]' >
+						<file:write doc:name="Write" doc:id="0b511ef8-a4e3-495c-aec9-f28b78e80bf1" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMysql.txt" mode="APPEND" >
+							<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+						</file:write>
+					</when>
+					<otherwise >
+						<file:write doc:name="Write" doc:id="33ae1939-92e8-4331-8a1b-a96374d0eead" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMysql.txt" mode="APPEND" >
+							<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+						</file:write>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="c9af083c-94e2-432f-b3bb-1c4872912106" message="mysql update" />
+			</otherwise>
+		</choice>
+		<choice doc:name="Choice1" doc:id="40ddbe43-ec47-4607-a346-49c2ce6dfa8e" >
+			<when expression="#[!isEmpty(vars.mongoOutput)]" >
+				<http:request method="POST" doc:name="Query to Mongo" doc:id="e7a4342f-d193-4271-a940-4168c5e9eee6" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
+					<http:body ><![CDATA[#[%dw 2.0
+output application/xml writeDeclaration = false
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+---
+{
+	soapenv#Envelope @('xmlns:roc': "http://example.com/rocketservice"): {
+		soapenv#Header: null,
+		soapenv#Body: vars.mongoOutput
+	}
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<choice doc:name="Choice" doc:id="5140a4c0-67d7-4ce3-9270-54f38173aa6d" >
+					<when expression='#[!isEmpty(vars.mongoOutput mapObject ((value, key, index) -&gt; "":key contains "Create") filterObject ((value, key, index) -&gt; value))]' >
+						<file:write doc:name="Write" doc:id="3cc8772a-c709-4fc9-b2eb-83f451f3c52b" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/createMongo.txt" mode="APPEND" >
+							<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+						</file:write>
+					</when>
+					<otherwise >
+						<file:write doc:name="Write" doc:id="be1737b1-df66-454c-ae4d-574800647bea" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/updateMongo.txt" mode="APPEND" >
+							<file:content ><![CDATA[#[vars.externalId]]]></file:content>
+						</file:write>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="5f1a20e7-2be7-4e39-aa84-138a0710363c" message="mongo update" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>
