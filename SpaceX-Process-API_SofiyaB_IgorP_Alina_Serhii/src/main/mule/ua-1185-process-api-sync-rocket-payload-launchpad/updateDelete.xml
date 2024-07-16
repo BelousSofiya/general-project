@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="demo2startFlow" doc:id="da71912d-c0fe-4da7-b4e3-ef5966a80c1f" >
+		<http:listener doc:name="Listener" doc:id="86deb264-7764-41ee-8dc7-5b927069b1ea" config-ref="HTTPS_Listener_config" path="/del" />
+		<set-variable value="#[attributes.queryParams.db]" doc:name="mode" doc:id="4297f020-2f51-4461-9acf-3df5b1c59f4a" variableName="mode" />
+		<set-variable value="#[attributes.queryParams.entity]" doc:name="entity" doc:id="8dcf891d-c2ec-43fd-a441-acf9dcc06dd5" variableName="entity" />
+		<choice doc:name="Choice" doc:id="1926f942-0872-4d3d-8e51-1559e04512e3" >
+			<when expression='#[vars.mode == "mongo"]' >
+				<http:request method="POST" doc:name="Request query to Mongo" doc:id="e70593c2-4c84-48fb-a5e6-994c2e121152" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
+					<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var entity = vars.entity as String
+
+var requestString = "<roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/>"
+var requestXml = read(requestString, "application/xml")
+
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: requestXml
+    }
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mongoEntity" doc:id="73c40bbf-813d-4c06-8289-422195b8c83c" variableName="mongoEntity" />
+				<ee:transform doc:name="Transform Message" doc:id="a04fd934-4eaf-456b-a65d-1c0203f3cb94" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.mongoEntity map ((item, index) -> {
+    "id":item.externalId
+})]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<batch:job jobName="mongo" doc:id="e054d21a-8f4c-4aca-8cba-7203ef8900dd" >
+					<batch:process-records >
+						<batch:step name="Batch_Step" doc:id="9ccbae17-7ecc-4dbf-9856-903b14548e8b" >
+							<set-variable value="#[payload.id]" doc:name="externalId" doc:id="09ecac28-bb02-4ad1-b28a-5c85dace21ff" variableName="externalId" />
+							<choice doc:name="Choice" doc:id="ed3c4bb3-7cac-4cfd-a275-d04f72e1d22a" >
+								<when expression='#[vars.entity == "Rockets"]' >
+									<http:request method="POST" doc:name="Create query to Mongo" doc:id="70938ccd-61e0-4934-b18b-b45beea438d6" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeleteRocketByExternalIdRequest: {
+                externalId: id
+            }
+        }
+ 
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<when expression='#[vars.entity == "Payloads"]' >
+									<http:request method="POST" doc:name="Create query to Mongo" doc:id="4b50742b-1447-422f-bc9f-e83a6abf8d62" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeletePayloadByExternalIdRequest: {
+                externalId: id
+            }
+        }
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<when expression='#[vars.entity == "Launchpads"]' >
+									<http:request method="POST" doc:name="Create query to Mongo" doc:id="967cffc5-25ae-4753-920b-3ae9a8a2d3cb" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeleteLaunchpadByExternalIdRequest: {
+                externalId: id
+            }
+        }
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<otherwise >
+									<logger level="INFO" doc:name="Logger" doc:id="b509bcf3-867d-48f4-805f-45a19f1fa952" message="fault" />
+								</otherwise>
+							</choice>
+						</batch:step>
+					</batch:process-records>
+				</batch:job>
+			</when>
+			<otherwise >
+				<http:request method="POST" doc:name="Request query to MySQL" doc:id="f5f8a9b9-bfd5-4631-8099-e8ae22cb6ee7" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+					<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var entity = vars.entity as String
+
+var requestString = "<roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/>"
+var requestXml = read(requestString, "application/xml")
+
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: requestXml
+    }
+}]]]></http:body>
+					<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+				</http:request>
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mysqlEntity" doc:id="b4c3a84c-8753-4e99-9080-64ed168d81db" variableName="mysqlEntity" />
+				<ee:transform doc:name="Transform Message" doc:id="41789429-b778-4259-b7b7-39fe05c3f1a1" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.mysqlEntity map ((item, index) -> {
+    "id":item.externalId
+})]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<batch:job jobName="demo2startBatch_Job" doc:id="03810d57-1321-4942-ac4e-dace3b20bdaa" >
+					<batch:process-records >
+						<batch:step name="Batch_Step" doc:id="945b988c-8044-4403-baca-f27c946bc73b" >
+							<set-variable value="#[payload.id]" doc:name="externalId" doc:id="4637a6e3-60a7-45b6-84b2-0c0a78364da1" variableName="externalId" />
+							<choice doc:name="Choice" doc:id="c96d4b08-0a2b-43d2-bf0f-ae5309d9e786" >
+								<when expression='#[vars.entity == "Rockets"]' >
+									<http:request method="POST" doc:name="Update query to MySQL" doc:id="0052cd44-15b1-401c-9ff4-ec00bf4b5c53" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeleteRocketByExternalIdRequest: {
+                externalId: id
+            }
+        }
+ 
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<when expression='#[vars.entity == "Payloads"]' >
+									<http:request method="POST" doc:name="Update query to MySQL" doc:id="6446f413-a088-48bf-a91c-f323629d5b43" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeletePayloadByExternalIdRequest: {
+                externalId: id
+            }
+        }
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<when expression='#[vars.entity == "Launchpads"]' >
+									<http:request method="POST" doc:name="Update query to MySQL" doc:id="11f5f48f-2c60-4804-88c0-4ba4911c8548" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort" >
+										<http:body ><![CDATA[#[%dw 2.0
+output application/xml
+ns soapenv http://schemas.xmlsoap.org/soap/envelope/
+ns roc http://example.com/rocketservice
+
+var id = vars.externalId
+---
+{
+    soapenv#Envelope: {
+        soapenv#Header: null,
+        soapenv#Body: {
+            roc#DeleteLaunchpadByExternalIdRequest: {
+                externalId: id
+            }
+        }
+}
+}]]]></http:body>
+										<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/xml"
+}]]]></http:headers>
+									</http:request>
+								</when>
+								<otherwise >
+									<logger level="INFO" doc:name="Logger" doc:id="c454d786-3dec-4edd-88bd-0cd823bddde4" message="fault" />
+								</otherwise>
+							</choice>
+						</batch:step>
+					</batch:process-records>
+				</batch:job>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
