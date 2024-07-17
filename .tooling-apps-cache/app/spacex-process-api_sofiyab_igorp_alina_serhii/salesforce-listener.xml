@@ -10,11 +10,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
 	<flow name="salesforce-listener" doc:id="4bbec579-4f9a-4cfc-9df4-3fe62dc61047" >
-		<salesforce:new-object-listener doc:name="On New Object" doc:id="5a1b325c-7fee-402b-b90f-a99c7731935b" objectType="Contract" config-ref="Salesforce_Config">
+		<!-- [STUDIO:"On New Object"]<salesforce:new-object-listener doc:name="On New Object" doc:id="5a1b325c-7fee-402b-b90f-a99c7731935b" objectType="Contract" config-ref="Salesforce_Config">
 		    <scheduling-strategy>
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
-		</salesforce:new-object-listener>
+		</salesforce:new-object-listener> [STUDIO] -->
 		<ee:transform doc:name="Mapping fields from salesforce to db" doc:id="2f7097ec-ff03-4fea-96ff-a8ef891b7049" >
 			<ee:message >
 			</ee:message>
@@ -140,11 +140,11 @@ output application/xml
 		</error-handler>
 	</flow>
 	<flow name="salesforce-listenerFlow" doc:id="a87dbe84-c134-4735-8543-2813b1fac5d6" >
-		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="4a7adbc6-5b48-42e1-b170-bf362a3587d3" objectType="Contract" config-ref="Salesforce_Config">
+		<!-- [STUDIO:"On Modified Object"]<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="4a7adbc6-5b48-42e1-b170-bf362a3587d3" objectType="Contract" config-ref="Salesforce_Config">
 		    <scheduling-strategy>
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
-		</salesforce:modified-object-listener>
+		</salesforce:modified-object-listener> [STUDIO] -->
 		<ee:transform doc:name="Mapping fields from salesforce to db" doc:id="ccab2ecf-4862-49f5-9a67-5f3c54a63ba9" >
 			<ee:message >
 			</ee:message>
