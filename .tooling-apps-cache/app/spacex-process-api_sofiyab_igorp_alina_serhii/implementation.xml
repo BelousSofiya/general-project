@@ -254,7 +254,7 @@ report filterObject ((value) -> value > 0)]]></ee:set-payload>
 		</batch:job>
 	</flow>
 	<flow name="getPropertiesFlow" doc:id="1b8731a0-2a55-4f47-824d-350d6da42d85" >
-		<file:read doc:name="Read Config File" doc:id="034b38b9-868e-4d47-90c1-28675e3b5010" path="H:\mulesoft\Projects\randomizer-flows\src\main\resources\random-properties.json" config-ref="Randomizer_File_Config"/>
+		<file:read doc:name="Read Config File" doc:id="034b38b9-868e-4d47-90c1-28675e3b5010" path="/Users/alinache/AnypointStudio/demo2/general-project/SpaceX-Process-API_SofiyaB_IgorP_Alina_Serhii/src/main/resources/random-properties.json" config-ref="Randomizer_File_Config"/>
 		<ee:transform doc:name="Transform Data To Java Object" doc:id="0e4e01ad-1f12-47c4-9e63-647ac7ccaaae" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
