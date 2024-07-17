@@ -33,7 +33,6 @@ http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api
 	<orbit></orbit>
 	<apoapsis></apoapsis>
 	<periapsis></periapsis>
-	<rocketId></rocketId>
       </roc:CreatePayloadRequest>
    </soapenv:Body>
 </soapenv:Envelope>
