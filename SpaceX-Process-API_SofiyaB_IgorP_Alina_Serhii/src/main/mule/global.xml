@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
 	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
@@ -28,9 +30,6 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 	<file:config name="Randomizer_File_Config" doc:name="File Config" doc:id="721fdc08-c067-471d-a39d-f5f6064eeeb3" >
 		<file:connection workingDir="H:\homework\general-project\SpaceX-Process-API_SofiyaB_IgorP_Alina_Serhii\src\main\resources" />
 	</file:config>
-		<file:config name="File_Config" doc:name="File Config" doc:id="e2926685-7a81-4f52-998a-8f2c904f5a59" >
-		<file:connection workingDir="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources" />
-	</file:config>
 	<wsc:config name="Web_Service_Consumer_Config_SQL" doc:name="Web Service Consumer Config" doc:id="22c475be-17f8-482d-b0b2-0460eddffcde" >
 		<wsc:connection wsdlLocation="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort?wsdl" service="SpaceXdbService" port="SpaceXdbServiceSoapPort" address="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort" >
 			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
@@ -39,6 +38,17 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 	<wsc:config name="Web_Service_Consumer_Config_MONGO" doc:name="Web Service Consumer Config" doc:id="d95cd024-2f52-4d5e-b35e-41a9ede66515" >
 		<wsc:connection wsdlLocation="http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api?wsdl" service="SpaceXdbService" port="SpaceXdbServiceSoapPort" address="http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api/*" />
 	</wsc:config>
+			<http:request-config name="HTTP_Request_configuration_SpaceX" doc:name="HTTP Request configuration" doc:id="86ec997b-425c-4b9a-840f-940297d7891a" >
+		<http:request-connection host="space-x-system-api.us-e2.cloudhub.io" />
+	</http:request-config>
+	<http:listener-config name="HTTPS_Listener_config" doc:name="HTTP Listener config" doc:id="601c3b48-3ca9-42c8-9c2e-e71c5b9825df" >
+		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" >
+			<tls:context >
+				<tls:trust-store password="password" path="truststore.jks"/>
+				<tls:key-store keyPassword="password" password="password" path="keystore.jks"/>
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
 	<import doc:name="Import" doc:id="82d3a078-09e3-4dcf-99c0-c17b14d3bf53" file="ua-1185-spacex-common-project-config.xml" />
 	<import doc:name="Import" doc:id="ec447a6b-7369-40a4-96b2-1e6b2b7df288" file="ua-1185-spacex-common-project-impl.xml" />
 	<import doc:name="Import" doc:id="9ea5c1b9-b2eb-422f-b38e-d1a9f8b396e0" file="ua-1185-spacex-main-error.xml" />
