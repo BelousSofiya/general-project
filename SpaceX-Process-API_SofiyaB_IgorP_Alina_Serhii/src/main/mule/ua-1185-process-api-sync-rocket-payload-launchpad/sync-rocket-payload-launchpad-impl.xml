@@ -142,7 +142,33 @@ if ( isEmpty(vars.mongoCurrent) ) createObj else if ( !isEmpty(update) ) updateO
 					</ee:transform>
 					<logger level="INFO" doc:name="Logger" doc:id="c25c8914-800f-4982-a21b-be3772194a3c" message="#[vars.mysqlOutput]" />
 					<logger level="DEBUG" doc:name="Logger1" doc:id="0ada3b5b-ec20-41f7-8863-73958676ba21" message="#[vars.mongoOutput]" />
-					<flow-ref doc:name="Flow Reference" doc:id="ea5899e2-fac5-4411-8cac-b2bd660be9ad" name="choiceFlow"/>
+					<choice doc:name="Choice" doc:id="1970a5c5-95ca-4234-8f2f-b4fac30afecc" >
+						<when expression="#[vars.mode == true]">
+							<flow-ref doc:name="Flow Reference" doc:id="ea5899e2-fac5-4411-8cac-b2bd660be9ad" name="choiceFlow" />
+						</when>
+					</choice>
+					<ee:transform doc:name="Transform Message" doc:id="a76c6207-54fc-4164-89c1-cdc010f24ff0" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.externalId): {
+(if(vars.mysqlOutput != "") "mysql" : vars.mysqlOutput else null ),
+(if(vars.mongoOutput != "") "mongo" : vars.mongoOutput else null )
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="648e1ac1-6ef2-4b5c-9618-a0c4e3615897" size="300">
+						<ee:transform doc:name="Transform Message" doc:id="4842ba4d-86be-4d65-bca5-36a9d75be4a2">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ((item) -> read(item, "application/json"))]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<logger level="INFO" doc:name="Logger" doc:id="80313ee5-813a-4e75-a44a-b33eec36d59b" message="#[payload]"/>
+					</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
 		</batch:job>
@@ -181,11 +207,8 @@ ns roc http://example.com/rocketservice
 					</otherwise>
 				</choice>
 			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="c9af083c-94e2-432f-b3bb-1c4872912106" message="mysql update" />
-			</otherwise>
 		</choice>
-		<choice doc:name="Choice1" doc:id="40ddbe43-ec47-4607-a346-49c2ce6dfa8e" >
+		<choice doc:name="Choice" doc:id="40ddbe43-ec47-4607-a346-49c2ce6dfa8e" >
 			<when expression="#[!isEmpty(vars.mongoOutput)]" >
 				<http:request method="POST" doc:name="Query to Mongo" doc:id="e7a4342f-d193-4271-a940-4168c5e9eee6" config-ref="HTTP_Request_configuration_Mongo" path="/api" >
 					<http:body ><![CDATA[#[%dw 2.0
@@ -218,9 +241,6 @@ ns roc http://example.com/rocketservice
 					</otherwise>
 				</choice>
 			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="5f1a20e7-2be7-4e39-aa84-138a0710363c" message="mongo update" />
-			</otherwise>
 		</choice>
 	</sub-flow>
 </mule>
