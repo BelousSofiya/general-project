@@ -27,7 +27,9 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
 		</http:request>
 			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="53e204e0-4c94-4a38-b6e2-4f6550ce28f0" type="ANY"/>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="53e204e0-4c94-4a38-b6e2-4f6550ce28f0" type="ANY">
+					<raise-error doc:name="Raise error" doc:id="0b0fb516-f696-4acc-b1b7-d5dbc869c6e6" />
+				</on-error-continue>
 			</error-handler>
 		</try>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mysqlEntity" doc:id="c7c819f9-2c25-42c7-ac96-815533c2cf4e" variableName="mysqlEntity" />
@@ -41,7 +43,14 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<file:write doc:name="Write1" doc:id="7612e9b9-d709-43f8-983a-131962078c41" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND" >
 			<file:content ><![CDATA[#[vars.mongoEntity]]]></file:content>
 		</file:write>
-		<http:request method="GET" doc:name="Request query to SpaceX" doc:id="f7b12b30-1994-42d2-9c73-f72c3ab3cd71" config-ref="HTTP_Request_configuration_SpaceX" path='#["api/" ++ lower(vars.entity)]'/>
+		<try doc:name="Try" doc:id="c4b40e58-6138-4237-8345-8c92dacabcf3" >
+			<http:request method="GET" doc:name="Request query to SpaceX" doc:id="f7b12b30-1994-42d2-9c73-f72c3ab3cd71" config-ref="HTTP_Request_configuration_SpaceX" path='#["api/" ++ lower(vars.entity)]' />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="40deb294-ad41-4165-8e12-d15f18788af1" >
+					<raise-error doc:name="Raise error" doc:id="78521f4f-680e-4bc4-b8be-f636af24e374" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var entityFieldsList = vars.entityFields splitBy(",") map ((item) -&gt; trim(item))&#10;var externalFieldsList = vars.externalField splitBy(",") map ((item) -&gt; trim(item))&#10;fun isNull(k, v) = if ( (k == "periapsis" or k == "apoapsis" or k == "weight") and v == null ) 0 &#10;else if ( k == "orbit" and v == null ) "-"  &#10;else v&#10;---&#10;payload map ((obj) -&gt; &#10;    entityFieldsList map ((ent, index) -&gt; &#10;{&#10;	(ent): isNull(ent, obj[externalFieldsList[index]])&#10;}&#10;        ) reduce ((acc, item) -&gt; acc ++ item))]' doc:name="entityFromSpaceX" doc:id="be836de1-bebe-4632-83de-b8f4b5b375b2" variableName="entityFromSpaceX" />
 		<file:write doc:name="Write2" doc:id="681cad8c-eef4-4d0b-ac8d-7ec9f6d9d4e5" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND" >
 			<file:content ><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
@@ -172,6 +181,11 @@ payload map ((item) -> read(item, "application/json"))]]></ee:set-payload>
 				</batch:step>
 			</batch:process-records>
 		</batch:job>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="699e58ff-7bd6-4c7a-be21-c1119a529a45" type="ANY" >
+				<raise-error doc:name="Raise error" doc:id="1c45be1d-d732-4224-9783-76363e8f68b3" />
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<sub-flow name="choiceFlow" doc:id="c51ed580-6b11-44b4-8aeb-f8304031c626" >
 		<choice doc:name="Choice" doc:id="4ee8d9b6-7d0b-4b6a-9646-1f2cfb6fc57a" >

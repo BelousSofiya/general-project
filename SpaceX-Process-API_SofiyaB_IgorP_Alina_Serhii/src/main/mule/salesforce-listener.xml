@@ -66,11 +66,6 @@ output application/xml
 }&#93;&#93;></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-<<<<<<< HEAD
-		<try doc:name="Try" doc:id="9615ab9f-abfb-4615-a01d-1da61b8676cc" >
-			<http:request method="POST" doc:name="Request to MySQL system api" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
-			<http:body><![CDATA[#[vars.XMLForMySQL&#93;&#93;&#93;></http:body>
-=======
 		<http:request method="POST" doc:name="Request" doc:id="3a45bba8-ac32-4592-aa96-187b09c92e34" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
@@ -95,7 +90,6 @@ output application/xml
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;---&#10;payload.soap#Envelope.soap#Body.soap#NoDataFoundResponse.result == "There is not any matching data for provided id."]'>
 				<http:request method="POST" doc:name="Request to MySQL system api in create" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body><![CDATA[#[vars.XMLForMySQL]]]></http:body>
->>>>>>> develop
 			<http:headers><![CDATA[#[output application/java
 &#45;&#45;-
 {
@@ -126,20 +120,14 @@ output application/xml
 	"Content-Type" : "application/xml"
 }&#93;&#93;&#93;></http:headers>
 		</http:request>
-<<<<<<< HEAD
+
 		<logger level="INFO" doc:name="Logger" doc:id="0eb40621-e138-4744-8fe5-6484026d51c7" message="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
-<<<<<<< HEAD
 		<logger level="INFO" doc:name="Logger" doc:id="0ce51b81-f975-430f-b2c2-6195fd7c31e8" message="#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse&#93;"/>
-=======
-		<logger level="INFO" doc:name="Logger" doc:id="0ce51b81-f975-430f-b2c2-6195fd7c31e8" message="#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse&#93;"/>
->>>>>>> develop
 		<choice doc:name="Choice" doc:id="d97f700b-d10a-4cce-ae88-c532cfdf617d" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse == "No result for provided id"&#93;'>
 				<logger level="INFO" doc:name="Logger" doc:id="5f088e9d-442b-41ba-905a-eebf969501ac" message="??????????????????????????????????????" />
-=======
 		<choice doc:name="Choice" doc:id="d97f700b-d10a-4cce-ae88-c532cfdf617d" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse == "No result for provided id"]'>
->>>>>>> develop
 				<http:request method="POST" doc:name="Request to Mongo system api" doc:id="e77f3a23-9a8f-44ce-a518-bb97fc0f33eb" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body><![CDATA[#[vars.XMLForMongo&#93;&#93;&#93;></http:body>
 			<http:headers><![CDATA[#[output application/java
@@ -148,10 +136,6 @@ output application/xml
 	"Content-Type" : "application/xml"
 }&#93;&#93;&#93;></http:headers>
 		</http:request>
-<<<<<<< HEAD
-				<logger level="INFO" doc:name="Logger" doc:id="12dc52cc-7749-496a-ab4e-e962409e5076" message="#[payload&#93;" />
-=======
->>>>>>> develop
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="5039ba8f-31e5-42b0-9789-a0169b7288be" message="There is such Launch in DB. Update it.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"/>
@@ -167,10 +151,6 @@ output application/xml
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
 		</salesforce:modified-object-listener>
-<<<<<<< HEAD
-		<logger level="INFO" doc:name="Logger" doc:id="722c1695-65ca-4110-8140-541274952283" message="#[payload&#93;"/>
-=======
->>>>>>> develop
 		<ee:transform doc:name="Mapping fields from salesforce to db" doc:id="ccab2ecf-4862-49f5-9a67-5f3c54a63ba9" >
 			<ee:message >
 			</ee:message>
@@ -267,20 +247,12 @@ output application/xml
 }&#93;&#93;&#93;></http:headers>
 		</http:request>
 		<choice doc:name="Choice" doc:id="953c3f13-7514-4b20-a2cc-efec66b1d3d0" >
-<<<<<<< HEAD
-			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.soap#NoDataFoundResponse.result == "There is not any matching data for provided id."&#93;'>
-				<http:request method="POST" doc:name="Request to MySQL system api for create" doc:id="834a007f-57ac-4e94-beb6-11b671435e74" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
-					<http:body ><![CDATA[#[vars.XMLForMySQLCreate&#93;&#93;&#93;></http:body>
-					<http:headers ><![CDATA[#[output application/java
-&#45;&#45;-
-=======
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;---&#10;payload.soap#Envelope.soap#Body.soap#NoDataFoundResponse.result == "There is not any matching data for provided id."]'>
 				<try doc:name="Try" doc:id="7656444f-3c74-40fb-a6ac-9d1b5fbbfa25" >
 					<http:request method="POST" doc:name="Request to MySQL system api for create" doc:id="834a007f-57ac-4e94-beb6-11b671435e74" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 					<http:body><![CDATA[#[vars.XMLForMySQLCreate]]]></http:body>
 					<http:headers><![CDATA[#[output application/java
 ---
->>>>>>> develop
 {
 	"Content-Type" : "application/xml"
 }&#93;&#93;&#93;></http:headers>
@@ -293,13 +265,8 @@ output application/xml
 				</try>
 			</when>
 			<otherwise >
-<<<<<<< HEAD
-				<http:request method="POST" doc:name="Request to MySQL system api" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
-			<http:body><![CDATA[#[vars.XMLForMySQL&#93;&#93;&#93;></http:body>
-=======
 				<http:request method="POST" doc:name="Request to MySQL system api in update" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body><![CDATA[#[vars.XMLForMySQL]]]></http:body>
->>>>>>> develop
 			<http:headers><![CDATA[#[output application/java
 &#45;&#45;-
 {
@@ -327,16 +294,8 @@ output application/xml
 	"Content-Type" : "application/xml"
 }&#93;&#93;&#93;></http:headers>
 		</http:request>
-<<<<<<< HEAD
-		<logger level="INFO" doc:name="Logger" doc:id="bd3fb3cf-a41a-422f-b855-017b05aea109" message="#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse&#93;"/>
-		<choice doc:name="Choice" doc:id="6b7299bc-9c10-411d-826c-a606c8a16018" >
-			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;&#45;&#45;-&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse != "No result for provided id"&#93;'>
-				<logger level="INFO" doc:name="Logger" doc:id="cadfed0a-c59c-42ee-8674-a540edbc0b11" message="LOGGGGGERRRRRRRRR!!!!!!!!!!!!!" />
-				<logger level="INFO" doc:name="Logger" doc:id="c337549f-1b49-4b1e-b551-7fb6650b2823" message="#[payload&#93;" />
-=======
 		<choice doc:name="Choice" doc:id="6b7299bc-9c10-411d-826c-a606c8a16018" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse != "No result for provided id"]'>
->>>>>>> develop
 				<http:request method="POST" doc:name="Request to Mongo system api" doc:id="d054fdbd-a764-480b-9caf-30a3eaf78666" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[vars.XMLForMongo&#93;&#93;&#93;></http:body>
 			<http:headers ><![CDATA[#[output application/java
@@ -345,10 +304,6 @@ output application/xml
 	"Content-Type" : "application/xml"
 }&#93;&#93;&#93;></http:headers>
 		</http:request>
-<<<<<<< HEAD
-				<logger level="INFO" doc:name="Logger" doc:id="2d60d2d6-dc30-4a2a-8d3c-57c629da008a" message="#[payload&#93;" />
-=======
->>>>>>> develop
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="c5962fc7-e63f-4355-b501-30baa49be62a" message="No result!!!!!!!!!!!!!!!!!!!"/>
