@@ -15,7 +15,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 </flow>
 	<flow name="createReporForErrorJob" doc:id="362e413a-7d3d-468c-96c0-e8d49d926947" >
 		<logger level="INFO" doc:name="Logger" doc:id="22c84765-367f-4e82-8af8-5e7fee159707" message='#["An error occured while processing " ++ vars.currentOperation as String ++ " job for entity " ++ vars.config.entityName as String ++ ". Report for the error is creating..."]'/>
-		<set-variable value="#[error.errorMessage.payload.Envelope.Body.Fault]" doc:name="Set Error Response" doc:id="233dc6cd-d2d2-4d76-bb77-9ee388e00bda" variableName="errorResponse"/>
+		<set-variable value="#[error]" doc:name="Set Error" doc:id="233dc6cd-d2d2-4d76-bb77-9ee388e00bda" variableName="error"/>
 		<os:retrieve doc:name="Retrieve Report" doc:id="f0c61517-aca4-4956-9462-5411f93053c0" key='#[vars.config.entityName as String ++ "Report"]' objectStore="Object_store">
 			<os:default-value ><![CDATA[#[{}]]]></os:default-value>
 		</os:retrieve>
@@ -28,16 +28,38 @@ output application/java
 var errorsObj = (if(payload.errors is Null) [] else payload.errors)
 var jobError = {
 	operation: vars.currentOperation,
-	errorType: error.errorType.identifier,
-	errorDetail: error.description,
-	errorResponse: vars.errorResponse
+	errorType: vars.error.errorType.identifier,
+	errorDetail: vars.error.description,
+	errorResponse: vars.error.errorMessage.payload.Envelope.Body
 }
 ---
 payload mergeWith {errors: errorsObj + jobError}
     ]]></ee:set-payload>
 			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="ERROR_MESSAGE" ><![CDATA[%dw 2.0
+import * from dw::core::Objects
+output application/json
+
+var error = {
+    "logType":"ERROR: ",
+    "code": vars.error.errorMessage.attributes.statusCode,
+    "message": valuesOf(vars.error.errorMessage.payload.Envelope.Body.Fault)[0],
+    "errorType": vars.error.errorType.identifier,
+    "dateTime": now(),
+    "description": vars.error.description,
+    "source": vars.error.dslSource
+}
+---
+error mapObject ((value, key) -> 
+	(if(value is Null) {(key): "Not provided."}
+	 else {(key): value}
+	)
+)]]></ee:set-variable>
+			</ee:variables>
 		</ee:transform>
 		<os:store doc:name="Store Updated Report" doc:id="6fe906b1-062f-4868-a1ac-5b6f214b52c7" key='#[vars.config.entityName as String ++ "Report"]' objectStore="Object_store"/>
+		<flow-ref doc:name="Flow Reference" doc:id="a3a897f8-3d84-4c0b-a9ef-569749b73b30" name="ua-1185-spacex-common-project-impl-Sub_Flow"/>
 		<logger level="INFO" doc:name="Logger" doc:id="71c947ed-b620-43ab-9089-b9b41121833f" message='#["The error occured while processing " ++ vars.currentOperation as String ++ " job for entity " ++ vars.config.entityName as String ++ " has been stored into report."]'/>
 	</flow>
 	<flow name="createReportForCustomError" doc:id="e5283c8b-2e56-4479-ac5c-4fa69448770c" >
