@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8febe603-01ae-41fc-b36e-c85be80f8388" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="randomizerMainFlow" doc:id="7b85e769-80d5-4a16-9e3a-8988de09048e" >
+		<http:listener doc:name="Listener" doc:id="3f235dd5-5df8-4ae6-9b12-edd6177726b5" path="randomize" config-ref="HTTP_Listener_config"/>
+		<flow-ref doc:name="Flow Reference" doc:id="0a6ad294-424a-4a50-86c7-d5c5dc184d5d" name="launchProcessingsFlow"/>
+	</flow>
+	<flow name="getReportMainFlow" doc:id="9a874dcd-c5ed-4fcb-b363-56ba644478cf" >
+		<http:listener doc:name="Listener" doc:id="9c134222-ca70-4087-a26d-e589f15299e2" path="get_report" config-ref="HTTP_Listener_config"/>
+		<flow-ref doc:name="Flow Reference" doc:id="b0abd0c0-87d6-4cdf-946e-018fc4098460" name="getReportFlow"/>
+	</flow>
+</mule>

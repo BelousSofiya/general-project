@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd">
+	<sub-flow name="ua-1185-spacex-common-project-impl-Sub_Flow" doc:id="2453f030-321b-47d6-ac74-d37cdd85b958" >
+		<set-variable value='#[%dw 2.0&#10;output application/dw&#10;---&#10;(&#10;    (vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ &#10;    (vars.ERROR_MESSAGE."description" default " "  ) ++&#10;    "." ++&#10;    (vars.ERROR_MESSAGE."source" default " " ) ++&#10;    ". Error details: {" ++ &#10;    (vars.ERROR_MESSAGE."message" default " ") ++ &#10;    "," ++ &#10;    (vars.ERROR_MESSAGE."code" default 500) ++ &#10;    "}"&#10;)]' doc:name="Set Variable errorLog" doc:id="14a0e9f4-fbd4-406b-bd5e-49e6c5054d68" variableName="errorLog" />
+		<logger level="ERROR" doc:name="Logger errorLog CP" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]" />
+		<ee:transform doc:name="Transform Message Error out" doc:id="bc43641d-c713-44e5-9b28-be98dddfea2f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var inputTime = vars.ERROR_MESSAGE."dateTime" as Time 
+var inputDate = vars.ERROR_MESSAGE."dateTime" as Date
+var inputZone = vars.ERROR_MESSAGE."dateTime" as TimeZone
+---
+{
+	"logType": vars.ERROR_MESSAGE."logType" default "ERROR: ",
+    "code": vars.ERROR_MESSAGE."code" default 500,
+    "message": vars.ERROR_MESSAGE."message" default "",
+    "errorType": vars.ERROR_MESSAGE."errorType" default "",
+    "dateTime": (inputDate ++ ' ' ++ inputTime as String {format: "HH:mm"} ++ ' ' ++ inputZone) default now(),
+    "description": vars.ERROR_MESSAGE."description" default "",
+    "source": vars.ERROR_MESSAGE."source" default ""  
+}]]></ee:set-payload>
+					</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[vars.ERROR_MESSAGE."code" default 500]]></ee:set-variable>
+			</ee:variables>
+				</ee:transform>
+		<flow-ref doc:name="Flow Reference to mail" doc:id="60bea52a-60fc-486b-8471-2e411a3b95ed" name="ua-1185-spacex-common-project-impl-mail-Sub_Flow" targetValue="#[vars.ERROR_MESSAGE]"/>
+		<flow-ref doc:name="Flow Reference to SalesForce" doc:id="3fe777ef-6919-4fc2-9b74-ca2ef896887d" name="ua-1185-spacex-common-project-impl-salesforce-Sub_Flow1" targetValue="#[vars.ERROR_MESSAGE]"/>
+	</sub-flow>
+	<sub-flow name="ua-1185-spacex-common-project-impl-mail-Sub_Flow" doc:id="1665ed67-d379-4293-a3c5-a9a30f3fb8ff" >
+		<async doc:name="Async" doc:id="9e4ad8bd-9f5c-4b48-94e9-d3b9a8c654c1">
+			<try doc:name="Try" doc:id="804269e5-0944-4dad-952e-cd5111d803f6">
+					<azure-key-vault:get-secret doc:id="9fd8e269-1a0a-43b9-aaea-e1e13c875dc6" name="report-mail" config-ref="Azure_Key_Vault_Config_Common_project" doc:name="Get Secret email CP1"/>
+					<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Set Variable secrets CP1" doc:id="33b87bb2-529b-458e-91f6-a618123fd2ff" variableName="secrets" />
+					<email:send doc:id="a087f2ce-442e-4e65-9da2-77e9bb8dc629" config-ref="Email_SMTP_Common_project" fromAddress="#[vars.secrets.fromaddres]" subject="Error Log" doc:name="Send error email to report mail box CP1">
+			<email:to-addresses>
+							<email:to-address value="#[vars.secrets.toaddres]" />
+						</email:to-addresses>
+						<email:body contentType="text/plain">
+				<email:content><![CDATA[#[(vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ 
+(vars.ERROR_MESSAGE."description" default " "  ) ++
+"." ++
+(vars.ERROR_MESSAGE."source" default " " ) ++
+". Error details: {" ++ 
+(vars.ERROR_MESSAGE."message" default " ") ++ 
+"," ++ 
+(vars.ERROR_MESSAGE."code" default 500) ++ 
+"}"]]]></email:content>
+			</email:body>
+		</email:send>
+					<logger level="INFO" doc:name="Logger  mail connector" doc:id="4a790c75-b04c-46af-9cc1-dd68e902b019" message="SUCCESS: Sended error mail mesages . Common project" />
+					<error-handler ref="ua-1185-spacex-main-common-project-mail-Error_Handler" />
+				</try>
+		</async>
+	</sub-flow>
+	<sub-flow name="ua-1185-spacex-common-project-impl-salesforce-Sub_Flow1" doc:id="884b365b-5542-487d-8666-a4c307907f50" >
+		<async doc:name="Async" doc:id="aebcdf87-2722-4bea-8480-c7912865a0ac" >
+			<try doc:name="Try" doc:id="3e46390e-b251-451d-ac29-2b20080b8f00" >
+				<azure-key-vault:get-secret doc:name="Get Secret key-case" doc:id="60db73dc-dce0-4f70-b64a-50dc8fe43f55" config-ref="Azure_Key_Vault_Config_Common_project" name="key-case" />
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Set Variable secrets Case" doc:id="548da0fa-1eb1-47ea-9f22-a59645f720f4" variableName="secretsCase" />
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;[{&#10;	"Status": "Working",&#10;	"Origin": "Web",&#10;	"Description": vars.ERROR_MESSAGE."message" default " ",&#10;	"Subject": vars.ERROR_MESSAGE."source" default " ",&#10;	"Priority": "High"&#10;}]]' doc:name="Set Variable request body" doc:id="c62a235f-7614-473f-9c01-d911bf62f89e" variableName="requestBody" />
+				<http:request method="GET" doc:name="Request to spaceX Case" doc:id="4e9e8a1a-06f1-4af5-a211-020bbd30da08" config-ref="HTTP_Request_config_to_log_in_Case_Common_project" path="/" sendBodyMode="ALWAYS" >
+					<http:body ><![CDATA[#[vars.requestBody]]]></http:body>
+				</http:request>
+				<logger level="INFO" doc:name="Logger  noification to salesforce case " doc:id="7298b608-ffb1-46c0-ae0f-baa9ca2a4983" message="SUCCESS: Sended noification to salesforce case . Common project" />
+				<error-handler ref="ua-1185-spacex-main-salesforce-connector-common-project-Error_Handler" />
+			</try>
+		</async>
+	</sub-flow>
+</mule>
