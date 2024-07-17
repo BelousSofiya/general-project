@@ -7,5 +7,8 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<flow name="sync-rocket-payload-launchpad-mainFlow" doc:id="a29027d4-1baa-4ac5-91bb-24e9da3a5080" >
 		<http:listener doc:name="Listener" doc:id="9016069e-bbbb-4e11-b9e7-e473d8c23d2c" config-ref="HTTPS_Listener_config" path="/sync"/>
 		<flow-ref doc:name="Flow Reference" doc:id="bc5157da-93ab-4154-9798-0aea2eca47ad" name="infoGatherFlow"/>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="08791445-a0a1-43f8-adb6-6fa04f70a97e" type="HTTP:BAD_REQUEST"/>
+		</error-handler>
 	</flow>
 </mule>
