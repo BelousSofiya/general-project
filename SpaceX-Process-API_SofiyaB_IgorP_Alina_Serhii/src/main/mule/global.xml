@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
 	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
 	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
@@ -39,7 +41,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<wsc:connection wsdlLocation="http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api?wsdl" service="SpaceXdbService" port="SpaceXdbServiceSoapPort" address="http://ua-1185-mongo-system-api.us-e2.cloudhub.io/api/*" />
 	</wsc:config>
 			<http:request-config name="HTTP_Request_configuration_SpaceX" doc:name="HTTP Request configuration" doc:id="86ec997b-425c-4b9a-840f-940297d7891a" >
-		<http:request-connection host="space-x-system-api.us-e2.cloudhub.io" />
+		<http:request-connection host="ua-1185-spacex-system-api.us-e2.cloudhub.io" connectionIdleTimeout="30000000"/>
 	</http:request-config>
 	<http:listener-config name="HTTPS_Listener_config" doc:name="HTTP Listener config" doc:id="601c3b48-3ca9-42c8-9c2e-e71c5b9825df" >
 		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" >
@@ -49,6 +51,13 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 			</tls:context>
 		</http:listener-connection>
 	</http:listener-config>
+		<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="059c19d1-c7f0-4cca-be1f-ee1fd8cf70e4" >
+    	<email:smtp-connection host="smtp.gmail.com" port="587" user="ua.1185.si.mulesoft.report@gmail.com" password="kfnq fuxf rkju rxuz" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.required" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
 	<import doc:name="Import" doc:id="82d3a078-09e3-4dcf-99c0-c17b14d3bf53" file="ua-1185-spacex-common-project-config.xml" />
 	<import doc:name="Import" doc:id="ec447a6b-7369-40a4-96b2-1e6b2b7df288" file="ua-1185-spacex-common-project-impl.xml" />
 	<import doc:name="Import" doc:id="9ea5c1b9-b2eb-422f-b38e-d1a9f8b396e0" file="ua-1185-spacex-main-error.xml" />

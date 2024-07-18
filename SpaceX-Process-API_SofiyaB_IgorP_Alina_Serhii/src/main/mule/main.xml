@@ -21,20 +21,38 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 		<http:listener doc:name="Listener" doc:id="9c134222-ca70-4087-a26d-e589f15299e2" path="get_report" config-ref="HTTP_Listener_config"/>
 		<flow-ref doc:name="Flow Reference" doc:id="b0abd0c0-87d6-4cdf-946e-018fc4098460" name="getReportFlow"/>
 	</flow>
-	<flow name="mainFlow" doc:id="f0bf7a36-d761-450a-b69e-d0385a387aea" >
+	<!-- [STUDIO:"mainFlow"]<flow name="mainFlow" doc:id="f0bf7a36-d761-450a-b69e-d0385a387aea" >
 		<salesforce:new-object-listener doc:name="On New Object" doc:id="6feb06dc-b4ec-4e8f-a887-e1f888a969d1" config-ref="Salesforce_Config" objectType="Contract">
 			<scheduling-strategy >
 				<fixed-frequency frequency="10000"/>
 			</scheduling-strategy>
 		</salesforce:new-object-listener>
 		<flow-ref doc:name="Flow Reference" doc:id="c51ab97c-b83f-4f17-8af6-5d9876093b62" name="salesforce-listener"/>
-	</flow>
-	<flow name="mainFlow1" doc:id="ab144a9a-b285-440b-9ad6-a75a81d86330" >
+	</flow> [STUDIO] -->
+	<!-- [STUDIO:"mainFlow1"]<flow name="mainFlow1" doc:id="ab144a9a-b285-440b-9ad6-a75a81d86330" >
 		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="f9ba1bfa-bd17-45cb-abdd-83a2bdcf66b0" config-ref="Salesforce_Config" objectType="Contract">
 			<scheduling-strategy >
 				<fixed-frequency frequency="10000"/>
 			</scheduling-strategy>
 		</salesforce:modified-object-listener>
 		<flow-ref doc:name="Flow Reference" doc:id="e5e239ab-b106-4041-8650-25a0caa3c237" name="salesforce-listenerFlow"/>
+	</flow> [STUDIO] -->
+		<flow name="sync-rocket-payload-launchpad-mainFlow" doc:id="a76554b2-959d-457f-a9c9-f7031470a78c" >
+		<http:listener doc:name="Listener" doc:id="342a989e-2006-41fb-8b9c-ab361f6df9a7" config-ref="HTTPS_Listener_config" path="/sync"/>
+		<flow-ref doc:name="Flow Reference" doc:id="360cf98b-ffad-4aba-8f27-d80148b215c8" name="startProcessFlow"/>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7232351d-455d-4d6e-a481-141f854a1f35" type="HTTP:BAD_REQUEST">
+				<logger level="INFO" doc:name="Logger" doc:id="5e94052a-cb7c-421c-ac3d-e4dbbe2a0d3a" message="eeeeeeerrrror"/>
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2c858c12-4980-44ed-9146-275d6e915756" type="HTTP:INTERNAL_SERVER_ERROR">
+				<logger level="INFO" doc:name="Logger" doc:id="1d0ab05a-1c6b-4fc7-82c3-d9491b99c40f" message="INTERNAL_SERVER_ERROR"/>
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f3038fb7-e476-4368-86f7-980b1a5d7701" type="HTTP:NOT_FOUND">
+				<logger level="INFO" doc:name="Logger" doc:id="a18299ff-0f60-4e04-893d-5e619b7f330a" message="HTTP:NOT_FOUND"/>
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="38c2e075-e1ad-4faf-9797-3c9a6c477e23" type="HTTP:TIMEOUT">
+				<logger level="INFO" doc:name="Logger" doc:id="b2dbc7af-118e-45aa-bc65-59c00f859b16" message="HTTP:TIMEOUT"/>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 </mule>

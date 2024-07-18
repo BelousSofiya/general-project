@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<file:config name="File_Config" doc:name="File Config" doc:id="c8cc235a-bfd4-4aee-8c63-12d40d0db1a4" >
 		<file:connection workingDir="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources" />
 	</file:config>
+	<sub-flow name="startProcessFlow" doc:id="64ddf78d-ce9f-414f-a25a-b8221f3a0054" >
+		<set-variable value="#[attributes.queryParams.safetyMode as Boolean]" doc:name="mode" doc:id="92bb2ef2-decb-4aff-850a-21efe3be0b97" variableName="mode"/>
+		<set-payload value='#[{&#10;    "entity": "Payloads",&#10;    "entityFields": "externalId, name, type, weight, orbit, apoapsis, periapsis",&#10;    "externalField": "id, name, type, mass_kg, orbit, apoapsis_km, periapsis_km"&#10;}]' doc:name="Set Payload" doc:id="a7d5a123-9a6a-43ea-86a1-2257b615d472" />
+		<flow-ref doc:name="Flow Reference" doc:id="3e0c48d3-7ce1-4f51-b797-097c9c8e7e1f" name="infoGatherFlow" />
+		<set-payload value='#[{&#10;    "entity": "Launchpads",&#10;    "entityFields": "externalId, name, locality, region, status",&#10;    "externalField": "id, name, locality, region, status"&#10;}]' doc:name="Set Payload" doc:id="ecb76145-10ef-47b9-935d-26b287d2cb17" />
+		<flow-ref doc:name="Flow Reference" doc:id="c96b0d2d-a70f-4997-9ea1-33fc0176c392" name="infoGatherFlow" />
+		<set-payload value='#[{&#10;    "entity": "Rockets",&#10;    "entityFields": "externalId, name, active, stages, costPerLaunch, description",&#10;    "externalField": "id, name, active, stages, cost_per_launch, description"&#10;}]' doc:name="Set Payload" doc:id="a6aed913-44a6-4577-8543-dd8381018b82" />
+		<ee:transform doc:name="Transform Message" doc:id="6f622416-7875-4de4-8394-fbe74bfd4034">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+import * from dw::Runtime
+output application/json
+---
+payload wait 20000]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="683b216b-e5ea-4359-8f20-844e881d8a4c" name="infoGatherFlow" />
+	</sub-flow>
 	<sub-flow name="infoGatherFlow" doc:id="9624b1e4-e65f-4596-9a65-a794ed517122" >
 		<ee:transform doc:name="mode/entity/extenalFields/entityFields" doc:id="eeed3ea5-1c53-4846-a35a-30995d119a13" >
 			<ee:message >
 			</ee:message>
 				<ee:variables>
-				<ee:set-variable variableName="entity"><![CDATA[attributes.queryParams.entity]]></ee:set-variable>
-				<ee:set-variable variableName="entityFields"><![CDATA[attributes.queryParams.entityFields]]></ee:set-variable>
-				<ee:set-variable variableName="externalField"><![CDATA[attributes.queryParams.externalField]]></ee:set-variable>
-				<ee:set-variable variableName="mode"><![CDATA[attributes.queryParams.safetyMode as Boolean]]></ee:set-variable>
+				<ee:set-variable variableName="entity"><![CDATA[payload.entity]]></ee:set-variable>
+				<ee:set-variable variableName="entityFields"><![CDATA[payload.entityFields]]></ee:set-variable>
+				<ee:set-variable variableName="externalField"><![CDATA[payload.externalField]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<set-variable value='#[%dw 2.0&#10;output application/xml&#10;ns soapenv http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;var entity = vars.entity as String&#10;var requestString = "&lt;roc:GetAll" ++ entity ++ "Request xmlns:roc=\"http://example.com/rocketservice\"/&gt;"&#10;var requestXml = read(requestString, "application/xml")&#10;---&#10;{&#10;	soapenv#Envelope: {&#10;		soapenv#Header: null,&#10;		soapenv#Body: requestXml&#10;	}&#10;}]' doc:name="requestGetAll" doc:id="4c50e570-e406-4821-a715-601b387cce02" variableName="requestGetAll"/>
@@ -28,7 +49,8 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		</http:request>
 			<error-handler >
 				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="53e204e0-4c94-4a38-b6e2-4f6550ce28f0" type="ANY">
-					<raise-error doc:name="Raise error" doc:id="0b0fb516-f696-4acc-b1b7-d5dbc869c6e6" type="ANY"/>
+					<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "logType":"Error: ",&#10;    "code": 400,&#10;    "message": "Bad Request",&#10;    "errorType": "APIKIT:BAD_REQUEST",&#10;    "dateTime": now(),&#10;    "description": "The server could not understand the request due to invalid syntax",&#10;    "source": "APIKIT"&#10;}]' doc:name="ERROR_MESSAGE" doc:id="38850b5e-0c7c-44da-ae3b-908b81a10060" variableName="ERROR_MESSAGE"/>
+					<flow-ref doc:name="Flow Reference" doc:id="6b5d25e0-e1f5-4ed2-b240-86d3f347a960" name="ua-1185-spacex-common-project-impl-Sub_Flow"/>
 				</on-error-continue>
 			</error-handler>
 		</try>
@@ -37,23 +59,22 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			<file:content ><![CDATA[#[vars.mysqlEntity]]]></file:content>
 		</file:write>
 		<http:request method="POST" doc:name="Request query to Mongo" doc:id="538e467f-8e1b-4c4b-96e1-c804d87ff13b" config-ref="HTTP_Request_configuration_Mongo" path="/api">
-			<http:body ><![CDATA[#[vars.requestGetAll]]]></http:body>
+			<http:body><![CDATA[#[vars.requestGetAll]]]></http:body>
 		</http:request>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;var records = payload mapObject ((value) &#10;	-&gt; value mapObject ((value) &#10;		-&gt; value) mapObject ((value) -&gt; value))&#10;var body = valuesOf(records)&#10;---&#10;if ( body[0] is Object ) body else ""]' doc:name="mongoEntity" doc:id="16b985c5-7a61-441d-9ccd-5df4abe0c949" variableName="mongoEntity" />
-		<file:write doc:name="Write1" doc:id="7612e9b9-d709-43f8-983a-131962078c41" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND" >
-			<file:content ><![CDATA[#[vars.mongoEntity]]]></file:content>
+		<file:write doc:name="Write1" doc:id="7612e9b9-d709-43f8-983a-131962078c41" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/mongoEntity.txt" mode="APPEND">
+			<file:content><![CDATA[#[vars.mongoEntity]]]></file:content>
 		</file:write>
-		<try doc:name="Try" doc:id="c4b40e58-6138-4237-8345-8c92dacabcf3" >
+		<try doc:name="Try" doc:id="c4b40e58-6138-4237-8345-8c92dacabcf3">
 			<http:request method="GET" doc:name="Request query to SpaceX" doc:id="f7b12b30-1994-42d2-9c73-f72c3ab3cd71" config-ref="HTTP_Request_configuration_SpaceX" path='#["api/" ++ lower(vars.entity)]' />
-			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="40deb294-ad41-4165-8e12-d15f18788af1" >
-					<raise-error doc:name="Raise error" doc:id="78521f4f-680e-4bc4-b8be-f636af24e374" type="ANY"/>
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="40deb294-ad41-4165-8e12-d15f18788af1" type="ANY">
 				</on-error-propagate>
 			</error-handler>
 		</try>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;var entityFieldsList = vars.entityFields splitBy(",") map ((item) -&gt; trim(item))&#10;var externalFieldsList = vars.externalField splitBy(",") map ((item) -&gt; trim(item))&#10;fun isNull(k, v) = if ( (k == "periapsis" or k == "apoapsis" or k == "weight") and v == null ) 0 &#10;else if ( k == "orbit" and v == null ) "-"  &#10;else v&#10;---&#10;payload map ((obj) -&gt; &#10;    entityFieldsList map ((ent, index) -&gt; &#10;{&#10;	(ent): isNull(ent, obj[externalFieldsList[index]])&#10;}&#10;        ) reduce ((acc, item) -&gt; acc ++ item))]' doc:name="entityFromSpaceX" doc:id="be836de1-bebe-4632-83de-b8f4b5b375b2" variableName="entityFromSpaceX" />
-		<file:write doc:name="Write2" doc:id="681cad8c-eef4-4d0b-ac8d-7ec9f6d9d4e5" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND" >
-			<file:content ><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
+		<file:write doc:name="Write2" doc:id="681cad8c-eef4-4d0b-ac8d-7ec9f6d9d4e5" config-ref="File_Config" path="/Users/alinache/AnypointStudio/studio-workspace/demo2start/src/main/resources/entityFromSpaceX.txt" mode="APPEND">
+			<file:content><![CDATA[#[vars.entityFromSpaceX]]]></file:content>
 		</file:write>
 		<flow-ref doc:name="Flow Reference" doc:id="e22dd25e-2ceb-4fb1-8d24-0ad0959e2501" name="batchFlow"/>
 	</sub-flow>
@@ -81,9 +102,18 @@ import * from dw::core::Strings
 					<ee:transform doc:name="currentSpacex/Mysql/Mongo/" doc:id="a0d5b2bd-6c46-44f8-969c-a08c23fb51c2" >
 						<ee:message />
 						<ee:variables >
-							<ee:set-variable variableName="spaceXCurrent" ><![CDATA[(vars.entityFromSpaceX filter(((item, index) -> vars.entityFromSpaceX[index].externalId==vars.externalId)))[0]]]></ee:set-variable>
-							<ee:set-variable variableName="mysqlCurrent" ><![CDATA[(vars.mysqlEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
-							<ee:set-variable variableName="mongoCurrent" ><![CDATA[(vars.mongoEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
+							<ee:set-variable variableName="spaceXCurrent" ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.entityFromSpaceX filter(((item, index) -> vars.entityFromSpaceX[index].externalId==vars.externalId)))[0]]]></ee:set-variable>
+							<ee:set-variable variableName="mysqlCurrent" ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.mysqlEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
+							<ee:set-variable variableName="mongoCurrent" ><![CDATA[%dw 2.0
+output application/json
+---
+(vars.mongoEntity filter ((item) -> item.externalId == vars.externalId))[0]]]></ee:set-variable>
 						</ee:variables>
 					</ee:transform>
 					<ee:transform doc:name="mysql/mongoOutput" doc:id="5dbe53e9-a92c-4bc2-bfdc-556ca0d74010" >
@@ -176,16 +206,11 @@ output application/json
 payload map ((item) -> read(item, "application/json"))]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
-						<logger level="INFO" doc:name="Logger" doc:id="80313ee5-813a-4e75-a44a-b33eec36d59b" message="#[payload]"/>
+						<logger level="INFO" doc:name="Logger" doc:id="80313ee5-813a-4e75-a44a-b33eec36d59b" message='#[payload]'/>
 					</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
 		</batch:job>
-		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="699e58ff-7bd6-4c7a-be21-c1119a529a45" type="ANY" >
-				<raise-error doc:name="Raise error" doc:id="1c45be1d-d732-4224-9783-76363e8f68b3" type="ANY"/>
-			</on-error-continue>
-		</error-handler>
 	</flow>
 	<sub-flow name="choiceFlow" doc:id="c51ed580-6b11-44b4-8aeb-f8304031c626" >
 		<choice doc:name="Choice" doc:id="4ee8d9b6-7d0b-4b6a-9646-1f2cfb6fc57a" >
@@ -256,5 +281,24 @@ ns roc http://example.com/rocketservice
 				</choice>
 			</when>
 		</choice>
+	</sub-flow>
+		<sub-flow name="mailReportFlow" doc:id="e30b0785-9ec3-4404-a400-af7c405150e7" >
+		<async doc:name="Async" doc:id="b57b68d9-fa08-4710-b406-f701e972dcd9">
+			<try doc:name="Try" doc:id="10254244-e2c6-415f-b8c2-0339e0379c6f">
+					<azure-key-vault:get-secret doc:name="Get Secret" doc:id="41d171ce-6b5b-4748-8df6-1b92a9dc9d43" config-ref="Azure_Key_Vault_Config_Common_project" name="report-mail"/>
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Set Variable secrets CP1" doc:id="12db41f2-fc7d-414c-a094-ee7c4c5693f2" variableName="secrets" />
+					<logger level="INFO" doc:name="Logger" doc:id="a84185b1-beaf-4277-8ae6-655ebd130e1b" message='#[{&#10;  "host": "smtp.gmail.com",&#10;  "port": "587",&#10;  "user": "ua.1185.si.mulesoft.report@gmail.com",&#10;  "password": "kfnq fuxf rkju rxuz",&#10;  "fromaddres": "ua.1185.si.mulesoft.report@gmail.com",&#10;  "toaddres": "ua.1185.si.mulesoft.report@gmail.com"&#10;}]' />
+				<email:send doc:id="c962c34d-1ccc-4c6d-8707-49fb1fe54b0c" config-ref="Email_SMTP" fromAddress="ua.1185.si.mulesoft.report@gmail.com" subject="Error Log" doc:name="Send error email to report mail box CP1">
+			<email:to-addresses>
+							<email:to-address value="kamareggg@gmail.com" />
+						</email:to-addresses>
+						<email:body contentType="text/plain">
+				<email:content><![CDATA[test]]></email:content>
+			</email:body>
+		</email:send>
+					<logger level="INFO" doc:name="Logger  mail connector" doc:id="39082109-04f8-452e-bb03-d838b4583f3c" message="SUCCESS: Sended error mail mesages . Common project" />
+					<error-handler ref="ua-1185-spacex-main-common-project-mail-Error_Handler" />
+				</try>
+		</async>
 	</sub-flow>
 </mule>

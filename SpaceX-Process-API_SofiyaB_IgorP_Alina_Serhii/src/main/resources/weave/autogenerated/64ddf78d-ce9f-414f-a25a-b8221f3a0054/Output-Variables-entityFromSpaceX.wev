@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_64ddf78d_ce9f_414f_a25a_b8221f3a0054_Output_Variables_entityFromSpaceX = Any
+

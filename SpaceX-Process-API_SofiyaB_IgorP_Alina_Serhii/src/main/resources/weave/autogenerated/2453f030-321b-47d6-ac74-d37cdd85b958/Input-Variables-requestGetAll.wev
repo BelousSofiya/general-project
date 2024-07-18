@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_2453f030_321b_47d6_ac74_d37cdd85b958_Input_Variables_requestGetAll = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
