@@ -37,4 +37,8 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 		</salesforce:modified-object-listener>
 		<flow-ref doc:name="Flow Reference" doc:id="e5e239ab-b106-4041-8650-25a0caa3c237" name="on-modified-object"/>
 	</flow>
+	<flow name="common-LaunchesIterator" doc:id="b7504207-c441-4a27-a2e8-beed79f12db5" >
+		<http:listener doc:name="Listener" doc:id="f9b39129-db16-450e-bdd7-7e0a1fe48db5" config-ref="HTTP_Listener_config" path="Launches" />
+		<flow-ref doc:name="Flow Reference" doc:id="49235f92-8912-4a7f-9692-cee59a7f9145" name="launches-publish-to-iterator" />
+	</flow>
 </mule>

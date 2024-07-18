@@ -148,11 +148,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-            <groupId>com.mycompany</groupId>
-            <artifactId>common-project</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
+			<groupId>com.mycompany</groupId>
+			<artifactId>common-project</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
