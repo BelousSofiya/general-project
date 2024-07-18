@@ -27,7 +27,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 				<fixed-frequency frequency="10000"/>
 			</scheduling-strategy>
 		</salesforce:new-object-listener>
-		<flow-ref doc:name="Flow Reference" doc:id="c51ab97c-b83f-4f17-8af6-5d9876093b62" name="salesforce-listener"/>
+		<flow-ref doc:name="Flow Reference" doc:id="c51ab97c-b83f-4f17-8af6-5d9876093b62" name="on-new-object"/>
 	</flow>
 	<flow name="mainFlow1" doc:id="ab144a9a-b285-440b-9ad6-a75a81d86330" >
 		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="f9ba1bfa-bd17-45cb-abdd-83a2bdcf66b0" config-ref="Salesforce_Config" objectType="Contract">
@@ -35,6 +35,6 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 				<fixed-frequency frequency="10000"/>
 			</scheduling-strategy>
 		</salesforce:modified-object-listener>
-		<flow-ref doc:name="Flow Reference" doc:id="e5e239ab-b106-4041-8650-25a0caa3c237" name="salesforce-listenerFlow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="e5e239ab-b106-4041-8650-25a0caa3c237" name="on-modified-object"/>
 	</flow>
 </mule>
