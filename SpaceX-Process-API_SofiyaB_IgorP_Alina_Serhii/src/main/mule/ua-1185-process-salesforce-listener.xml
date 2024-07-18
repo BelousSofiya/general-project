@@ -9,13 +9,13 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
-	<flow name="salesforce-listener" doc:id="4bbec579-4f9a-4cfc-9df4-3fe62dc61047" >
-		<salesforce:new-object-listener doc:name="On New Object" doc:id="5a1b325c-7fee-402b-b90f-a99c7731935b" objectType="Contract" config-ref="Salesforce_Config">
+	<flow name="on-new-object" doc:id="4bbec579-4f9a-4cfc-9df4-3fe62dc61047" >
+		<!-- [STUDIO:"On New Object"]<salesforce:new-object-listener doc:name="On New Object" doc:id="5a1b325c-7fee-402b-b90f-a99c7731935b" objectType="Contract" config-ref="Salesforce_Config">
 		    <scheduling-strategy>
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
-		</salesforce:new-object-listener>
-		<ee:transform doc:name="Mapping fields from salesforce to db" doc:id="2f7097ec-ff03-4fea-96ff-a8ef891b7049" >
+		</salesforce:new-object-listener> [STUDIO] -->
+		<ee:transform doc:name="Mapping fields" doc:id="2f7097ec-ff03-4fea-96ff-a8ef891b7049" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -36,7 +36,7 @@ output application/java
 payload.ExternalId__c]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="Create input xml for system apps" doc:id="59e79ada-ccae-43a4-bbed-f4760f4c6a93" >
+		<ee:transform doc:name="Prepare input xmls" doc:id="59e79ada-ccae-43a4-bbed-f4760f4c6a93" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -66,7 +66,7 @@ output application/xml
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<http:request method="POST" doc:name="Request" doc:id="3a45bba8-ac32-4592-aa96-187b09c92e34" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+		<http:request method="POST" doc:name="MySQL check externalId" doc:id="3a45bba8-ac32-4592-aa96-187b09c92e34" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
@@ -88,7 +88,7 @@ output application/xml
 		</http:request>
 		<choice doc:name="Choice" doc:id="89bb3c61-f962-4ba6-9d18-60357e802f3a" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;---&#10;payload.soap#Envelope.soap#Body.soap#NoDataFoundResponse.result == "There is not any matching data for provided id."]'>
-				<http:request method="POST" doc:name="Request to MySQL system api in create" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+				<http:request method="POST" doc:name="MySQL create launch" doc:id="0ed6d08f-85db-4db9-8604-9d413e949ad3" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body><![CDATA[#[vars.XMLForMySQL]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
 ---
@@ -101,7 +101,7 @@ output application/xml
 				<logger level="INFO" doc:name="Logger" doc:id="a220c97e-43ad-4305-9937-c1b21f784216" message="CREATE"/>
 			</otherwise>
 		</choice>
-		<http:request method="POST" doc:name="Request to Mongo to check if externalId exist in db" doc:id="e558dc47-b0b6-47f6-b483-a330df7b8774" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+		<http:request method="POST" doc:name="Mongo check externalId" doc:id="e558dc47-b0b6-47f6-b483-a330df7b8774" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
@@ -122,7 +122,7 @@ output application/xml
 		</http:request>
 		<choice doc:name="Choice" doc:id="d97f700b-d10a-4cce-ae88-c532cfdf617d" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse == "No result for provided id"]'>
-				<http:request method="POST" doc:name="Request to Mongo system api" doc:id="e77f3a23-9a8f-44ce-a518-bb97fc0f33eb" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+				<http:request method="POST" doc:name="Mongo create launch" doc:id="e77f3a23-9a8f-44ce-a518-bb97fc0f33eb" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body><![CDATA[#[vars.XMLForMongo]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
 ---
@@ -139,13 +139,14 @@ output application/xml
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="403b09a9-967c-4f67-851b-e6509edb9e3f" type="ANY"/>
 		</error-handler>
 	</flow>
-	<flow name="salesforce-listenerFlow" doc:id="a87dbe84-c134-4735-8543-2813b1fac5d6" >
-		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="4a7adbc6-5b48-42e1-b170-bf362a3587d3" objectType="Contract" config-ref="Salesforce_Config">
+	<flow name="on-modified-object" doc:id="a87dbe84-c134-4735-8543-2813b1fac5d6" >
+		<!-- [STUDIO:"On Modified Object"]<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="4a7adbc6-5b48-42e1-b170-bf362a3587d3" objectType="Contract" config-ref="Salesforce_Config">
 		    <scheduling-strategy>
                 <fixed-frequency frequency="10000"/>
             </scheduling-strategy>
-		</salesforce:modified-object-listener>
-		<ee:transform doc:name="Mapping fields from salesforce to db" doc:id="ccab2ecf-4862-49f5-9a67-5f3c54a63ba9" >
+		</salesforce:modified-object-listener> [STUDIO] -->
+		<logger level="INFO" doc:name="Logger" doc:id="696b32b9-9e43-4efc-a56f-c9808e17e1e3" message="#[payload]"/>
+		<ee:transform doc:name="Mapping fields" doc:id="ccab2ecf-4862-49f5-9a67-5f3c54a63ba9" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -166,7 +167,7 @@ output application/java
 payload.ExternalId__c]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="Create input xml for system apps" doc:id="3e11f675-dd87-458a-a22e-af706e62606a" >
+		<ee:transform doc:name="Prepare input xmls" doc:id="3e11f675-dd87-458a-a22e-af706e62606a" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -220,7 +221,7 @@ output application/xml
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<http:request method="POST" doc:name="Request to MySQL to check if externalId exists in db" doc:id="b701b7fa-beb9-4b0c-8e93-9650bf2fd3d0" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+		<http:request method="POST" doc:name="MySQL check externalId" doc:id="b701b7fa-beb9-4b0c-8e93-9650bf2fd3d0" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
@@ -243,7 +244,7 @@ output application/xml
 		<choice doc:name="Choice" doc:id="953c3f13-7514-4b20-a2cc-efec66b1d3d0" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;---&#10;payload.soap#Envelope.soap#Body.soap#NoDataFoundResponse.result == "There is not any matching data for provided id."]'>
 				<try doc:name="Try" doc:id="7656444f-3c74-40fb-a6ac-9d1b5fbbfa25" >
-					<http:request method="POST" doc:name="Request to MySQL system api for create" doc:id="834a007f-57ac-4e94-beb6-11b671435e74" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+					<http:request method="POST" doc:name="MySQL create launch" doc:id="834a007f-57ac-4e94-beb6-11b671435e74" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 					<http:body><![CDATA[#[vars.XMLForMySQLCreate]]]></http:body>
 					<http:headers><![CDATA[#[output application/java
 ---
@@ -259,7 +260,7 @@ output application/xml
 				</try>
 			</when>
 			<otherwise >
-				<http:request method="POST" doc:name="Request to MySQL system api in update" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
+				<http:request method="POST" doc:name="MySQL update launch" doc:id="d8468f09-6375-4e9a-95a4-a9a79d240d0d" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 			<http:body><![CDATA[#[vars.XMLForMySQL]]]></http:body>
 			<http:headers><![CDATA[#[output application/java
 ---
@@ -269,7 +270,7 @@ output application/xml
 		</http:request>
 			</otherwise>
 		</choice>
-		<http:request method="POST" doc:name="Request to Mongo to check if externalId exist in db" doc:id="70de624f-2d0f-43cb-bccb-a18f6da82679" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+		<http:request method="POST" doc:name="Mongo check externalId" doc:id="70de624f-2d0f-43cb-bccb-a18f6da82679" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[%dw 2.0
 output application/xml
 ---
@@ -290,7 +291,7 @@ output application/xml
 		</http:request>
 		<choice doc:name="Choice" doc:id="6b7299bc-9c10-411d-826c-a606c8a16018" >
 			<when expression='#[ns soap http://schemas.xmlsoap.org/soap/envelope/&#10;ns roc http://example.com/rocketservice&#10;---&#10;payload.soap#Envelope.soap#Body.roc#GetByExternalIdResponse != "No result for provided id"]'>
-				<http:request method="POST" doc:name="Request to Mongo system api" doc:id="d054fdbd-a764-480b-9caf-30a3eaf78666" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+				<http:request method="POST" doc:name="Mongo update launch" doc:id="d054fdbd-a764-480b-9caf-30a3eaf78666" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 			<http:body ><![CDATA[#[vars.XMLForMongo]]]></http:body>
 			<http:headers ><![CDATA[#[output application/java
 ---
@@ -301,7 +302,7 @@ output application/xml
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="c5962fc7-e63f-4355-b501-30baa49be62a" message="No result!!!!!!!!!!!!!!!!!!!"/>
-				<http:request method="POST" doc:name="Request to Mongo system api for create" doc:id="45aee9e3-b642-4a6d-8500-9ba517a51047" config-ref="HTTP_Request_configuration_Mongo" path="/api">
+				<http:request method="POST" doc:name="Mongo create launch" doc:id="45aee9e3-b642-4a6d-8500-9ba517a51047" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 					<http:body ><![CDATA[#[vars.XMLForMongoCreate]]]></http:body>
 					<http:headers ><![CDATA[#[output application/java
 ---

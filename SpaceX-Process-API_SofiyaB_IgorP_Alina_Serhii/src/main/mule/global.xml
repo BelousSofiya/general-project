@@ -16,9 +16,6 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<salesforce:basic-connection username="${secure::salesforce.username}" password="${secure::salesforce.password}" securityToken="${secure::salesforce.token}" url="${secure::salesforce.url}"/>
 	</salesforce:sfdc-config>
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="21352e8e-6fbe-4b7b-adca-5971e447fec8" file="config/local-out.yaml" key="1111111111111111"/>
-	<azure-key-vault:config name="Azure_Key_Vault_Config_common_api" doc:name="Azure Key Vault Config" doc:id="80b133a3-8e2f-4d6a-ae65-f9a8f8bf2a47" >
-		<azure-key-vault:connection clientId="${secure::azure.clientId}" tenantId="${secure::azure.tenantId}" clientSecret="${secure::azure.clientSecret}" vaultName="${secure::azure.vaultName}" />
-	</azure-key-vault:config>
 	<http:request-config name="HTTP_Request_configuration_MySQL" doc:name="HTTP Request configuration" doc:id="facc74d9-5a4b-49e1-b766-60e278500eda" >
 		<http:request-connection host="ua-1185-mysql-system-api.us-e2.cloudhub.io" connectionIdleTimeout="300000"/>
 	</http:request-config>
