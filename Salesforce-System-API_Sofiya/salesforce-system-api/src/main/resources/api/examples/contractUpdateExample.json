@@ -1,0 +1,8 @@
+{
+  "ExternalId__c": "123456",
+  "NameSalesforce__c": "Updated Falcon 9 Launch",
+  "SuccessStatus__c": "Success",
+  "Details__c": "This was an updated successful launch.",
+  "DateCreation__c": "2024-06-25T00:00:00Z",
+  "RocketName__c": "Falcon 9"
+}
