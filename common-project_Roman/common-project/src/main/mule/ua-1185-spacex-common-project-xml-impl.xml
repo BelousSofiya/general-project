@@ -7,25 +7,23 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
 http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd">
-	<sub-flow name="ua-1185-spacex-common-project-impl-Sub_Flow" doc:id="2453f030-321b-47d6-ac74-d37cdd85b958" >
+	<sub-flow name="ua-1185-spacex-common-project-impl-xml-Sub_Flow" doc:id="2453f030-321b-47d6-ac74-d37cdd85b958" >
 		<set-variable value='#[%dw 2.0&#10;output application/dw&#10;---&#10;(&#10;    (vars.ERROR_MESSAGE."logType" default "ERROR: ") ++ &#10;    (vars.ERROR_MESSAGE."description" default " "  ) ++&#10;    "." ++&#10;    (vars.ERROR_MESSAGE."source" default " " ) ++&#10;    ". Error details: {" ++ &#10;    (vars.ERROR_MESSAGE."message" default " ") ++ &#10;    "," ++ &#10;    (vars.ERROR_MESSAGE."code" default 500) ++ &#10;    "}"&#10;)]' doc:name="Set Variable errorLog" doc:id="14a0e9f4-fbd4-406b-bd5e-49e6c5054d68" variableName="errorLog" />
-		<logger level="ERROR" doc:name="Logger errorLog CP" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]" />
+		<logger level="ERROR" doc:name="Logger errorLog CP XML" doc:id="72982ecb-6561-495f-b00c-1d61c813676d" message="#[%dw 2.0&#10;output application/java&#10;---&#10;vars.errorLog]" />
 		<ee:transform doc:name="Transform Message Error out" doc:id="bc43641d-c713-44e5-9b28-be98dddfea2f">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
-var inputTime = vars.ERROR_MESSAGE."dateTime" as Time 
-var inputDate = vars.ERROR_MESSAGE."dateTime" as Date
-var inputZone = vars.ERROR_MESSAGE."dateTime" as TimeZone
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope/
 ---
 {
-	"logType": vars.ERROR_MESSAGE."logType" default "ERROR: ",
-    "code": vars.ERROR_MESSAGE."code" default 500,
-    "message": vars.ERROR_MESSAGE."message" default "",
-    "errorType": vars.ERROR_MESSAGE."errorType" default "",
-    "dateTime": (inputDate ++ ' ' ++ inputTime as String {format: "HH:mm"} ++ ' ' ++ inputZone) default now(),
-    "description": vars.ERROR_MESSAGE."description" default "",
-    "source": vars.ERROR_MESSAGE."source" default ""  
+    soap#Envelope: {
+        soap#Body: {
+            soap#Fault: {
+                errorMessage: vars.ERROR_MESSAGE."description" default ""
+            }
+        }
+    }
 }]]></ee:set-payload>
 					</ee:message>
 			<ee:variables >

@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			</email:properties>
 		</email:smtp-connection>
 	</email:smtp-config>
-	<configuration doc:name="Configuration" doc:id="55bc69d4-ec19-4479-a5bf-521e28821d0a" defaultErrorHandler-ref="ua-1185-spacex-main-common-project-Error_Handler" />
+	<configuration doc:name="Configuration" doc:id="55bc69d4-ec19-4479-a5bf-521e28821d0a" defaultErrorHandler-ref="ua-1185-spacex-common-project-main-Error_Handler" />
 	<http:request-config name="HTTP_Request_config_to_log_in_Case_Common_project" doc:name="HTTP Request configuration" doc:id="504eda46-a187-40cf-9330-724fda808e53" basePath="#['/' ++ vars.secretsCase.'base-path']">
 		<http:request-connection host="#[vars.secretsCase.'host']" port="#[vars.secretsCase.'port']"/>
 	</http:request-config>

@@ -36,10 +36,18 @@ mvn clean package install:install
 ```
 ## 4. Add in global config 
 - import(configuration) name imported flow (ua-****-error.xml)
-- min import 
- ├── ua-1185-spacex-common-project-config.xml
- ├── ua-1185-spacex-common-project-impl.xml
- └── ua-1185-spacex-main-error.xml
+
+###  a) min import json out
+  ├── ua-1185-spacex-common-project-config.xml
+  ├── ua-1185-spacex-common-project-sender.xml
+  ├── ua-1185-spacex-common-project-impl.xml
+  └── ua-1185-spacex-main-error.xml
+
+###  a) min import xml out
+  ├── ua-1185-spacex-common-project-config.xml
+  ├── ua-1185-spacex-common-project-sender.xml
+  ├── ua-1185-spacex-common-project-xml-impl.xml
+  └── ua-1185-spacex-main-error.xml
 
 ## 5. Add in Run 
 ```In Mule RUN
