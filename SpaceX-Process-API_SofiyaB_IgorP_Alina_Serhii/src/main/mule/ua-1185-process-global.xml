@@ -26,6 +26,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<os:object-store name="Object_store" doc:name="Object store" doc:id="30195365-46f4-472b-a59f-db1894541703" entryTtl="3" entryTtlUnit="HOURS" expirationInterval="3" expirationIntervalUnit="HOURS" config-ref="ObjectStore_Config" />
 	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="ad5c9fd1-c7f6-4ac1-a930-f0126326d40c" />
 	<file:config name="Randomizer_File_Config" doc:name="File Config" doc:id="721fdc08-c067-471d-a39d-f5f6064eeeb3" >
+		<file:connection workingDir="${app.home}" />
 	</file:config>
 	<wsc:config name="Web_Service_Consumer_Config_SQL" doc:name="Web Service Consumer Config" doc:id="22c475be-17f8-482d-b0b2-0460eddffcde" >
 		<wsc:connection wsdlLocation="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort?wsdl" service="SpaceXdbService" port="SpaceXdbServiceSoapPort" address="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort" >
