@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
-	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
-	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:azure-key-vault="http://www.mulesoft.org/schema/mule/azure-key-vault" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
@@ -11,7 +11,8 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
-http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="fe982120-b92b-46d2-8a21-bc8a03dcb811" >
 		<salesforce:basic-connection username="${secure::salesforce.username}" password="${secure::salesforce.password}" securityToken="${secure::salesforce.token}" url="${secure::salesforce.url}"/>
 	</salesforce:sfdc-config>
@@ -25,7 +26,6 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 	<os:object-store name="Object_store" doc:name="Object store" doc:id="30195365-46f4-472b-a59f-db1894541703" entryTtl="3" entryTtlUnit="HOURS" expirationInterval="3" expirationIntervalUnit="HOURS" config-ref="ObjectStore_Config" />
 	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="ad5c9fd1-c7f6-4ac1-a930-f0126326d40c" />
 	<file:config name="Randomizer_File_Config" doc:name="File Config" doc:id="721fdc08-c067-471d-a39d-f5f6064eeeb3" >
-		<file:connection workingDir="H:\homework\general-project\SpaceX-Process-API_SofiyaB_IgorP_Alina_Serhii\src\main\resources" />
 	</file:config>
 	<wsc:config name="Web_Service_Consumer_Config_SQL" doc:name="Web Service Consumer Config" doc:id="22c475be-17f8-482d-b0b2-0460eddffcde" >
 		<wsc:connection wsdlLocation="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort?wsdl" service="SpaceXdbService" port="SpaceXdbServiceSoapPort" address="http://ua-1185-mysql-system-api.us-e2.cloudhub.io/SpaceXdbService/SpaceXdbServiceSoapPort" >
@@ -49,4 +49,5 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 	<import doc:name="Import" doc:id="82d3a078-09e3-4dcf-99c0-c17b14d3bf53" file="ua-1185-spacex-common-project-config.xml" />
 	<import doc:name="Import" doc:id="ec447a6b-7369-40a4-96b2-1e6b2b7df288" file="ua-1185-spacex-common-project-impl.xml" />
 	<import doc:name="Import" doc:id="9ea5c1b9-b2eb-422f-b38e-d1a9f8b396e0" file="ua-1185-spacex-main-error.xml" />
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="d8931d38-4c7c-41b7-9468-7ac804bafcd7" />
 </mule>
