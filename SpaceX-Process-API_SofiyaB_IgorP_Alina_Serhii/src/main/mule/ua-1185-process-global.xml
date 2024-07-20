@@ -40,15 +40,16 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<http:request-connection host="space-x-system-api.us-e2.cloudhub.io" />
 	</http:request-config>
 	<http:listener-config name="HTTPS_Listener_config" doc:name="HTTP Listener config" doc:id="601c3b48-3ca9-42c8-9c2e-e71c5b9825df" >
-		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" >
-			<tls:context >
-				<tls:trust-store password="password" path="truststore.jks"/>
-				<tls:key-store keyPassword="password" password="password" path="keystore.jks"/>
-			</tls:context>
+		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8082" tlsContext="TLS_Context">
 		</http:listener-connection>
 	</http:listener-config>
 	<import doc:name="Import" doc:id="82d3a078-09e3-4dcf-99c0-c17b14d3bf53" file="ua-1185-spacex-common-project-config.xml" />
 	<import doc:name="Import" doc:id="ec447a6b-7369-40a4-96b2-1e6b2b7df288" file="ua-1185-spacex-common-project-impl.xml" />
-	<import doc:name="Import" doc:id="9ea5c1b9-b2eb-422f-b38e-d1a9f8b396e0" file="ua-1185-spacex-main-error.xml" />
+	<import doc:name="Import" doc:id="9ea5c1b9-b2eb-422f-b38e-d1a9f8b396e0" file="ua-1185-spacex-common-project-main-error.xml" />
 	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="d8931d38-4c7c-41b7-9468-7ac804bafcd7" />
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="b150519e-00c8-4bc5-a8d0-268a1dab4026" >
+		<tls:key-store type="pkcs12" path="keystore.p12" alias="mule-server" keyPassword="xxc45rty" password="xxc45rty" />
+	</tls:context>
+	<import doc:name="Import" doc:id="60d03f30-ee92-4189-babd-03eb57f398ca" file="ua-1185-spacex-common-project-sender.xml" />
+	<import doc:name="Import" doc:id="6154edf3-dc2f-4e8e-b68c-74aaf8a79303" file="ua-1185-spacex-process-api-error.xml" />
 </mule>

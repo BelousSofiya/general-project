@@ -26,7 +26,7 @@ output application/json
 "Processes for entities has been started."]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<error-handler ref="ua-1185-spacex-main-common-project-Error_Handler"/>
+		<error-handler ref="common-error-handlerError_Handler"/>
 	</flow>
 	<flow name="entitiesProcessingFlow" doc:id="486aa30f-f96b-4ee8-b57e-9cf38e689c8d" >
 		<ee:transform doc:name="Set configurations" doc:id="7abd719a-33c5-4e3b-8bc7-077d4d6f83b9" >
