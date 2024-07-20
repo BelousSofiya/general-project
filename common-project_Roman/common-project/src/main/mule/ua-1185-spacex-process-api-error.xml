@@ -3,5 +3,16 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-	<error-handler name="ua-1185-spacex-process-api-errorError_Handler" doc:id="ff77448e-4e76-484b-aa27-86edd162b728" />
+	<error-handler name="ua-1185-spacex-process-api-sync3-db-Error_Handler" doc:id="ff77448e-4e76-484b-aa27-86edd162b728" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue ANY" doc:id="01411ee0-1318-4619-9839-0278bfbaa26e" type="ANY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "DB:BAD_REQUEST",&#10;	"dateTime": now(),&#10;	"description": "The response from the database is not correct, there may be no connection to the database",&#10;	"source": "Process api"&#10;}]' doc:name="Variable DB:BAD_REQUEST" doc:id="e9468aa7-4d53-4d95-a105-8e6859c657a8" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="0ac7d9cf-badd-4759-9dd5-1ea379897d77" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+	</error-handler>
+	<error-handler name="ua-1185-spacex-process-api-sync3-spacex-Error_Handler" doc:id="d085e060-220c-455c-9797-628fb5c58381" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate ANY" doc:id="f1b6b326-ba7c-4e2a-bafe-59b45f1c19e2" type="ANY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "DB:BAD_REQUEST",&#10;	"dateTime": now(),&#10;	"description": "The response from the spaceX is not correct, there may be no connection to the SpaceX",&#10;	"source": "Process api"&#10;}]' doc:name="Variable DB:BAD_REQUEST" doc:id="93773f87-e64f-400d-b409-93e997f5c936" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="34e822ee-f0f5-4bb3-9e05-e2ac7998ac6a" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-propagate>
+	</error-handler>
 </mule>
