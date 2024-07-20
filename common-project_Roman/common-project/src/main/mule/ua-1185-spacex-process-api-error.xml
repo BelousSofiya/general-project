@@ -15,4 +15,18 @@
 			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="34e822ee-f0f5-4bb3-9e05-e2ac7998ac6a" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
 		</on-error-propagate>
 	</error-handler>
+	<error-handler name="ua-1185-spacex-process-api-salesforce-listener-error" doc:id="c8790738-edeb-4433-a6fd-2191a1bd4371" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue HTTP:INTERNAL_SERVER_ERROR" doc:id="f3b48327-db3d-4939-922e-1ee870bf29b0" type="HTTP:INTERNAL_SERVER_ERROR">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "HTTP:INTERNAL_SERVER_ERROR",&#10;	"dateTime": now(),&#10;	"description": "The response from the database is not correct, there may be no connection to the database",&#10;	"source": "Process api"&#10;}]' doc:name="Variable HTTP:INTERNAL_SERVER_ERROR" doc:id="898587f6-e5dd-4087-882e-d2d15f945ea8" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="b7e7ecff-e126-4acb-a3b0-203a347fdc1f" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue HTTP:BAD_REQUEST" doc:id="39bd1c0c-5310-4dc2-9292-a6960611467d" type="HTTP:BAD_REQUEST">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "HTTP:BAD_REQUEST",&#10;	"dateTime": now(),&#10;	"description": "The response from the database is not correct, there may be no connection to the database",&#10;	"source": "Process api"&#10;}]' doc:name="Variable HTTP:BAD_REQUEST" doc:id="ae95d886-38b0-479a-9ca8-303a1fa0f830" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="f87b068f-02ba-4ab7-aed5-5dadad7bc020" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue  salesforce listener ANY" doc:id="5e1b6f3f-1e46-4461-86a1-1d9cea05d77d" type="ANY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 400,&#10;	"message": "Bad Request",&#10;	"errorType": "ANY",&#10;	"dateTime": now(),&#10;	"description": "The response from the database is not correct, there may be no connection to the database",&#10;	"source": "Process api"&#10;}]' doc:name="Variable  salesforce listener ANY" doc:id="378d56c1-5179-48e3-a9a1-daeeddab6286" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="1948d394-9705-428c-afcb-302ba902d8b2" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+	</error-handler>
 </mule>
