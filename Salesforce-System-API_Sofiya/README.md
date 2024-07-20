@@ -52,11 +52,11 @@ Body
 ]
 ```
 ### Create Salesforce Contract ###
-**POST /salesforce**
+**POST /contracts**
 
 Request
 
-`POST http://ua-1185-salesforce-system-api.us-e2.cloudhub.io/salesforce`
+`POST http://ua-1185-salesforce-system-api.us-e2.cloudhub.io/contracts`
 
 Response
 ```json
