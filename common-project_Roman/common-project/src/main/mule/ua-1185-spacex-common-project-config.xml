@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			</email:properties>
 		</email:smtp-connection>
 	</email:smtp-config>
-	<http:request-config name="HTTP_Request_config_to_log_in_Case_Common_project" doc:name="HTTP Request configuration" doc:id="504eda46-a187-40cf-9330-724fda808e53" basePath="#['/' ++ vars.secretsCase.'base-path']">
+	<http:request-config name="HTTP_Request_config_to_log_in_Case_Common_project" doc:name="HTTP Request configuration" doc:id="504eda46-a187-40cf-9330-724fda808e53">
 		<http:request-connection host="#[vars.secretsCase.'host']" port="#[vars.secretsCase.'port']"/>
 	</http:request-config>
 </mule>
