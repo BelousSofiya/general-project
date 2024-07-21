@@ -52,4 +52,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	</tls:context>
 	<import doc:name="Import" doc:id="60d03f30-ee92-4189-babd-03eb57f398ca" file="ua-1185-spacex-common-project-sender.xml" />
 	<import doc:name="Import" doc:id="6154edf3-dc2f-4e8e-b68c-74aaf8a79303" file="ua-1185-spacex-process-api-error.xml" />
+	<http:request-config name="HTTP_Request_configuration_Salesforce" doc:name="HTTP Request configuration" doc:id="344cf570-ab42-445a-81a5-5c5ad7397ce9" >
+		<http:request-connection connectionIdleTimeout="300000" host="ua-1185-salesforce-system-api.us-e2.cloudhub.io"/>
+	</http:request-config>
 </mule>
