@@ -12,14 +12,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
-	<flow name="sync-rocket-payload-launchpad-mainFlow" doc:id="7d52b541-6f8e-417e-94b8-7e5c2b612029">
-		<http:listener doc:name="Listener" doc:id="ea816fd6-d14a-4597-a2ff-e953ba06b8c2" config-ref="HTTPS_Listener_config" path="/sync" />
-		<flow-ref doc:name="Flow Reference" doc:id="9eb194d8-6433-4912-995d-83299cd2fbf4" name="startProcessFlow" />
-	</flow>
-	<flow name="sync-rocket-payload-launchpad-reportFlow" doc:id="cac18678-6250-4e53-93b1-9a58ccddc778" >
-		<http:listener doc:name="Listener" doc:id="015aae3b-1c09-490a-a777-182081067b7b" config-ref="HTTPS_Listener_config" path="/sendReport"/>
-		<flow-ref doc:name="Flow Reference" doc:id="53a64674-4d05-4f9c-892f-2b79826bdd66" name="startReportFlow"/>
-	</flow>
+
 	<sub-flow name="startProcessFlow" doc:id="64ddf78d-ce9f-414f-a25a-b8221f3a0054" >
 		<set-variable value="#[attributes.queryParams.safetyMode as Boolean]" doc:name="mode" doc:id="92bb2ef2-decb-4aff-850a-21efe3be0b97" variableName="mode"/>
 				<os:clear doc:name="Clear OS" doc:id="5d4def45-0499-4562-ba26-09e755956080" objectStore="Object_store"/>
@@ -421,107 +414,5 @@ ns roc http://example.com/rocketservice
 			<set-variable value='#[%dw 2.0&#10;output application/json&#10;fun getChangedValues(oldObj, newObj) = &#10;  newObj filterObject ((value, key) -&gt; &#10;    oldObj[key] != null and value != oldObj[key]&#10;  ) mapObject ((value, key) -&gt; &#10;    {&#10;	(key): {&#10;		old: oldObj[key],&#10;		new: value&#10;	}&#10;}&#10;  )&#10;var resp = vars.mongoOutput filterObject ((value, key, index) -&gt; key contains  "Update")&#10;var newRequest = vars.mongoOutput mapObject ((value) -&gt; value)&#10;var updatedRequest = getChangedValues(vars.mongoCurrent, newRequest)&#10;---&#10;if ( isEmpty(vars.mongoOutput) ) {&#10;} else if ( isEmpty(resp) ) vars.mongoOutput else vars.mongoOutput mapObject ((value, key, index) -&gt; (key):updatedRequest)]' doc:name="checkErrorMongo" doc:id="426bdbb5-9874-48db-90e0-60e01511d703" variableName="checkErrorMongo" />
 			<error-handler ref="ua-1185-spacex-process-api-sync3-db-Error_Handler" />
 					</try>
-	</sub-flow>
-	<sub-flow name="startReportFlow" doc:id="6d911b7b-cbd0-4e8a-8bde-70422cb1cda2" >
-		<os:retrieve-all-keys doc:name="Retrieve all keys" doc:id="35410280-bc08-437b-af42-c20a7215db16" objectStore="Object_store" />
-		<ee:transform doc:name="Transform to json" doc:id="c7b34c0e-2e70-48b5-87b1-fc27027ab9dd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-payload 
-
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<choice doc:name="Choice" doc:id="dfac8fbb-bc73-4c2a-8e3b-2edd9f45de8c" >
-			<when expression='#[payload == [  "Launchpads_result_mongo_report",&#10;  "Launchpads_result_mysql_report",&#10;  "Payloads_result_mongo_report",&#10;  "Payloads_result_mysql_report",&#10;  "Rockets_result_mongo_report",&#10;  "Rockets_result_mysql_report",&#10;  "result_mode_report"&#10;]]' >
-				<flow-ref doc:name="Flow Reference" doc:id="f1ec2dd3-612d-4ed6-b737-a8ce71b73964" name="createReportFlow" />
-			</when>
-			<otherwise >
-				<ee:transform doc:name="Wait Message" doc:id="c8d90157-5dd0-4604-a7b8-454eaba85116" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output text/plain
----
-"You need to wait for the report to be generated."]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-			</otherwise>
-		</choice>
-	</sub-flow>
-	<sub-flow name="createReportFlow" doc:id="cd27b337-95bb-459e-89d1-b5c4c0221443" >
-		<os:retrieve-all doc:name="Retrieve all data from os" doc:id="842675ba-cfde-4025-92f6-61af7e48cca6" objectStore="Object_store" />
-		<ee:transform doc:name="Transform to json" doc:id="5e74cc30-e291-4a69-9dbd-9f72c41e9c99" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-payload 
-
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<ee:transform doc:name="create report" doc:id="a6ff3de5-560e-40c2-bf56-9d860ce6b606" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-import * from dw::core::Dates
-output text/plain
----
-"Mode: " ++ payload.result_mode_report as String ++ "\n" ++
-"DateTime: " ++ (now() as String { format: "dd-MM-yyyy HH:mm:ss\n" }) ++
-"Requestor: HTTPS\n\n" ++
-"Content\n" ++  "------------------------------------------------------------------------\n" ++
-"\nSource: MySQL\n" ++ 
-payload."Launchpads_result_mysql_report" as String ++ "\n" ++
-payload."Rockets_result_mysql_report" as String ++ "\n" ++
-payload."Payloads_result_mysql_report" as String ++
-"\n\nSource: MongoDB\n" ++ 
-payload."Launchpads_result_mongo_report" as String ++ "\n" ++
-payload."Rockets_result_mongo_report" as String ++ "\n" ++
-payload."Payloads_result_mongo_report" as String ++
-"\n------------------------------------------------------------------------"]]></ee:set-payload>
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="report" ><![CDATA[%dw 2.0
-import * from dw::core::Dates
-output text/plain
----
-"Mode: " ++ payload.result_mode_report as String ++ "\n" ++
-"DateTime: " ++ (now() as String { format: "dd-MM-yyyy HH:mm:ss\n" }) ++
-"Requestor: HTTPS\n\n" ++
-"Content\n" ++  "------------------------------------------------------------------------\n" ++
-"\nSource: MySQL\n" ++ 
-payload."Launchpads_result_mysql_report" as String ++ "\n" ++
-payload."Rockets_result_mysql_report" as String ++ "\n" ++
-payload."Payloads_result_mysql_report" as String ++
-"\n\nSource: MongoDB\n" ++ 
-payload."Launchpads_result_mongo_report" as String ++ "\n" ++
-payload."Rockets_result_mongo_report" as String ++ "\n" ++
-payload."Payloads_result_mongo_report" as String ++
-"\n------------------------------------------------------------------------"]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<set-variable value='#[%dw 2.0&#10;import * from dw::core::Dates&#10;output text/plain&#10;---&#10;(now() as String { format: "dd-MM-yyyy" })]' doc:name="date" doc:id="67cb7af2-4ed8-4efa-8650-74929bed87bc" variableName="date" />
-		<file:write doc:name="Write report into file" doc:id="98b4dc71-234f-4fd3-8628-31154fe53848" path='#["/tmp/" ++ vars.date as String ++ "-https-sync-report.txt"]'/>
-		<flow-ref doc:name="Flow Reference" doc:id="da77170e-08c8-4c86-9395-92bd1a23f95b" name="mailReportFlow" />
-	</sub-flow>
-	<sub-flow name="mailReportFlow" doc:id="e30b0785-9ec3-4404-a400-af7c405150e7" >
-		<async doc:name="Async" doc:id="b57b68d9-fa08-4710-b406-f701e972dcd9">
-			<try doc:name="Try" doc:id="10254244-e2c6-415f-b8c2-0339e0379c6f">
-					<!-- [STUDIO:"Get Secret"]<azure-key-vault:get-secret doc:name="Get Secret" doc:id="41d171ce-6b5b-4748-8df6-1b92a9dc9d43" config-ref="Azure_Key_Vault_Config_Common_project" name="report-mail"/> [STUDIO] -->
-				<!-- [STUDIO:"secrets"]<set-variable value="#[%dw 2.0&#10;output application/json&#10;&#45;&#45;-&#10;read(payload.value as String)&#93;" doc:name="secrets" doc:id="12db41f2-fc7d-414c-a094-ee7c4c5693f2" variableName="secrets" /> [STUDIO] -->
-				<email:send doc:id="c962c34d-1ccc-4c6d-8707-49fb1fe54b0c" config-ref="Email_SMTP_Common_project" fromAddress="ua.1185.si.mulesoft.report@gmail.com" subject="Report" doc:name="Send report email to report mail box">
-			<email:to-addresses>
-							<email:to-address value="kamareggg@gmail.com" />
-						</email:to-addresses>
-						<email:body contentType="text/plain">
-				<email:content><![CDATA[#[vars.report]]]></email:content>
-			</email:body>
-		</email:send>
-					<logger level="INFO" doc:name="Logger mail connector" doc:id="39082109-04f8-452e-bb03-d838b4583f3c" message="SUCCESS: Sended report mail" />
-				<error-handler ref="ua-1185-spacex-common-project-mail-Error_Handler" />
-				</try>
-		</async>
 	</sub-flow>
 </mule>
