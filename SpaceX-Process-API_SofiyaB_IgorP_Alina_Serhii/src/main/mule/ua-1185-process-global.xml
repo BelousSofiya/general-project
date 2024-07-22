@@ -52,7 +52,13 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	</tls:context>
 	<import doc:name="Import" doc:id="60d03f30-ee92-4189-babd-03eb57f398ca" file="ua-1185-spacex-common-project-sender.xml" />
 	<import doc:name="Import" doc:id="6154edf3-dc2f-4e8e-b68c-74aaf8a79303" file="ua-1185-spacex-process-api-error.xml" />
+<<<<<<< HEAD
+		<os:object-store name="Object_store_sync" doc:name="Object store" doc:id="75a2dff1-cc5f-40f8-a5a0-0c844f6e067e" entryTtl="10" expirationInterval="3" expirationIntervalUnit="HOURS" config-ref="ObjectStore_Config_sync" entryTtlUnit="MINUTES"/>
+	<os:config name="ObjectStore_Config_sync" doc:name="ObjectStore Config" doc:id="9d003952-75ee-4164-9a6d-9d6ed365c101" />
+	
+=======
 	<http:request-config name="HTTP_Request_configuration_Salesforce" doc:name="HTTP Request configuration" doc:id="344cf570-ab42-445a-81a5-5c5ad7397ce9" >
 		<http:request-connection connectionIdleTimeout="300000" host="ua-1185-salesforce-system-api.us-e2.cloudhub.io"/>
 	</http:request-config>
+>>>>>>> develop
 </mule>

@@ -15,8 +15,8 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 
 	<sub-flow name="startProcessFlow" doc:id="64ddf78d-ce9f-414f-a25a-b8221f3a0054" >
 		<set-variable value="#[attributes.queryParams.safetyMode as Boolean]" doc:name="mode" doc:id="92bb2ef2-decb-4aff-850a-21efe3be0b97" variableName="mode"/>
-				<os:clear doc:name="Clear OS" doc:id="5d4def45-0499-4562-ba26-09e755956080" objectStore="Object_store"/>
-		<os:store doc:name="Store result_mode" doc:id="c8ab4071-deca-40bf-ad69-ac578baad330" key='result_mode_report' objectStore="Object_store">
+				<os:clear doc:name="Clear OS" doc:id="5d4def45-0499-4562-ba26-09e755956080" objectStore="Object_store_sync"/>
+		<os:store doc:name="Store result_mode" doc:id="c8ab4071-deca-40bf-ad69-ac578baad330" key='result_mode_report' objectStore="Object_store_sync">
 							<os:value><![CDATA[#[%dw 2.0
 output application/json
 fun mode(boo) = if(boo) "WORKING" else "SAFETY"
@@ -32,13 +32,17 @@ output text/plain
 "The process of creating and updating data has started. Wait a moment while the data is processed and the report is generated."]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Finish synchronization logger" doc:id="3a9621dd-d9c7-4cc9-81d0-cbcac1cedcee" message="SUCCESS: Synchronization process was finished." />
 	</sub-flow>
 	<sub-flow name="entitiesSetFlow" doc:id="a8718d65-be9f-4ee0-b5a0-e7d78c070c69" >
 		<set-payload value='#[{&#10;    "entity": "Payloads",&#10;    "entityFields": "externalId, name, type, weight, orbit, apoapsis, periapsis",&#10;    "externalField": "id, name, type, mass_kg, orbit, apoapsis_km, periapsis_km"&#10;}]' doc:name="Set Payloads" doc:id="a7d5a123-9a6a-43ea-86a1-2257b615d472" />
+		<logger level="INFO" doc:name="Start of the payloads synchronization process logger" doc:id="1a8fbb04-1086-44c7-910b-16738984b4b3" message="SUCCESS: Start of the payloads synchronization process." />
 		<flow-ref doc:name="Flow Reference" doc:id="3e0c48d3-7ce1-4f51-b797-097c9c8e7e1f" name="infoGatherFlow" />
 		<set-payload value='#[{&#10;    "entity": "Launchpads",&#10;    "entityFields": "externalId, name, locality, region, status",&#10;    "externalField": "id, name, locality, region, status"&#10;}]' doc:name="Set Launchpads" doc:id="ecb76145-10ef-47b9-935d-26b287d2cb17" />
+		<logger level="INFO" doc:name="Start of the launchpads synchronization process logger" doc:id="c19684f9-ecf9-4bcd-9aab-060f0691e776" message="SUCCESS: Start of the launchpads synchronization process." />
 		<flow-ref doc:name="Flow Reference" doc:id="c96b0d2d-a70f-4997-9ea1-33fc0176c392" name="infoGatherFlow" />
 		<set-payload value='#[{&#10;    "entity": "Rockets",&#10;    "entityFields": "externalId, name, active, stages, costPerLaunch, description",&#10;    "externalField": "id, name, active, stages, cost_per_launch, description"&#10;}]' doc:name="Set Rockets" doc:id="a6aed913-44a6-4577-8543-dd8381018b82" />
+		<logger level="INFO" doc:name="Start of the rockets synchronization process logger" doc:id="eaa064b1-f6b2-419d-9084-882df0a197cc" message="SUCCESS: Start of the rockets synchronization process." />
 		<flow-ref doc:name="Flow Reference" doc:id="683b216b-e5ea-4359-8f20-844e881d8a4c" name="infoGatherFlow" />
 	</sub-flow>
 	<sub-flow name="infoGatherFlow" doc:id="9624b1e4-e65f-4596-9a65-a794ed517122" >
@@ -55,6 +59,7 @@ output text/plain
 			<http:request method="GET" doc:name="Request query to SpaceX" doc:id="f7b12b30-1994-42d2-9c73-f72c3ab3cd71" config-ref="HTTP_Request_configuration_SpaceX" path='#["api/" ++ lower(vars.entity)]' />
 			<error-handler ref="ua-1185-spacex-process-api-sync3-spacex-Error_Handler" />
 		</try>
+		<logger level="INFO" doc:name="Data from SpaceX received logger" doc:id="25ba0e12-209d-4940-ab31-994e8095c69a" message="SUCCESS: Data from SpaceX received." />
 		<ee:transform doc:name="vars_entityFromSpaceX/spilledEntity/requestCreate/Update" doc:id="36ad8479-f92a-463c-92c5-aabe5ece4693" >
 			<ee:message >
 			</ee:message>
@@ -246,7 +251,7 @@ output application/json
   filter (!isEmpty($))]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<os:store doc:name="Store mysql report" doc:id="b5449cb1-d93e-4a21-ac74-3ce9ed15cba1" key='#[vars.entity as String ++ "_result_mysql_report"]' objectStore="Object_store" >
+		<os:store doc:name="Store mysql report" doc:id="b5449cb1-d93e-4a21-ac74-3ce9ed15cba1" key='#[vars.entity as String ++ "_result_mysql_report"]' objectStore="Object_store_sync" >
 			<os:value ><![CDATA[#[%dw 2.0
 output text/plain 
 
@@ -264,7 +269,7 @@ var text_update_mysql = update_mysql_mod map ((item, index) -> item pluck ((valu
 (if(!isEmpty(text_update_mysql))("\nUPDATED\n"++ text_update_mysql as String) else "") ++
 (if(!isEmpty(fault_mysql)) ("\nFAILED\n"++ fault_mysql as String) else "")]]]></os:value>
 		</os:store>
-		<os:store doc:name="Store mongo report" doc:id="e065e835-5552-452a-9e69-a081d431f026" key='#[vars.entity as String ++ "_result_mongo_report"]' objectStore="Object_store" >
+		<os:store doc:name="Store mongo report" doc:id="e065e835-5552-452a-9e69-a081d431f026" key='#[vars.entity as String ++ "_result_mongo_report"]' objectStore="Object_store_sync" >
 			<os:value ><![CDATA[#[%dw 2.0
 output text/plain
 
