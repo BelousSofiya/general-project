@@ -23,7 +23,7 @@ fun mode(boo) = if(boo) "WORKING" else "SAFETY"
 ---
 mode(vars.mode)]]]></os:value>
 						</os:store>
-		<flow-ref doc:name="Flow Reference" doc:id="f05355ff-1dd2-43f3-a24e-f6a4983a004c" name="entitiesSetFlow"/>
+		<flow-ref doc:name="Entities set flow" doc:id="f05355ff-1dd2-43f3-a24e-f6a4983a004c" name="entitiesSetFlow"/>
 		<ee:transform doc:name="Finish message" doc:id="ab50791f-068e-4ec9-bb33-c561fe25fe0e" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -91,7 +91,7 @@ import * from dw::core::Strings
 				<ee:set-variable variableName="splitedEntityFields" ><![CDATA[vars.entityFields as String splitBy ", "]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="e22dd25e-2ceb-4fb1-8d24-0ad0959e2501" name="batchFlow"/>
+		<flow-ref doc:name="To batch flow" doc:id="e22dd25e-2ceb-4fb1-8d24-0ad0959e2501" name="batchFlow"/>
 	</sub-flow>
 	<flow name="batchFlow" doc:id="996a98d1-d9c8-479a-9193-f437f7a90262" >
 		<batch:job jobName="Batch_Job" doc:id="c4e1fe9e-d880-4a37-90e0-20993949dd17" maxFailedRecords="100">
@@ -100,7 +100,7 @@ import * from dw::core::Strings
 					<batch:aggregator doc:name="Batch Aggregator" doc:id="648e1ac1-6ef2-4b5c-9618-a0c4e3615897" size="300">
 						<flow-ref doc:name="Flow Reference" doc:id="bf61c0ec-029c-4ca3-99dc-927fb0ccc0d5" name="batchAgregationFlow"/>
 					</batch:aggregator>
-					<flow-ref doc:name="Flow Reference" doc:id="367a466c-47a1-4a0c-a2bd-b0777573c0ee" name="batchStepFlow"/>
+					<flow-ref doc:name="To batch step flow" doc:id="367a466c-47a1-4a0c-a2bd-b0777573c0ee" name="batchStepFlow"/>
 				</batch:step>
 			</batch:process-records>
 		</batch:job>
@@ -136,8 +136,8 @@ output application/json
 (vars.entityFromSpaceX filter(((item, index) -> vars.entityFromSpaceX[index].externalId==vars.externalId)))[0]]]></ee:set-variable>
 						</ee:variables>
 					</ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="188ca87d-cdb5-48a3-b7b3-05abfa77afe4" name="mysqlStepFlow" />
-		<flow-ref doc:name="Flow Reference" doc:id="d30a7ea2-8b07-4f5b-b2d0-0938af701b01" name="mongoStepFlow" />
+		<flow-ref doc:name="To MySQL flow" doc:id="188ca87d-cdb5-48a3-b7b3-05abfa77afe4" name="mysqlStepFlow" />
+		<flow-ref doc:name="To Mongo flow" doc:id="d30a7ea2-8b07-4f5b-b2d0-0938af701b01" name="mongoStepFlow" />
 		<ee:transform doc:name="prepare to agregation" doc:id="a76c6207-54fc-4164-89c1-cdc010f24ff0">
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
@@ -260,7 +260,7 @@ var fault_mysql = (vars.fault_mysql.fault_mysql map ((item) -> item pluck ((valu
 var create_mysql = vars.create_mysql.create_mysql map ((item, index) -> item mapObject ((value, key, index) -> value mapObject ((value, key, index) -> value)))
 var text_create_mysql = create_mysql map ((item) -> vars.splitedEntityFields map ((field) -> field ++ ": " ++ (item[field])) joinBy ", ") joinBy "\n"
 
-var update_mysql = vars.update_musql.update_mysql map ((item, index) -> item mapObject ((value, key, index) -> (key): value mapObject ((value, key, index) -> value)))
+var update_mysql = vars.update_mysql.update_mysql map ((item, index) -> item mapObject ((value, key, index) -> (key): value mapObject ((value, key, index) -> value)))
 var update_mysql_mod = update_mysql map ((item) -> item mapObject ((value, key, index) -> ("externalId: " ++ (key as String)) : value mapObject ((value, key, index) -> (key) : "old "++ (key) ++ ": " ++ value.old ++ " -> new " ++ (key) ++ ": " ++ value.new)))
 var text_update_mysql = update_mysql_mod map ((item, index) -> item pluck ((value, key, index) -> key ++ ", " ++ (value pluck ((value, key, index) -> key ++" - "++ value) joinBy  ", "))joinBy  "") joinBy  " \n"
 ---

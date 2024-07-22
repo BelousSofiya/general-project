@@ -242,7 +242,7 @@ fun getNewValue(val) = (
     else if(val is String and isNumeric(val))
             numbersOperations[randomInt(sizeOf(numbersOperations))](val as Number)
     else if(val is String) stringOperations[randomInt(sizeOf(stringOperations))](val)
-    else if(val is Number) numbersOperations[randomInt(sizeOf(numbersOperations))](val)
+    else if(val is Number) numbersOperations[randomInt(sizeOf(numbersOperations))](val) + 1
     else if(val is Null) stubs[randomInt(sizeOf(stubs))]
     else null
 )
