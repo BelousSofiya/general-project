@@ -52,7 +52,7 @@ output application/xml
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://www.example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
             "roc:CreateLaunchRequest": vars.LaunchFieldsData
@@ -197,7 +197,7 @@ output application/xml
 output application/xml
 ---
 {
-    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://www.example.com/rocketservice"): {
+    "soapenv:Envelope" @("xmlns:soapenv": "http://schemas.xmlsoap.org/soap/envelope/", "xmlns:roc":"http://example.com/rocketservice"): {
         "soapenv:Header": null,
         "soapenv:Body": {
             "roc:CreateLaunchRequest": vars.LaunchFieldsData
