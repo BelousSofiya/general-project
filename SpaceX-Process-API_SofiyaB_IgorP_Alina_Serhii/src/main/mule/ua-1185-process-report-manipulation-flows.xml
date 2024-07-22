@@ -48,7 +48,7 @@ var error = {
     "errorType": vars.error.errorType.identifier,
     "dateTime": now(),
     "description": vars.error.description,
-    "source": vars.error.dslSource
+    "source": vars.error.cause
 }
 ---
 error mapObject ((value, key) -> 
