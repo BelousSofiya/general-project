@@ -69,4 +69,16 @@
 			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="a9bd0a90-a214-41f8-906c-e149290e116e" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
 		</on-error-propagate>
 	</error-handler>
+	<error-handler name="ua-1185-spacex-process-api-launche-iterrator-P-Error_Handler" doc:id="f4d4a501-15e7-4260-b367-70bbc5531df2" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate ANY" doc:id="fd9f33af-f6e5-4368-ade9-3c0ab7d4b231" type="ANY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 500,&#10;	"message": "Serice Error",&#10;	"errorType": "ANY",&#10;	"dateTime": now(),&#10;	"description": "Problem with connection to Database service",&#10;	"source": "launche-iterrator"&#10;}]' doc:name="Variable ANY" doc:id="f3e8fd6c-db1b-415f-a3e9-75f9c6269e20" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="ded290b2-c498-496b-a78c-3a31aabe472d" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-propagate>
+	</error-handler>
+	<error-handler name="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" doc:id="9fd987f6-1f0a-4fe9-8381-4aeb62fec5b1" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue ANY" doc:id="26c593a1-3cef-41ce-a169-26c2e4f9d3a7" type="ANY">
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"logType":"Error: ",&#10;	"code": 500,&#10;	"message": "Serice Error",&#10;	"errorType": "ANY",&#10;	"dateTime": now(),&#10;	"description": "Problem with connection to Database service",&#10;	"source": "launche-iterrator"&#10;}]' doc:name="Variable ANY" doc:id="6d221fa9-1667-4422-bbdc-cf395e4a1ae0" variableName="ERROR_MESSAGE" />
+			<flow-ref doc:name="Flow Reference Common Project Impl" doc:id="8de1e513-8452-4187-8b2f-33142f288dac" name="ua-1185-spacex-common-project-impl-Sub_Flow" />
+		</on-error-continue>
+	</error-handler>
 </mule>
