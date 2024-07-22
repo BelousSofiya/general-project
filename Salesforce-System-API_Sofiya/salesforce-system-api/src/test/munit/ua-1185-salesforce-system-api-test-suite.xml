@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<munit:config name="ua-1185-salesforce-system-api-test-suite.xml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="6237301a-c0c5-4078-a7d2-67083b5acb63" >
+		<http:request-connection host="0.0.0.0" port="8081" />
+	</http:request-config>
 	<munit:test name="create-case-test-flow" doc:id="6f7683b7-0645-46bc-877b-beec62e976cc">
 		<munit:enable-flow-sources >
 			<munit:enable-flow-source value="salesforce-system-api-main" />
@@ -27,7 +31,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow Reference to Create Case" doc:id="6b977062-2cff-428c-bf8f-3e9cad778365" name="post:\cases:application\json:salesforce-system-api-config"/>
+			<flow-ref doc:name="Flow Reference to Create Case" doc:id="6b977062-2cff-428c-bf8f-3e9cad778365" name="post:\cases:application\json:salesforce-system-api-config" />
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert That Status Code is 200" doc:id="c02f7b5d-d11b-4429-9df3-9be2bf1389f9" is="#[MunitTools::equalTo(200)]" expression="#[attributes.statusCode]"/>
@@ -115,7 +119,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<munit:behavior>
 			<munit-tools:mock-when doc:name="Mock when" doc:id="083ec2ed-b410-4f38-9806-6e2215aabb71" processor="salesforce:query" >
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="19ecb02b-40c6-4f6e-9659-a134a85bc29c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="96e88d63-596a-4df1-87e3-2d350b2f3498" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value='#[[&#10;    {&#10;        "Status": "Draft",&#10;        "StartDate": "2023-07-01",&#10;        "DateCreation__c": "2024-07-01",&#10;        "RocketName__c": "Rocket",&#10;        "AccountId": "001Qy00000OJydlIAD",&#10;        "ExternalId__c": "5eb87cddffd86e000604b32f",&#10;        "Details__c": "Hello",&#10;        "Id": "800Qy00000GUEXNIA5",&#10;        "ContractTerm": "1",&#10;        "type": "Contract",&#10;        "SuccessStatus__c": "success",&#10;        "NameSalesforce__c": "Sofiia1"&#10;    }&#10;]]' />

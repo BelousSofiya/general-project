@@ -10,18 +10,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/schema/mule/azure-key-vault/current/mule-azure-key-vault.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="createCase" doc:id="e7df28ba-0d0c-453c-93cf-d88d1e5b8830" >
-		<http:listener doc:name="Listener POST /cases" doc:id="3600b39b-5964-40e1-904f-3d4bcc3c44e3" config-ref="salesforce-system-api-httpListenerConfig" path="${cases.endpoint}"/>
-		<ee:transform doc:name="Transform Message Json to Java" doc:id="453f4fd5-94e2-4fef-82fa-9e2aa8d38cee">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+	<sub-flow name="createCase" doc:id="9fe8e13a-1509-4d79-ba68-cfb96fde71f4" >
+		<ee:transform doc:name="Transform Message Json to Java" doc:id="739e714c-446e-4730-b857-dfcb6609bceb" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:create doc:name="Create" doc:id="6d4490e0-0c00-4a2d-88dd-abce0e48643e" config-ref="Salesforce_Global_Config" type="Case" />
-		<ee:transform doc:name="Transform Message to JSON" doc:id="9c2410c6-72e7-44f5-ab54-39a54a460596" >
+		<salesforce:create type="Case" doc:name="Create" doc:id="c975b76b-65d0-439b-b20a-27f52b4ef83a" config-ref="Salesforce_Global_Config" />
+		<ee:transform doc:name="Transform Message to JSON" doc:id="68c9e1ef-5604-475e-9a43-9ed5365b5dda" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -29,38 +28,10 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Create Case Logger" doc:id="29bd08f7-0696-4444-bb99-e62a37233403" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API created case to Salesforce API"]'/>
-	</flow>
-	<flow name="createContract" doc:id="93411593-a10b-4e03-8141-cd360e411333" >
-		<http:listener doc:name="Listener POST /salesforce" doc:id="f3f61bd5-973d-4a00-be6c-b4b97b38b2ad" config-ref="salesforce-system-api-httpListenerConfig" path="${salesforce.endpoint}"/>
-		<ee:transform doc:name="Transform Message Json to Java" doc:id="cb37db8f-a3ee-4f4c-aaa5-7ac33c372b4e" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-payload map ((item, index) -> 
-    item ++ {
-        StartDate: item.StartDate as Date,
-        DateCreation__c: item.DateCreation__c as Date
-    }
-)
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<salesforce:create doc:name="Create" doc:id="b7443cd4-4c60-45e0-aa09-8f1743fe327c" config-ref="Salesforce_Global_Config" type="Contract"/>
-		<ee:transform doc:name="Transform Message to JSON" doc:id="133e37ce-a31f-4363-aa3f-fea39eb04812" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="Create Contract Logger" doc:id="bd91503f-158c-4075-95e8-d75a92fbf368" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API created contract to Salesforce API"]'/>
-	</flow>
-	<flow name="updateContract" doc:id="e7c5a19f-80a6-42c7-b4cb-6850db834829" >
-		<http:listener doc:name="Listener PUT /contracts" doc:id="4774c3be-510d-4540-ab0a-49f2d6178df5" config-ref="salesforce-system-api-httpListenerConfig" path="${contracts.endpoint}"/>
-		<ee:transform doc:name="Transform Message Json to Java" doc:id="73db79e1-ff3f-4a86-aa9a-2812d8fc84b2" >
+		<logger level="INFO" doc:name="Create Case Logger" doc:id="f2e67615-4314-40dc-9463-a47ad2d8db52" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API created case to Salesforce API"]' />
+	</sub-flow>
+	<sub-flow name="createContract" doc:id="e7fffc18-783c-42ca-bc1d-7452234ff4f9" >
+		<ee:transform doc:name="Transform Message Json to Java" doc:id="6a83e0a1-7983-4dbf-b96d-7851b221b33f" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
@@ -74,8 +45,8 @@ payload map ((item, index) ->
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:update doc:name="Update" doc:id="51098eb7-cea5-450a-a019-db81e0455f7e" config-ref="Salesforce_Global_Config" type="Contract"/>
-		<ee:transform doc:name="Transform Message to JSON" doc:id="9e425c49-a519-46f8-a577-9b017e31d267" >
+		<salesforce:create type="Contract" doc:name="Create" doc:id="b910ffad-2328-4a63-aa9f-07bac05951d6" config-ref="Salesforce_Global_Config" />
+		<ee:transform doc:name="Transform Message to JSON" doc:id="b6052377-f17f-4d21-9016-08554c9cce77" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -83,37 +54,62 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Create Contract Logger" doc:id="22d0318f-b9a6-4403-b953-875deab723ce" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API updated contract in Salesforce API"]'/>
-	</flow>
-	<flow name="getContractById" doc:id="fb0e05f9-e3ea-44dd-8042-c32fc861182f">
-		<http:listener doc:name="Listener GET /contracts/{id}" doc:id="d95f1039-6c1c-465e-a294-f4baff0e64c8" config-ref="salesforce-system-api-httpListenerConfig" path="/contracts/{id}" />
-		<ee:transform doc:name="Transform Message Json to Java" doc:id="8df7ff6e-8f34-40ff-81ef-2ea82a139f1a">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+		<logger level="INFO" doc:name="Create Contract Logger" doc:id="437c76b5-b5ea-46f9-b408-f4d20d53cc26" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API created contract to Salesforce API"]' />
+	</sub-flow>
+	<sub-flow name="updateContract" doc:id="86f1975b-e1a8-494a-b7c9-cdcbc1cc47ec" >
+		<ee:transform doc:name="Transform Message Json to Java" doc:id="79dade90-c06c-4aaa-ac33-5d458763b16f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload map ((item, index) -> 
+    item ++ {
+        StartDate: item.StartDate as Date,
+        DateCreation__c: item.DateCreation__c as Date
+    }
+)
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update type="Contract" doc:name="Update" doc:id="26ae872d-e6a8-4fad-afed-5eb8fae4f0ed" config-ref="Salesforce_Global_Config" />
+		<ee:transform doc:name="Transform Message to JSON" doc:id="e10724bd-a3f8-4d93-b4e2-ee3458d63d81" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Create Contract Logger" doc:id="f72b06cb-5c7c-4136-937b-e78ee4f70662" message='#[output application/java&#10;---&#10;"SUCCESS: Salesforce-System-API updated contract in Salesforce API"]' />
+	</sub-flow>
+	<sub-flow name="getContractById" doc:id="3214549d-c16b-4ebf-b105-e7b1f401ba64" >
+		<ee:transform doc:name="Transform Message Json to Java" doc:id="3ac7eac6-63be-4db3-9b90-88f9821a341b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 ---
 "SELECT Id, AccountId, ExternalId__c, SuccessStatus__c, DateCreation__c, Details__c, RocketName__c, NameSalesforce__c, Status, StartDate, ContractTerm FROM Contract WHERE ExternalId__c = '" ++ (attributes.uriParams.id default "5eb87cddffd86e000604b32f")  ++ "'"]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:query doc:name="Query" doc:id="19ecb02b-40c6-4f6e-9659-a134a85bc29c" config-ref="Salesforce_Global_Config">
-			<salesforce:salesforce-query><![CDATA[#[payload]]]></salesforce:salesforce-query>
+		<salesforce:query doc:name="Query" doc:id="96e88d63-596a-4df1-87e3-2d350b2f3498" config-ref="Salesforce_Global_Config" >
+			<salesforce:salesforce-query ><![CDATA[#[payload]]]></salesforce:salesforce-query>
 		</salesforce:query>
-		<choice doc:name="Choice the Payload" doc:id="4e251b40-1144-40ea-a411-9f48b4352fe0">
-			<when expression="#[payload != null]">
-				<ee:transform doc:name="Transform Message to JSON" doc:id="db6bb5d1-e9c3-4fe5-af24-ba62206754ce">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+		<choice doc:name="Choice the Payload" doc:id="b9a61cd4-41dc-47e0-81f6-446bbe5986bf" >
+			<when expression="#[payload != null]" >
+				<ee:transform doc:name="Transform Message to JSON" doc:id="2148f49c-cfae-4cc4-bf32-54b18c2d5bfd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 payload]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-				<logger level="INFO" doc:name="Contract Retrieved Logger " doc:id="9f595e69-6ef8-4f27-81fb-255b4e6b25da" message='#[output application/java&#10;---&#10;"SUCCESS: Retrieved contract with ID: #[attributes.uriParams.id]"]' />
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Contract Retrieved Logger " doc:id="5f3559f6-0ca8-4063-83bb-f69c6e5e0136" message='#[output application/java&#10;---&#10;"SUCCESS: Retrieved contract with ID: #[attributes.uriParams.id]"]' />
 			</when>
-			<otherwise>
-				<set-variable value="#[204]" doc:name="Set Status Variable" doc:id="092070f5-0d73-479a-b058-de38df1dadf9" variableName="httpStatus" />
-				<logger level="INFO" doc:name="Contract Not Found Logger " doc:id="23931743-f875-4cda-a79e-bf352a664db5" message='#[output application/java&#10;---&#10;"SUCCESS: Contract with #[attributes.uriParams.id] ID was not found"]' />
+			<otherwise >
+				<set-variable value="#[204]" doc:name="Set Status Variable" doc:id="8084f077-920e-406c-bb01-c05a01df1daf" variableName="httpStatus" />
+				<logger level="INFO" doc:name="Contract Not Found Logger " doc:id="b42ca7d6-4601-4787-bfe9-90271954d332" message='#[output application/java&#10;---&#10;"SUCCESS: Contract with #[attributes.uriParams.id] ID was not found"]' />
 			</otherwise>
 		</choice>
-	</flow>
+	</sub-flow>
 </mule>

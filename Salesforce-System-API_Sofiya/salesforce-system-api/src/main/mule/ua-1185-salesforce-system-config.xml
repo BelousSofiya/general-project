@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<salesforce:sfdc-config name="Salesforce_Global_Config" doc:name="Salesforce Config" doc:id="62d9f154-408e-4680-962f-e29018ff8e3d" >
-		<salesforce:basic-connection username="maksym.stepanenko.86@gmail.com" password="Pavlograd1990" securityToken="MBwR3UtuyosEKVbuhcDn96Wn5" />
+		<salesforce:basic-connection username="#[vars.key.username]" password="#[vars.key.password]" securityToken="#[vars.key.securitytoken]" />
 	</salesforce:sfdc-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="716cedf4-1716-4a01-849e-b418bfa44dc2" file="${env}-properties.yaml" />
 	<import doc:name="Import" doc:id="ef8b1ff7-069e-4a92-94d3-383201686e71" file="ua-1185-spacex-api-error.xml" />
