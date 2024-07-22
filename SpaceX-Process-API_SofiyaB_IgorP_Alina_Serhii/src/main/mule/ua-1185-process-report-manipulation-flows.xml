@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
     <flow name="createEntityInReport" doc:id="995b8f3f-dca8-44e9-b885-456ee1a9e489" >
 		<logger level="INFO" doc:name="Logger" doc:id="4f68be64-8297-4c4a-81b1-6c6be3612e04" message='#["Preparing report record for " ++ vars.config.entityName as String]'/>
 		<os:store doc:name="Store Entity Into Report" doc:id="610a6cd5-9eab-4e77-8993-aa66d927db50" key='#[vars.config.entityName as String ++ "Report"]' objectStore="Object_store">
-			<os:value ><![CDATA[#[{}]]]></os:value>
+			<os:value ><![CDATA[#[{started_at: now()}]]]></os:value>
 		</os:store>
 	
 </flow>
@@ -42,13 +42,13 @@ import * from dw::core::Objects
 output application/json
 
 var error = {
-    "logType":"ERROR: ",
+    "logType":"Error: ",
     "code": vars.error.errorMessage.attributes.statusCode,
     "message": valuesOf(vars.error.errorMessage.payload.Envelope.Body.Fault)[0],
     "errorType": vars.error.errorType.identifier,
     "dateTime": now(),
     "description": vars.error.description,
-    "source": vars.error.dslSource
+    "source": vars.error.cause
 }
 ---
 error mapObject ((value, key) -> 
