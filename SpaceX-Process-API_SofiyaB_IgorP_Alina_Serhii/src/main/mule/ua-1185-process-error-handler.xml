@@ -30,7 +30,7 @@ output application/json
 			</ee:transform>
 			<flow-ref doc:name="Create Report" doc:id="8619fc85-5985-479e-b338-e1f6ec62d715" name="createReporForErrorJob"/>
 		</on-error-propagate>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="edbba869-4590-4719-8702-d40683d66889" type="WSC:BAD_REQUEST">
+		<on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" doc:id="edbba869-4590-4719-8702-d40683d66889" type="WSC:BAD_REQUEST">
 			<ee:transform doc:name="Set Current Operation" doc:id="f1c66d58-66cb-4b20-b806-59166314ce07">
 				<ee:message>
 				</ee:message>
@@ -80,7 +80,7 @@ output application/json
 			</ee:transform>
 			<flow-ref doc:name="Create Report" doc:id="f039db0d-306f-447c-82fe-1d8ec065762c" name="createReporForErrorJob"/>
 		</on-error-continue>
-		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2b98cc6d-1511-45cb-9d69-1ebec4d14a0e" type="WSC:CANNOT_DISPATCH">
+		<on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" doc:id="2b98cc6d-1511-45cb-9d69-1ebec4d14a0e" type="WSC:CANNOT_DISPATCH">
 			<ee:transform doc:name="Set Current Operation" doc:id="0786e604-1a50-4b07-84ef-d62331750dca" >
 				<ee:message >
 				</ee:message>

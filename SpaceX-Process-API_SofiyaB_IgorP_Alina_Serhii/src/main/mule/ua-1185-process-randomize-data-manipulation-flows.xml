@@ -111,7 +111,7 @@ flatten(getRecordsToDelete("MONGO") + getRecordsToDelete("SQL"))]]></ee:set-payl
 			</ee:message>
 		</ee:transform>
 			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7e7c42ec-ae3f-4ba0-9b55-c901973967f1" type="ANY">
+				<on-error-propagate enableNotifications="false" logException="false" doc:name="On Error Propagate" doc:id="7e7c42ec-ae3f-4ba0-9b55-c901973967f1" type="ANY">
 					<raise-error doc:name="Raise error" doc:id="0dae8783-a048-461c-b829-ebd0a7d4a8f8" type="PROCESS:DATA_DEFINITION" description='#["An error occured while defining records to delete for entity " ++ vars.config.entityName as String ++ ". The process has been stopped."]'/>
 				</on-error-propagate>
 			</error-handler>
@@ -178,7 +178,7 @@ flatten(getRecordsToProcess("SQL") + getRecordsToProcess("MONGO"))]]></ee:set-pa
 			</ee:message>
 		</ee:transform>
 			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a26f7b2f-c3da-41ca-adf6-d1c1d6d43d20" type="ANY">
+				<on-error-propagate enableNotifications="false" logException="false" doc:name="On Error Propagate" doc:id="a26f7b2f-c3da-41ca-adf6-d1c1d6d43d20" type="ANY">
 					<raise-error doc:name="Raise error" doc:id="e5a9fafd-f329-46d6-9193-6e01c2703adc" type="PROCESS:DATA_DEFINITION" description='#["An error occured while defining records to update for entity " ++ vars.config.entityName as String ++ ". The process has been stopped."]'/>
 				</on-error-propagate>
 			</error-handler>

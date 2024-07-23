@@ -96,7 +96,7 @@ output application/xml
 						</when>
 					</choice>
 						<error-handler >
-							<on-error-propagate enableNotifications="true" logException="false" doc:name="On Error Propagate" doc:id="07e80bf9-7629-44cc-99d6-0c46a1f9863d" type="ANY">
+							<on-error-propagate enableNotifications="false" logException="false" doc:name="On Error Propagate" doc:id="07e80bf9-7629-44cc-99d6-0c46a1f9863d" type="ANY">
 								<ee:transform doc:name="Define Current Operation" doc:id="af0e3b55-1976-4373-ab0b-943a880267a0" >
 									<ee:message >
 									</ee:message>
