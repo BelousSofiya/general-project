@@ -35,7 +35,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<async doc:name="Async" doc:id="0bd6676b-692d-4de5-bd36-6b382939796c" >
 			<try doc:name="Try" doc:id="15d5188c-70e5-4ad4-bfbe-820d52634671" >
 				<azure-key-vault:get-secret doc:name="Get Secret key-case" doc:id="d424a45e-0299-4c27-b4c4-431f7d4d0f50" config-ref="Azure_Key_Vault_Config_Common_project" name="key-case" target="secretsCase" targetValue="#[read(payload.value as String)]"/>
-				<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;[{&#10;	"Status": "Working",&#10;	"Origin": "Web",&#10;	"Description": vars.ERROR_MESSAGE."message" default " ",&#10;	"Subject": vars.ERROR_MESSAGE."source" default " ",&#10;	"Priority": "High"&#10;}]]' doc:name="Set Variable request body" doc:id="110f15b0-43b0-490f-b183-c685d38ad790" variableName="requestBody" />
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;[{&#10;	"Status": "Working",&#10;	"Origin": "Web",&#10;	"Description": vars.ERROR_MESSAGE."description" default " ",&#10;	"Subject": vars.ERROR_MESSAGE."source" default " ",&#10;	"Priority": "High"&#10;}]]' doc:name="Set Variable request body" doc:id="110f15b0-43b0-490f-b183-c685d38ad790" variableName="requestBody" />
 				<http:request method="#[vars.secretsCase.'method']" doc:name="Request to spaceX Case" doc:id="c70560f2-1a1b-4088-a071-f284c97f7723" config-ref="HTTP_Request_config_to_log_in_Case_Common_project" path="#[vars.secretsCase.'base-path']" sendBodyMode="ALWAYS" >
 					<http:body ><![CDATA[#[vars.requestBody]]]></http:body>
 				</http:request>
