@@ -60,5 +60,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<http:request-config name="HTTP_Request_configuration_Salesforce" doc:name="HTTP Request configuration" doc:id="344cf570-ab42-445a-81a5-5c5ad7397ce9" >
 		<http:request-connection connectionIdleTimeout="300000" host="ua-1185-salesforce-system-api.us-e2.cloudhub.io"/>
 	</http:request-config>
+	<os:object-store name="Object_storeForReport" doc:name="Object store" doc:id="91527ac6-b01b-407f-9e55-20c704a969d7" />
 
 </mule>
