@@ -23,25 +23,24 @@ http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/sche
 	</vm:config>
 	<flow name="launches-publish-to-iterator" doc:id="d9c94e11-61d6-44c1-8733-594b114ee94c" >
 		<set-variable value='#[((attributes.queryParams.mode as String) replace /"/ with "" )]' doc:name="Set Working Mode" doc:id="0cbc76a8-2484-48b8-a2e6-e226f3af663d" variableName="mode"/>
-		<os:store doc:name="Store" doc:id="2d0c2f4d-edec-4e86-b8db-52d5dc710712" key='"mode"' objectStore="Object_storeForReport" >
+		<os:store doc:name="Store" doc:id="2d0c2f4d-edec-4e86-b8db-52d5dc710712" key='mode' objectStore="Object_storeForReport" >
 			<os:value ><![CDATA[#[vars.mode]]]></os:value>
 		</os:store>
-		<logger level="INFO" doc:name="Logger" doc:id="537c113b-38e8-4a3f-97f1-21c3042d37f5" message="Working mode"/>
-		<logger level="INFO" doc:name="Logge" doc:id="2cdd1598-616f-4c3f-a8c9-954081b64466" message="#[vars.mode]"/>
 		<vm:publish queueName="TestQ" doc:name="Publish to Launches-Iterator" doc:id="b357e3c6-7bdb-42dd-b21f-367e4ee92cd1" config-ref="VM_Config" timeout="25" />
 		<error-handler ref="ua-1185-spacex-process-api-JMS-Error_Handler" />
 	</flow>
 	<sub-flow name="ua-1185-spacex-sent-project-impl-mail-Sub_Flow" doc:id="a2ecfff6-7db7-4539-a307-47534b238e9d" >
 		<async doc:name="Async" doc:id="ba4130ac-38d1-4161-a30c-0f263fd6d421" >
 			<try doc:name="Try" doc:id="d2d1c363-ee3e-4577-a14a-89a7a4cd0dda" >
-				<os:retrieve doc:name="Retrieve" doc:id="e050217b-e1b3-4381-b262-12b20aa86ce2" key='"Report"' objectStore="Object_storeForReport" />
+				<os:retrieve doc:name="Retrieve" doc:id="e050217b-e1b3-4381-b262-12b20aa86ce2" key='Report' objectStore="Object_storeForReport" >
+					<os:default-value ><![CDATA[#[{}]]]></os:default-value>
+				</os:retrieve>
 				<set-variable value="#[payload]" doc:name="Set ReportWithAllData" doc:id="7fa2d7a9-d6dc-49a9-9c8f-488f149cea5d" variableName="ReportWithAllData"/>
-				<os:retrieve doc:name="Retrieve Working Mode" doc:id="ac01dca2-6e9d-4afa-ad39-fd41cb56b2a8" key='"mode"' objectStore="Object_storeForReport" />
+				<os:retrieve doc:name="Retrieve Working Mode" doc:id="ac01dca2-6e9d-4afa-ad39-fd41cb56b2a8" key='mode' objectStore="Object_storeForReport" >
+					<os:default-value ><![CDATA[#[""]]]></os:default-value>
+				</os:retrieve>
 				<set-variable value='#[payload]' doc:name="Set Working Mode" doc:id="e2c66243-c9b8-439a-bec5-64057b855a5b" variableName="mode" />
-				<logger level="INFO" doc:name="Logger2" doc:id="a02b023b-99ef-4d60-a74d-9f21b06cb170" message="Working mode" />
-				<logger level="INFO" doc:name="Logger1" doc:id="a53860bd-5ff2-48da-998a-a5d18847e92c" message="#[vars.mode]" />
 				<azure-key-vault:get-secret doc:name="Get Secret " doc:id="1dfd89d1-f481-4442-a947-fb5980fc4d4f" config-ref="Azure_Key_Vault_Config_Common_project" name="key-repport-2" target="secrets" targetValue="#[read(payload.value as String)]"/>
-				<logger level="INFO" doc:name="Logger" doc:id="85786895-9dd7-4047-916b-8395c55c959f" message="report data!!!!!!!!!!!!!!!!"/>
 				<logger level="INFO" doc:name="Logger" doc:id="30cabc8e-7097-4bf1-b5ac-f87cd9d95119" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"Mode": vars.mode,&#10;"Content": vars.ReportWithAllData&#10;}]'/>
 				<email:send doc:name="Send error email to report mail box CP" doc:id="c7713afd-7257-4705-aef9-981dd0e57dc1" config-ref="Email_SMTP_Common_project" fromAddress='#[vars.secrets.fromaddres]' subject="Records Report" >
 					<email:to-addresses >
@@ -58,7 +57,7 @@ output application/json
 }]]]></email:content>
 					</email:body>
 				</email:send>
-				<logger level="INFO" doc:name="Logger  mail sent successfully" doc:id="6c8cf4b7-ae3f-4659-937e-c33df91dfcb5" message="SUCCESS: Sended error mail mesages . launche iterrator" />
+				<logger level="INFO" doc:name="Logger  mail sent successfully" doc:id="6c8cf4b7-ae3f-4659-937e-c33df91dfcb5" message="SUCCESS: Sended error mail mesages. Launch iterator" />
 				<error-handler ref="ua-1185-spacex-common-project-mail-Error_Handler" />
 			</try>
 		</async>
@@ -216,7 +215,7 @@ var launche = vars.currentRecord
 </ee:transform>
 					<set-variable value="#[payload]" doc:name="Set Data" doc:id="9a4da97f-cb84-484c-90e9-33927572ffc0" variableName="DataRecords"/>
 					<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;(&#10;  (if (vars.DataRecords.spacexRecordMongo.report != null) { spacexRecordMongoReport: vars.DataRecords.spacexRecordMongo.report } else {}) ++&#10;  (if (vars.DataRecords.spacexRecordMySQL.report != null) { spacexRecordMySQLReport: vars.DataRecords.spacexRecordMySQL.report } else {}) ++&#10;  (if (vars.DataRecords.spacexRecordSalesforce.report != null) { spacexRecordSalesforceReport: vars.DataRecords.spacexRecordSalesforce.report } else {})&#10;)]" doc:name="Set ReportData" doc:id="2755736f-8ec0-45b0-aeb8-0346157322aa" variableName="ReportData" />
-					<os:retrieve doc:name="Retrieve" doc:id="d8d37383-b854-42d4-8e46-2196d72ed8cb" key='"Report"' objectStore="Object_storeForReport">
+					<os:retrieve doc:name="Retrieve" doc:id="d8d37383-b854-42d4-8e46-2196d72ed8cb" key='Report' objectStore="Object_storeForReport">
 						<os:default-value ><![CDATA[#[{}]]]></os:default-value>
 					</os:retrieve>
 					<ee:transform doc:name="Transform Message" doc:id="b1006f92-71e8-4a38-b88a-03196499532e" >
@@ -239,20 +238,14 @@ var updatedPayload = {
 updatedPayload]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<os:store doc:name="Store" doc:id="228505c1-2f37-492b-b23e-38f48248f346" key='"Report"' objectStore="Object_storeForReport"/>
-					<os:retrieve doc:name="Retrieve Working Mode" doc:id="d9c30943-56dc-4674-95c3-272d5e77982e" key='"mode"' objectStore="Object_storeForReport" />
+					<os:store doc:name="Store" doc:id="228505c1-2f37-492b-b23e-38f48248f346" key='Report' objectStore="Object_storeForReport"/>
+					<os:retrieve doc:name="Retrieve Working Mode" doc:id="d9c30943-56dc-4674-95c3-272d5e77982e" key='mode' objectStore="Object_storeForReport" />
 					<set-variable value="#[payload]" doc:name="Set Working Mode" doc:id="fd6a6b5e-475b-4872-8851-d8be355faa6f" variableName="mode" />
-					<logger level="INFO" doc:name="Logger1" doc:id="4db19a01-1386-4eba-83a2-973b78d8a055" message="mode" />
-					<logger level="INFO" doc:name="Logger" doc:id="c1c9ffc1-dea3-4d89-912e-ef23b0fd1491" message="#[vars.mode]" />
 					<choice doc:name="Choice" doc:id="2439afc4-c989-4479-ac5c-98b4f88d9fc9" >
 						<when expression='#[vars.mode == "Working"]'>
 							<flow-ref doc:name="Flow Reference" doc:id="9d32a6bc-d6ed-42dc-9af3-4dac8bf91f21" name="launches-records" />
 						</when>
 					</choice>
-					<batch:aggregator doc:name="Batch Aggregator" doc:id="ec442e1b-af42-4a77-8a0c-b3a2b1bf2e3e" size="10" preserveMimeTypes="true">
-						<logger level="INFO" doc:name="Logger1" doc:id="db140bca-645b-4cd0-a753-5b350aff45c4" message="#[payload]" />
-					
-</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
 		</batch:job>
@@ -360,7 +353,6 @@ output application/json
 					<http:request method="POST" doc:name="Request To Mongo" doc:id="ef8fd3dd-0d06-4da4-94c0-f440f2c4a8ca" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 					<http:body><![CDATA[#[vars.MongoDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="3a0ce633-73fe-45dd-873b-6f605e9554bd" message="Created data from salesforce" />
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			
@@ -371,7 +363,6 @@ output application/json
 					<http:request method="POST" doc:name="Request To Mongo" doc:id="2dc34f10-6b8c-4875-9a04-b4dbabf912f1" config-ref="HTTP_Request_configuration_Mongo" path="/api">
 					<http:body><![CDATA[#[vars.MongoDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="b74bed26-ed69-4f71-9750-1bc8dd9b50b2" message="Created data from salesforce" />
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			</when>
@@ -384,7 +375,6 @@ output application/json
 					<http:request method="POST" doc:name="Request To MySQl" doc:id="c13d3ea8-393b-487a-b374-cce065ed904c" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 					<http:body><![CDATA[#[vars.MySQLDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="0b48434c-e83f-4541-9b70-936368e64b3c" message="Created data from salesforce" />
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			
@@ -395,7 +385,6 @@ output application/json
 					<http:request method="POST" doc:name="Request To MySQl" doc:id="ae5dd15b-fe78-4414-ac97-4ae6da777a04" config-ref="HTTP_Request_configuration_MySQL" path="/SpaceXdbService/SpaceXdbServiceSoapPort">
 					<http:body><![CDATA[#[vars.MySQLDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="1a39f90a-d0ae-48c9-a995-85e20679178a" message="Created data from salesforce" />
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			</when>
@@ -408,8 +397,6 @@ output application/json
 					<http:request method="POST" doc:name="Request To Salesforce" doc:id="72f1d15e-e659-4eee-9155-4f6c67742e94" config-ref="HTTP_Request_configuration_Salesforce" path="/contracts">
 					<http:body><![CDATA[#[vars.SalesforceDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="c86135c7-a83d-45d8-8c75-3ffd78b7202e" message="Created data from salesforce"/>
-					<logger level="INFO" doc:name="Logger" doc:id="ef8afb5f-6b27-40e2-a773-9312dbe0eb58" message="#[payload]"/>
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			</when>
@@ -419,8 +406,6 @@ output application/json
 					<http:request method="PUT" doc:name="Request To Salesforce" doc:id="1878419e-06c3-4c9e-82c0-3daf521df789" path="/contracts" config-ref="HTTP_Request_configuration_Salesforce">
 					<http:body><![CDATA[#[vars.SalesforceDataForCreate]]]></http:body>
 				</http:request>
-					<logger level="INFO" doc:name="Logger" doc:id="32226974-74d4-4ec5-b147-dea3fba26454" message="Updated data from salesforce:"/>
-					<logger level="INFO" doc:name="Logger" doc:id="f1055848-ef62-47b2-8198-563f692dabe5" message="#[payload]"/>
 					<error-handler ref="ua-1185-spacex-process-api-launche-iterrator-C-Error_Handler" />
 				</try>
 			</when>
