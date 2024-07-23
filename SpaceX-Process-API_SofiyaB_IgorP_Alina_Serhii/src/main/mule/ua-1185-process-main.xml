@@ -45,11 +45,11 @@ http://www.mulesoft.org/schema/mule/azure-key-vault http://www.mulesoft.org/sche
 		<flow name="sync-rocket-payload-launchpad-mainFlow" doc:id="7f406899-14e0-4fd6-809e-56d95d51dcfa">
 		<http:listener doc:name="Listener" doc:id="9d643493-6689-488d-85f9-727b08cf2936" config-ref="HTTPS_Listener_config" path="/sync" />
 		<logger level="INFO" doc:name="Start synchronization process " doc:id="88e97691-93f5-4402-b664-c657083790a7" message="SUCCESS: Synchronization process was run." />
-		<flow-ref doc:name="Flow Reference" doc:id="b5dab712-ba15-4a5a-8c6a-93e15c9e2a57" name="startProcessFlow" />
+		<flow-ref doc:name="Reference to startProcessFlow" doc:id="b5dab712-ba15-4a5a-8c6a-93e15c9e2a57" name="startProcessFlow" />
 	</flow>
 	<flow name="sync-rocket-payload-launchpad-reportFlow" doc:id="82035845-bbb6-4836-acf4-81bb626c6067" >
 		<http:listener doc:name="Listener" doc:id="55f2cf71-99b4-4cb0-9975-511cbc57a866" config-ref="HTTPS_Listener_config" path="/sendReport"/>
 		<logger level="INFO" doc:name="Start report generation process " doc:id="2e420a96-193e-42fb-b7aa-b52209aaa497" message="SUCCESS: The process of generating a report has started." />
-		<flow-ref doc:name="Flow Reference" doc:id="cf17a25e-b658-4f8e-b60f-0f702b3474fd" name="startReportFlow"/>
+		<flow-ref doc:name="Reference to startReportFlow" doc:id="cf17a25e-b658-4f8e-b60f-0f702b3474fd" name="startReportFlow"/>
 	</flow>
 </mule>

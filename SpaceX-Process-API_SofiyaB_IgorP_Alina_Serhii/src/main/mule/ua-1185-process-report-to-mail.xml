@@ -25,7 +25,7 @@ payload
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="0ed6dd51-ae17-4694-8871-6363dcc8778c" >
 			<when expression='#[payload == [  "Launchpads_result_mongo_report",&#10;  "Launchpads_result_mysql_report",&#10;  "Payloads_result_mongo_report",&#10;  "Payloads_result_mysql_report",&#10;  "Rockets_result_mongo_report",&#10;  "Rockets_result_mysql_report",&#10;  "result_mode_report"&#10;]]' >
-				<flow-ref doc:name="Flow Reference" doc:id="1c762a6e-3f5f-4456-bd35-09a2bffec6ab" name="createReportFlow" />
+				<flow-ref doc:name="Reference to create report" doc:id="1c762a6e-3f5f-4456-bd35-09a2bffec6ab" name="createReportFlow" />
 			</when>
 			<otherwise >
 				<ee:transform doc:name="Wait Message" doc:id="c669d6d8-5a23-4687-a61a-2e41ab91304a" >
@@ -52,7 +52,7 @@ payload
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<ee:transform doc:name="create report" doc:id="55fca689-7d33-4376-9d8c-6d772edb4a12" >
+		<ee:transform doc:name="Create report" doc:id="55fca689-7d33-4376-9d8c-6d772edb4a12" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 import * from dw::core::Dates
@@ -92,13 +92,13 @@ payload."Payloads_result_mongo_report" as String ++
 "\n------------------------------------------------------------------------"]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="388d700d-e2ac-4caa-8ac5-90fa6a336336" name="mailReportFlow" />
+		<flow-ref doc:name="Reference to mail report" doc:id="388d700d-e2ac-4caa-8ac5-90fa6a336336" name="mailReportFlow" />
 	</sub-flow>
 	<sub-flow name="mailReportFlow" doc:id="ab8bdd53-d9de-448d-bae5-70b52e88b372" >
 		<async doc:name="Async" doc:id="224fc3da-8bcc-425c-86fa-7d4d43935a58">
 			<try doc:name="Try" doc:id="6a79103d-4d1d-4f9b-9068-d88069ca28ae">
 					<azure-key-vault:get-secret doc:name="Get Secret" doc:id="36c98a85-a03c-4e41-98cd-94a731d55a04" config-ref="Azure_Key_Vault_Config_Common_project" name="key-repport"/>
-				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="secrets" doc:id="a97b20dd-5409-4a4e-822e-5d9a7e6f1c13" variableName="secrets" />
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;read(payload.value as String)]" doc:name="Secrets" doc:id="a97b20dd-5409-4a4e-822e-5d9a7e6f1c13" variableName="secrets" />
 				<email:send doc:id="236fe9d9-b511-4095-9b05-e2622e26fa4b" config-ref="Email_SMTP_Common_project" fromAddress="#[vars.secrets.fromaddres]" subject="Report from SoftServe System Integration (LaunchPads, Rockets and Payloads)" doc:name="Send report email to report mail box">
 			<email:to-addresses>
 						<email:to-address value="#[vars.secrets.toaddres]" />
