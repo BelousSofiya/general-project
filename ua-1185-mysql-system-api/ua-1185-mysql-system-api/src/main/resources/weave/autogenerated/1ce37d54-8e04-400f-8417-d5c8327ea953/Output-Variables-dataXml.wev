@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_1ce37d54_8e04_400f_8417_d5c8327ea953_Output_Variables_dataXml = Any
+
