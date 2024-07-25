@@ -115,3 +115,87 @@ output application/json
 	"source": "Test source: 123456"
 }
 ```
+
+
+## Azure Keys
+
+### Mail Key
+
+``` mail repport
+key-repport
+{
+'host': 'smtp.gmail.com',
+'port': '587',
+'user': '***.sppt@gmail.com',
+'password': '*** vysf eihd uxao',
+'fromaddres': '@gmail.com',
+'toaddres': '@gmail.com'
+}
+
+
+key-repport-2
+{
+'host': 'smtp.gmail.com',
+'port': '587',
+'user': 'test',
+'password': 'test test test',
+'fromaddres': 'test@test',
+'toaddres': 'test@test'
+}
+
+report-mail
+{
+'host': 'smtp.gmail.com',
+'port': '587',
+'user': 'test',
+'password': 'test test test',
+'fromaddres': 'test@test',
+'toaddres': 'test@test'
+}
+```
+
+### case Key
+```
+key-case
+{
+   'protocol': 'HTTP',
+   'base-path': 'cases',
+   'host': 'test',
+   'port': '80',
+   'password': '',
+   'method': 'POST'
+}
+```
+### DB Key
+
+```
+key-mongo
+{
+  'host': 'mongodb', 
+  'user': 'admin',
+  'password': '******',
+  'cluster': '*****.servers.mongodirector.com:27017'
+}
+```
+
+```
+key-salesforce 
+{
+   'username': '******@gmail.com',
+   'password': '*******',
+   'securitytoken': '**********',
+   'authorizationurl': 'https://login.salesforce.com/services/Soap/u/60.0'
+}
+```
+
+```
+key-sql
+{
+  "host": "S******.servers.mongodirector.com",
+  "port": "3306",
+  "user": "*****",
+  "password": "******",
+  "database": "******"
+}
+
+```

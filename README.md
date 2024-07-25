@@ -18,13 +18,13 @@ Global variables and sample filling
 
 
 ```properties
--M-XX:-UseBiasedLocking -M-Dfile.encoding=UTF-8 -M-XX:+UseG1GC -M-XX:+UseStringDeduplication -M-Dmule.deployment.forceParseConfigXmls=true
--M-Ddogkey=1e111abad111e1c1c1f1ae11111b11b1 
+
+-M-Ddogkey=*******
 -M-Ddoghost=datadoghq.eu
--M-DAZURE_CLIENT_ID=1a1d11c1-1df1-1a11-1111-b1d85c1fbfd1
--M-DAZURE_TENANT_ID=b11a1ab1-1e11-1111-1111-d1111c11f111
--M-DAZURE_CLIENT_SECRET=nn11Q~lhmb1qb1zME11~BLvpV1kEJ1lxyRdkoaN1
--M-DMULE_AZURE_KEY_VAULT_NAME=mulesoft1111
+-M-DAZURE_CLIENT_ID=*****-*****-4a19-9845-b0d85c8fbfd5
+-M-DAZURE_TENANT_ID=***-***-4127-8255-d2019c39f914
+-M-DAZURE_CLIENT_SECRET=*****~*******O0~BLvpV7kEJ8lxyRdkoaN4 
+-M-DMULE_AZURE_KEY_VAULT_NAME=mulesoft1185
 -M-DFREQUENCY=1
 ```
 
